@@ -1,187 +1,235 @@
-import { useEffect, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { PanelLeftOpen, SquarePen } from 'lucide-react';
+import Sidebar from './components/Sidebar.jsx';
+import ChatView from './components/ChatView.jsx';
+import { NO_ANSWER_MSG, sendChatMessage } from './lib/api.js';
+import { fetchClients, getCachedClients } from './lib/clients.js';
+import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
 
-const CHAT_URL = import.meta.env.VITE_N8N_CHAT_URL;
-const SESSION_KEY = 'lpa-session-id';
+const MOBILE_QUERY = '(max-width: 767px)';
 
-const REQUEST_TIMEOUT_MS = 30000;
-const NO_ANSWER_MSG = "Sorry, I didn't get an answer. Please try again.";
-const UNREACHABLE_MSG = "Can't reach the assistant right now. Please try again.";
-
-const STARTERS = [
-  'Where are we at for Wagner Soil Testing?',
-  'Who is assigned to Bruin Pest Management?',
-  'Show the September landing pages for Wagner Soil Testing',
-  "Which months don't have landing pages for A Vision Windscreens?",
-];
-
-function getSessionId() {
-  let id = localStorage.getItem(SESSION_KEY);
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem(SESSION_KEY, id);
-  }
-  return id;
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setMatches(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
 }
 
-function extractOutput(data) {
-  // n8n may return an object or a single-item array
-  const item = Array.isArray(data) ? data[0] : data;
-  const output = item?.output;
-  return typeof output === 'string' && output.trim() ? output : '';
-}
-
-const markdownComponents = {
-  a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
-};
-
-export default function App() {
-  const [sessionId, setSessionId] = useState(getSessionId);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const bottomRef = useRef(null);
+function useTheme() {
+  const [theme, setTheme] = useState(loadTheme);
+  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
+  const resolved = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, loading, error]);
+    document.documentElement.dataset.theme = resolved;
+  }, [resolved]);
 
-  async function send(text) {
-    const chatInput = text.trim();
-    if (!chatInput || loading) return;
+  const choose = useCallback((t) => {
+    setTheme(t);
+    saveTheme(t);
+  }, []);
 
-    setMessages((m) => [...m, { role: 'user', content: chatInput }]);
-    setInput('');
-    setError('');
-    setLoading(true);
+  return [theme, choose];
+}
 
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+export default function App() {
+  const [chats, setChats] = useState(loadChats);
+  const [activeId, setActiveId] = useState(null);
+  const [pending, setPending] = useState({});
+  const [errors, setErrors] = useState({});
 
+  const [panel, setPanel] = useState('chats');
+  const [query, setQuery] = useState('');
+  const [theme, setTheme] = useTheme();
+
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const [collapsed, setCollapsed] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const sidebarVisible = isMobile ? drawerOpen : !collapsed;
+
+  const [clients, setClients] = useState(() => getCachedClients()?.clients ?? null);
+  const [clientStatus, setClientStatus] = useState('idle');
+  const clientsRequested = useRef(false);
+
+  useEffect(() => {
+    saveChats(chats);
+  }, [chats]);
+
+  useEffect(() => {
+    if (!isMobile) setDrawerOpen(false);
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onKey = (e) => e.key === 'Escape' && setDrawerOpen(false);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [drawerOpen]);
+
+  const loadClients = useCallback(async () => {
+    setClientStatus('loading');
     try {
-      const res = await fetch(CHAT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'sendMessage', sessionId, chatInput }),
-        signal: controller.signal,
-      });
-      if (res.status !== 200) {
-        const body = await res.text().catch(() => '');
-        console.error('Assistant request failed:', res.status, res.statusText, body);
-        setError(UNREACHABLE_MSG);
-        return;
-      }
-
-      let data = null;
-      try {
-        data = await res.json();
-      } catch (parseErr) {
-        console.error('Assistant response was not valid JSON:', parseErr);
-      }
-      const output = extractOutput(data);
-      if (!output) console.warn('Assistant response had no "output" field:', data);
-      setMessages((m) => [...m, { role: 'assistant', content: output || NO_ANSWER_MSG }]);
-    } catch (err) {
-      console.error(
-        err.name === 'AbortError'
-          ? `Assistant request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`
-          : 'Assistant request error:',
-        err
-      );
-      setError(UNREACHABLE_MSG);
-    } finally {
-      clearTimeout(timer);
-      setLoading(false);
+      setClients(await fetchClients());
+      setClientStatus('ok');
+    } catch {
+      setClientStatus('error');
     }
+  }, []);
+
+  // Load the client list once (unless a fresh cached copy exists)
+  useEffect(() => {
+    if (clientsRequested.current) return;
+    clientsRequested.current = true;
+    if (!getCachedClients()?.fresh) loadClients();
+  }, [loadClients]);
+
+  const activeChat = chats.find((c) => c.id === activeId) ?? null;
+
+  const updateChat = useCallback((id, fn) => {
+    setChats((list) => list.map((c) => (c.id === id ? fn(c) : c)));
+  }, []);
+
+  const request = useCallback(
+    async (chatId, sessionId, text) => {
+      setPending((p) => ({ ...p, [chatId]: true }));
+      setErrors((e) => ({ ...e, [chatId]: false }));
+      try {
+        const output = await sendChatMessage(sessionId, text);
+        const now = Date.now();
+        updateChat(chatId, (c) => ({
+          ...c,
+          updatedAt: now,
+          messages: [...c.messages, { role: 'assistant', content: output.trim() ? output : NO_ANSWER_MSG, createdAt: now }],
+        }));
+      } catch {
+        setErrors((e) => ({ ...e, [chatId]: true }));
+      } finally {
+        setPending((p) => ({ ...p, [chatId]: false }));
+      }
+    },
+    [updateChat]
+  );
+
+  function send(text) {
+    const chatInput = text.trim();
+    if (!chatInput) return;
+
+    const now = Date.now();
+    const userMsg = { role: 'user', content: chatInput, createdAt: now };
+    let chat = activeChat;
+    if (chat) {
+      if (pending[chat.id]) return;
+      updateChat(chat.id, (c) => ({ ...c, updatedAt: now, messages: [...c.messages, userMsg] }));
+    } else {
+      chat = { ...createChat(chatInput), messages: [userMsg] };
+      setChats((list) => [chat, ...list]);
+      setActiveId(chat.id);
+    }
+    request(chat.id, chat.sessionId, chatInput);
+  }
+
+  // Resend the user message that produced the assistant answer at `index`
+  function retryAnswer(index) {
+    const chat = activeChat;
+    const userMsg = chat?.messages[index - 1];
+    if (!chat || pending[chat.id] || userMsg?.role !== 'user') return;
+    updateChat(chat.id, (c) => ({ ...c, messages: c.messages.slice(0, index) }));
+    request(chat.id, chat.sessionId, userMsg.content);
+  }
+
+  function retryAfterError() {
+    const chat = activeChat;
+    const last = chat?.messages[chat.messages.length - 1];
+    if (!chat || pending[chat.id] || last?.role !== 'user') return;
+    request(chat.id, chat.sessionId, last.content);
+  }
+
+  function closeDrawerOnMobile() {
+    if (isMobile) setDrawerOpen(false);
   }
 
   function newChat() {
-    const id = crypto.randomUUID();
-    localStorage.setItem(SESSION_KEY, id);
-    setSessionId(id);
-    setMessages([]);
-    setError('');
-    setInput('');
+    setActiveId(null);
+    closeDrawerOnMobile();
   }
 
-  function onSubmit(e) {
-    e.preventDefault();
-    send(input);
+  function askFromSidebar(question) {
+    closeDrawerOnMobile();
+    send(question);
   }
 
-  function onKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      send(input);
-    }
+  const chatHandlers = {
+    onOpen: (id) => {
+      setActiveId(id);
+      closeDrawerOnMobile();
+    },
+    onPin: (id) => updateChat(id, (c) => ({ ...c, pinned: !c.pinned })),
+    onRename: (id, title) => updateChat(id, (c) => ({ ...c, title })),
+    onDelete: (id) => {
+      setChats((list) => list.filter((c) => c.id !== id));
+      if (id === activeId) setActiveId(null);
+    },
+  };
+
+  function toggleSidebar() {
+    if (isMobile) setDrawerOpen((o) => !o);
+    else setCollapsed((c) => !c);
   }
 
   return (
-    <div className="app">
-      <header className="header">
-        <h1>Landing Page Assistant</h1>
-        <button className="new-chat" onClick={newChat} disabled={loading}>
-          New chat
-        </button>
-      </header>
+    <div className={`app ${sidebarVisible ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'is-mobile' : ''}`}>
+      {isMobile && drawerOpen && <div className="overlay" onClick={() => setDrawerOpen(false)} aria-hidden="true" />}
 
-      <main className="messages">
-        {messages.length === 0 && (
-          <div className="empty">
-            <p>Ask about project status, assignments or landing pages.</p>
-            <div className="starters">
-              {STARTERS.map((q) => (
-                <button key={q} className="starter" onClick={() => send(q)} disabled={loading}>
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+      <aside className="sidebar" aria-label="Sidebar" aria-hidden={!sidebarVisible} inert={!sidebarVisible ? true : undefined}>
+        <Sidebar
+          panel={panel}
+          onPanel={setPanel}
+          query={query}
+          onQuery={setQuery}
+          onNewChat={newChat}
+          onClose={toggleSidebar}
+          chats={chats}
+          activeId={activeId}
+          chatHandlers={chatHandlers}
+          clients={clients}
+          clientStatus={clientStatus}
+          onRefreshClients={loadClients}
+          onAsk={askFromSidebar}
+          theme={theme}
+          onTheme={setTheme}
+        />
+      </aside>
 
-        {messages.map((m, i) => (
-          <div key={i} className={`message ${m.role}`}>
-            {m.role === 'assistant' ? (
-              <div className="markdown">
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                  {m.content}
-                </ReactMarkdown>
-              </div>
-            ) : (
-              m.content
-            )}
-          </div>
-        ))}
+      <main className="main">
+        <header className="topbar">
+          {!sidebarVisible && (
+            <>
+              <button type="button" className="icon-btn" onClick={toggleSidebar} aria-label="Open sidebar" title="Open sidebar">
+                <PanelLeftOpen size={18} aria-hidden="true" />
+              </button>
+              <button type="button" className="icon-btn" onClick={newChat} aria-label="New chat" title="New chat">
+                <SquarePen size={18} aria-hidden="true" />
+              </button>
+            </>
+          )}
+          <span className="topbar-title">{activeChat?.title ?? ''}</span>
+        </header>
 
-        {loading && (
-          <div className="message assistant typing" aria-label="Assistant is typing">
-            <span /><span /><span />
-          </div>
-        )}
-
-        {error && <div className="error">⚠️ {error}</div>}
-
-        <div ref={bottomRef} />
+        <ChatView
+          key={activeChat?.id ?? 'new'}
+          chat={activeChat}
+          waiting={Boolean(activeChat && pending[activeChat.id])}
+          error={Boolean(activeChat && errors[activeChat.id])}
+          clients={clients}
+          onSend={send}
+          onRetry={retryAnswer}
+          onRetryError={retryAfterError}
+        />
       </main>
-
-      <form className="composer" onSubmit={onSubmit}>
-        <div className="composer-row">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}
-            placeholder="Type your question…"
-            rows={1}
-            disabled={loading}
-          />
-          <button type="submit" disabled={loading || !input.trim()}>
-            Send
-          </button>
-        </div>
-        <p className="hint">Tip: include the client name, e.g. Wagner, Yandina or Coolum.</p>
-      </form>
     </div>
   );
 }
