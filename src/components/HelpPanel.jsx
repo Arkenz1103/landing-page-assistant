@@ -6,12 +6,18 @@ const EXAMPLES = [
   { type: 'Service / City', q: 'What is the service and city for Wagner Soil Testing?' },
   { type: 'GMB / Yellow Pages / True Local link', q: 'What is the GMB link for Bruin Pest Management?' },
   { type: 'Assigned Use Only', q: 'What is in Assigned Use Only for Wagner Soil Testing?' },
+  { type: 'All clients', q: 'Show all clients' },
+  { type: 'Plan', q: 'What plan is Wagner on?' },
+  { type: 'Report link', q: 'Report link for Cuzkell' },
+  { type: 'Citations', q: 'Citations for Ace Restumping' },
+  { type: 'Reports not done', q: 'Which reports are not done?' },
+  { type: 'Clients by assignee', q: 'Which clients is Johnny assigned to?' },
 ];
 
 export default function HelpPanel({ onAsk }) {
   return (
     <div className="help-panel">
-      <p>This assistant answers from the client landing page sheet. Always include a client name.</p>
+      <p>This assistant answers from the client landing page sheet. Include a client name for client-specific questions, or ask about all clients (e.g. Show all clients).</p>
       <h3 className="group-label">Question types</h3>
       <ul className="help-list">
         {EXAMPLES.map((e) => (

@@ -51,7 +51,7 @@ export default function Composer({ onSend, waiting, large = false, autoFocus = f
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Ask about a client's landing pages…"
+          placeholder="Ask about a landing page, plan, report or citations..."
           rows={large ? 2 : 1}
         />
         <button type="submit" className="send-btn" disabled={!canSend} aria-label="Send message" title="Send">
