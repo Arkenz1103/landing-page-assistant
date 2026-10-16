@@ -634,7 +634,7 @@ button:disabled {
 }
 
 .thread {
-  max-width: 760px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 12px 20px 24px;
 }
@@ -1056,6 +1056,60 @@ button:disabled {
 
 .markdown tbody tr:nth-child(even) td {
   background: var(--table-zebra);
+}
+
+/* <small> blocks from the assistant: compact tables for long row listings */
+.markdown-small table {
+  font-size: 0.76rem;
+}
+
+.markdown-small th,
+.markdown-small td {
+  padding: 4px 8px;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+/* Collapsible raw sheet data + internal scroll box for long tables */
+.sheet-details {
+  margin: 0 0 14px;
+}
+
+.sheet-details > summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.scroll-box {
+  max-height: 320px;
+  overflow: auto;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.scroll-box .table-wrap {
+  margin: 0;
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+}
+
+.scroll-box table {
+  font-size: 0.8rem;
+}
+
+.scroll-box th,
+.scroll-box td {
+  padding: 5px 9px;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.scroll-box th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .table-link {
