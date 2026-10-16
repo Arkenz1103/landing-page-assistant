@@ -1,0 +1,576 @@
+- generic [ref=f1e3]:
+  - complementary "Sidebar" [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - heading "Landing Page Assistant" [level=1] [ref=f1e7]
+        - button "Close sidebar" [ref=f1e8] [cursor=pointer]
+      - button "New chat" [ref=f1e12] [cursor=pointer]
+      - searchbox "Search chats" [ref=f1e20]
+      - navigation "Sidebar sections" [ref=f1e21]:
+        - button "Chats" [pressed] [ref=f1e22] [cursor=pointer]
+        - button "Clients" [ref=f1e25] [cursor=pointer]
+        - button "Help" [ref=f1e31] [cursor=pointer]
+      - region "Today" [ref=f1e70]:
+        - heading "Today" [level=3] [ref=f1e71]
+        - list [ref=f1e72]:
+          - listitem [ref=f1e73]:
+            - button "Scan all client in the master sheets the…" [ref=f1e74] [cursor=pointer]
+            - button "Options for Scan all client in the master sheets the…" [ref=f1e75] [cursor=pointer]
+      - radiogroup "Colour theme" [ref=f1e37]:
+        - radio "Light" [ref=f1e38] [cursor=pointer]
+        - radio "Dark" [ref=f1e45] [cursor=pointer]
+        - radio "System" [checked] [ref=f1e48] [cursor=pointer]
+  - main [ref=f1e51]:
+    - generic [ref=f1e52]: Scan all client in the master sheets the…
+    - generic [ref=f1e82]:
+      - generic [ref=f1e83]: Scan all client in the master sheets then list the services and months where the landing page url is empty.
+      - generic [ref=f1e99]:
+        - generic [ref=f1e100]:
+          - heading "Landing page audit — all clients" [level=3] [ref=f1e101]
+          - paragraph [ref=f1e102]:
+            - strong [ref=f1e103]: 2,403 rows
+            - text: have an empty Landing Page URL across
+            - strong [ref=f1e104]: 78 client tabs
+            - text: ", covering 198 services and 15 months, with"
+            - strong [ref=f1e105]: RCM Hot Water Services
+            - text: missing the most (208 rows). Click a client tab below to jump to its raw sheet rows; every row is listed individually with all 7 sheet columns.
+          - generic [ref=f1e106]:
+            - tablist [ref=f1e107]:
+              - tab "RCM Hot Water Services (208)" [ref=f1e108] [cursor=pointer]
+              - tab "Guaranteed Gutter Protection (132)" [ref=f1e109] [cursor=pointer]
+              - tab "Access Alarms (108)" [ref=f1e110] [cursor=pointer]
+              - tab "Rowdy's Car Carrier (95)" [ref=f1e111] [cursor=pointer]
+              - tab "Superior Glass Brisbane (95)" [ref=f1e112] [cursor=pointer]
+              - tab "RYNO Fencing (88)" [ref=f1e113] [cursor=pointer]
+              - tab "Sureline Fencing (59)" [ref=f1e114] [cursor=pointer]
+              - tab "Eco Air and Electrical (55)" [ref=f1e115] [cursor=pointer]
+              - tab "Cuzkell Pty Ltd (51)" [ref=f1e116] [cursor=pointer]
+              - tab "Bruin Pest Management (48)" [ref=f1e117] [cursor=pointer]
+              - tab "Billabong Pool Services & Supply (46)" [ref=f1e118] [cursor=pointer]
+              - tab "Griffiths Concrete & Construction Services (46)" [ref=f1e119] [cursor=pointer]
+              - tab "Ace Restumping (39)" [ref=f1e120] [cursor=pointer]
+              - tab "L.J. Shop Fitters (39)" [ref=f1e121] [cursor=pointer]
+              - tab "Queensland Paint Supplies (37)" [ref=f1e122] [cursor=pointer]
+              - tab "Luxe Electrical Industries (36)" [ref=f1e123] [cursor=pointer]
+              - tab "Above All Roof Painting and Repairs (32)" [ref=f1e124] [cursor=pointer]
+              - tab "Ricthies Plumbing & Gas (32)" [ref=f1e125] [cursor=pointer]
+              - tab "Suncoast Hydroponics (32)" [ref=f1e126] [cursor=pointer]
+              - tab "Billabong Pool Services & Supply Noosaville (31)" [ref=f1e127] [cursor=pointer]
+              - tab "Hanceys Turf (31)" [active] [selected] [ref=f1e128] [cursor=pointer]
+              - tab "Leafshield Gutter Protection (31)" [ref=f1e129] [cursor=pointer]
+              - tab "Morrison's Maintenance Plumbing (31)" [ref=f1e130] [cursor=pointer]
+              - tab "Northside Mini Mix (31)" [ref=f1e131] [cursor=pointer]
+              - tab "A Vision Windscreens (30)" [ref=f1e132] [cursor=pointer]
+              - tab "Journeyman Movers (30)" [ref=f1e133] [cursor=pointer]
+              - tab "Wagner Soil Testing (30)" [ref=f1e134] [cursor=pointer]
+              - tab "Lomandra Accounting (26)" [ref=f1e135] [cursor=pointer]
+              - tab "Neptunes Pool Care (26)" [ref=f1e136] [cursor=pointer]
+              - tab "Care Technical Service (25)" [ref=f1e137] [cursor=pointer]
+              - tab "Lockbell Commercial Linings (25)" [ref=f1e138] [cursor=pointer]
+              - tab "Smith Tree Solutions (25)" [ref=f1e139] [cursor=pointer]
+              - tab "B & J Whitsed Waterproofing (24)" [ref=f1e140] [cursor=pointer]
+              - tab "Burke Industries (24)" [ref=f1e141] [cursor=pointer]
+              - tab "Deadlock Garage Doors (24)" [ref=f1e142] [cursor=pointer]
+              - tab "FAA Property (24)" [ref=f1e143] [cursor=pointer]
+              - tab "Pine Rivers Crane Hire (24)" [ref=f1e144] [cursor=pointer]
+              - tab "Snowys Painting (24)" [ref=f1e145] [cursor=pointer]
+              - tab "Sunshine Coast Home & Office Removals (24)" [ref=f1e146] [cursor=pointer]
+              - tab "Tile Factory Outlet (24)" [ref=f1e147] [cursor=pointer]
+              - tab "Auto Glass Caboolture (23)" [ref=f1e148] [cursor=pointer]
+              - tab "Billabong Robotic Pool Cleaners (23)" [ref=f1e149] [cursor=pointer]
+              - tab "Catton Roderick Lawyers Birtinya (23)" [ref=f1e150] [cursor=pointer]
+              - tab "Catton Roderick Lawyers Redcliffe (23)" [ref=f1e151] [cursor=pointer]
+              - tab "Integrity Lounge Designs (23)" [ref=f1e152] [cursor=pointer]
+              - tab "Liverpool Garage Doors (23)" [ref=f1e153] [cursor=pointer]
+              - tab "Rasura Alexandra Headlands (23)" [ref=f1e154] [cursor=pointer]
+              - tab "Rasura Chiropractic (23)" [ref=f1e155] [cursor=pointer]
+              - tab "Billabong Pool Services & Supply Caloundra (21)" [ref=f1e156] [cursor=pointer]
+              - tab "BN Painting Services Pty Ltd (21)" [ref=f1e157] [cursor=pointer]
+              - tab "Embroidery FX (21)" [ref=f1e158] [cursor=pointer]
+              - tab "Luxe Lighting (21)" [ref=f1e159] [cursor=pointer]
+              - tab "Catton Roderick Lawyers (20)" [ref=f1e160] [cursor=pointer]
+              - tab "Neptunes Pool Care (20)" [ref=f1e161] [cursor=pointer]
+              - tab "Neptunes Pool Care (20)" [ref=f1e162] [cursor=pointer]
+              - tab "Captivating Concrete Solutions (19)" [ref=f1e163] [cursor=pointer]
+              - tab "Micks Gasfitting Services (19)" [ref=f1e164] [cursor=pointer]
+              - tab "Southern Cross Concrete Cutting (19)" [ref=f1e165] [cursor=pointer]
+              - tab "Australian Boating College (18)" [ref=f1e166] [cursor=pointer]
+              - tab "Kitchens R Us (17)" [ref=f1e167] [cursor=pointer]
+              - tab "Smith Tree Solutions Chevallum (17)" [ref=f1e168] [cursor=pointer]
+              - tab "Dolphin Marine (15)" [ref=f1e169] [cursor=pointer]
+              - tab "Hancey's Turf Sunshine Coast (13)" [ref=f1e170] [cursor=pointer]
+              - tab "Roebuck Concepts (13)" [ref=f1e171] [cursor=pointer]
+              - tab "Jerry & the Tilemakers (12)" [ref=f1e172] [cursor=pointer]
+              - tab "Ace Posts and Beams (11)" [ref=f1e173] [cursor=pointer]
+              - tab "Jim Monger Plumbing (11)" [ref=f1e174] [cursor=pointer]
+              - tab "Bob Gunn Termite Solutions Loganholme (10)" [ref=f1e175] [cursor=pointer]
+              - tab "Above All Roof Painting and Repairs (9)" [ref=f1e176] [cursor=pointer]
+              - tab "Yandina Station (7)" [ref=f1e177] [cursor=pointer]
+              - tab "Ferngully Productions (6)" [ref=f1e178] [cursor=pointer]
+              - tab "Stone & Rock Baringa (4)" [ref=f1e179] [cursor=pointer]
+              - tab "Stone & Rock Springwood (4)" [ref=f1e180] [cursor=pointer]
+              - tab "LiveEdge Landscaping (3)" [ref=f1e181] [cursor=pointer]
+              - tab "Bob Gunn Termite Solutions (2)" [ref=f1e182] [cursor=pointer]
+              - tab "noosa pool & spa Centre (2)" [ref=f1e183] [cursor=pointer]
+              - tab "Bob Gunn Flagstone (1)" [ref=f1e184] [cursor=pointer]
+              - tab "Caboolture Physical Therapy Centre (1)" [ref=f1e185] [cursor=pointer]
+            - group [ref=f1e186]:
+              - strong [ref=f1e188] [cursor=pointer]: 📋 RCM Hot Water Services — (208 missing rows)
+            - group [ref=f1e189]:
+              - strong [ref=f1e191] [cursor=pointer]: 📋 Guaranteed Gutter Protection — (132 missing rows)
+            - group [ref=f1e192]:
+              - strong [ref=f1e194] [cursor=pointer]: 📋 Access Alarms — (108 missing rows)
+            - group [ref=f1e195]:
+              - strong [ref=f1e197] [cursor=pointer]: 📋 Rowdy's Car Carrier — (95 missing rows)
+            - group [ref=f1e198]:
+              - strong [ref=f1e200] [cursor=pointer]: 📋 Superior Glass Brisbane — (95 missing rows)
+            - group [ref=f1e201]:
+              - strong [ref=f1e203] [cursor=pointer]: 📋 RYNO Fencing — (88 missing rows)
+            - group [ref=f1e204]:
+              - strong [ref=f1e206] [cursor=pointer]: 📋 Sureline Fencing — (59 missing rows)
+            - group [ref=f1e207]:
+              - strong [ref=f1e209] [cursor=pointer]: 📋 Eco Air and Electrical — (55 missing rows)
+            - group [ref=f1e210]:
+              - strong [ref=f1e212] [cursor=pointer]: 📋 Cuzkell Pty Ltd — (51 missing rows)
+            - group [ref=f1e213]:
+              - strong [ref=f1e215] [cursor=pointer]: 📋 Bruin Pest Management — (48 missing rows)
+            - group [ref=f1e216]:
+              - strong [ref=f1e218] [cursor=pointer]: 📋 Billabong Pool Services & Supply — (46 missing rows)
+            - group [ref=f1e219]:
+              - strong [ref=f1e221] [cursor=pointer]: 📋 Griffiths Concrete & Construction Services — (46 missing rows)
+            - group [ref=f1e222]:
+              - strong [ref=f1e224] [cursor=pointer]: 📋 Ace Restumping — (39 missing rows)
+            - group [ref=f1e225]:
+              - strong [ref=f1e227] [cursor=pointer]: 📋 L.J. Shop Fitters — (39 missing rows)
+            - group [ref=f1e228]:
+              - strong [ref=f1e230] [cursor=pointer]: 📋 Queensland Paint Supplies — (37 missing rows)
+            - group [ref=f1e231]:
+              - strong [ref=f1e233] [cursor=pointer]: 📋 Luxe Electrical Industries — (36 missing rows)
+            - group [ref=f1e234]:
+              - strong [ref=f1e236] [cursor=pointer]: 📋 Above All Roof Painting and Repairs — (32 missing rows)
+            - group [ref=f1e237]:
+              - strong [ref=f1e239] [cursor=pointer]: 📋 Ricthies Plumbing & Gas — (32 missing rows)
+            - group [ref=f1e240]:
+              - strong [ref=f1e242] [cursor=pointer]: 📋 Suncoast Hydroponics — (32 missing rows)
+            - group [ref=f1e243]:
+              - strong [ref=f1e245] [cursor=pointer]: 📋 Billabong Pool Services & Supply Noosaville — (31 missing rows)
+            - group [ref=f1e246]:
+              - strong [ref=f1e248] [cursor=pointer]: 📋 Hanceys Turf — (31 missing rows)
+              - table [ref=f1e251]:
+                - rowgroup [ref=f1e252]:
+                  - row [ref=f1e253]:
+                    - columnheader "Row" [ref=f1e254]
+                    - columnheader "Month" [ref=f1e255]
+                    - columnheader "Client" [ref=f1e256]
+                    - columnheader "Assigned To" [ref=f1e257]
+                    - columnheader "Service" [ref=f1e258]
+                    - columnheader "City" [ref=f1e259]
+                    - columnheader "Suburb / Location" [ref=f1e260]
+                    - columnheader "Landing Page URL" [ref=f1e261]
+                - rowgroup [ref=f1e262]:
+                  - row [ref=f1e263]:
+                    - cell "28" [ref=f1e264]
+                    - cell "January 2026" [ref=f1e265]
+                    - cell "Hanceys Turf" [ref=f1e266]
+                    - cell "Nigel" [ref=f1e267]
+                    - cell "Commercial and Sports Turf Construction" [ref=f1e268]
+                    - cell "Brisbane" [ref=f1e269]
+                    - cell "Wynnum" [ref=f1e270]
+                    - cell [ref=f1e271]
+                  - row [ref=f1e272]:
+                    - cell "29" [ref=f1e273]
+                    - cell "January 2026" [ref=f1e274]
+                    - cell "Hanceys Turf" [ref=f1e275]
+                    - cell "Nigel" [ref=f1e276]
+                    - cell "Commercial and Sports Turf Construction" [ref=f1e277]
+                    - cell "Brisbane" [ref=f1e278]
+                    - cell "Redcliffe" [ref=f1e279]
+                    - cell [ref=f1e280]
+                  - row [ref=f1e281]:
+                    - cell "30" [ref=f1e282]
+                    - cell "January 2026" [ref=f1e283]
+                    - cell "Hanceys Turf" [ref=f1e284]
+                    - cell "Nigel" [ref=f1e285]
+                    - cell "Commercial and Sports Turf Construction" [ref=f1e286]
+                    - cell "Brisbane" [ref=f1e287]
+                    - cell "Ipswich" [ref=f1e288]
+                    - cell [ref=f1e289]
+                  - row [ref=f1e290]:
+                    - cell "31" [ref=f1e291]
+                    - cell "January 2026" [ref=f1e292]
+                    - cell "Hanceys Turf" [ref=f1e293]
+                    - cell "Nigel" [ref=f1e294]
+                    - cell "Commercial and Sports Turf Construction" [ref=f1e295]
+                    - cell "Brisbane" [ref=f1e296]
+                    - cell "Logan Central" [ref=f1e297]
+                    - cell [ref=f1e298]
+                  - row [ref=f1e299]:
+                    - cell "48" [ref=f1e300]
+                    - cell "April" [ref=f1e301]
+                    - cell "Hanceys Turf" [ref=f1e302]
+                    - cell "Nigel" [ref=f1e303]
+                    - cell "Turf supplies" [ref=f1e304]
+                    - cell "Brisbane" [ref=f1e305]
+                    - cell "North Lakes" [ref=f1e306]
+                    - cell [ref=f1e307]
+                  - row [ref=f1e308]:
+                    - cell "49" [ref=f1e309]
+                    - cell "April" [ref=f1e310]
+                    - cell "Hanceys Turf" [ref=f1e311]
+                    - cell "Nigel" [ref=f1e312]
+                    - cell "Turf supplies" [ref=f1e313]
+                    - cell "Brisbane" [ref=f1e314]
+                    - cell "Chermside" [ref=f1e315]
+                    - cell [ref=f1e316]
+                  - row [ref=f1e317]:
+                    - cell "50" [ref=f1e318]
+                    - cell "April" [ref=f1e319]
+                    - cell "Hanceys Turf" [ref=f1e320]
+                    - cell "Nigel" [ref=f1e321]
+                    - cell "Turf supplies" [ref=f1e322]
+                    - cell "Brisbane" [ref=f1e323]
+                    - cell "Carindale" [ref=f1e324]
+                    - cell [ref=f1e325]
+                  - row [ref=f1e326]:
+                    - cell "51" [ref=f1e327]
+                    - cell "April" [ref=f1e328]
+                    - cell "Hanceys Turf" [ref=f1e329]
+                    - cell "Nigel" [ref=f1e330]
+                    - cell "Turf supplies" [ref=f1e331]
+                    - cell "Brisbane" [ref=f1e332]
+                    - cell "Indooroopilly" [ref=f1e333]
+                    - cell [ref=f1e334]
+                  - row [ref=f1e335]:
+                    - cell "65" [ref=f1e336]
+                    - cell "June" [ref=f1e337]
+                    - cell "Hanceys Turf" [ref=f1e338]
+                    - cell "Nigel" [ref=f1e339]
+                    - cell "Turf Installation" [ref=f1e340]
+                    - cell "Brisbane" [ref=f1e341]
+                    - cell "North Lakes" [ref=f1e342]
+                    - cell [ref=f1e343]
+                  - row [ref=f1e344]:
+                    - cell "67" [ref=f1e345]
+                    - cell "June" [ref=f1e346]
+                    - cell "Hanceys Turf" [ref=f1e347]
+                    - cell "Nigel" [ref=f1e348]
+                    - cell "Turf Installation" [ref=f1e349]
+                    - cell "Brisbane" [ref=f1e350]
+                    - cell "Carindale" [ref=f1e351]
+                    - cell [ref=f1e352]
+                  - row [ref=f1e353]:
+                    - cell "68" [ref=f1e354]
+                    - cell "June" [ref=f1e355]
+                    - cell "Hanceys Turf" [ref=f1e356]
+                    - cell "Nigel" [ref=f1e357]
+                    - cell "Turf Installation" [ref=f1e358]
+                    - cell "Brisbane" [ref=f1e359]
+                    - cell "Indooroopilly" [ref=f1e360]
+                    - cell [ref=f1e361]
+                  - row [ref=f1e362]:
+                    - cell "70" [ref=f1e363]
+                    - cell "July" [ref=f1e364]
+                    - cell "Hanceys Turf" [ref=f1e365]
+                    - cell "Nigel" [ref=f1e366]
+                    - cell "Turf Installation" [ref=f1e367]
+                    - cell "Brisbane" [ref=f1e368]
+                    - cell "Sunnybank" [ref=f1e369]
+                    - cell [ref=f1e370]
+                  - row [ref=f1e371]:
+                    - cell "71" [ref=f1e372]
+                    - cell "July" [ref=f1e373]
+                    - cell "Hanceys Turf" [ref=f1e374]
+                    - cell "Nigel" [ref=f1e375]
+                    - cell "Turf Installation" [ref=f1e376]
+                    - cell "Brisbane" [ref=f1e377]
+                    - cell "Eight Mile Plains" [ref=f1e378]
+                    - cell [ref=f1e379]
+                  - row [ref=f1e380]:
+                    - cell "72" [ref=f1e381]
+                    - cell "July" [ref=f1e382]
+                    - cell "Hanceys Turf" [ref=f1e383]
+                    - cell "Nigel" [ref=f1e384]
+                    - cell "Turf Installation" [ref=f1e385]
+                    - cell "Brisbane" [ref=f1e386]
+                    - cell "Mount Gravatt" [ref=f1e387]
+                    - cell [ref=f1e388]
+                  - row [ref=f1e389]:
+                    - cell "73" [ref=f1e390]
+                    - cell "July" [ref=f1e391]
+                    - cell "Hanceys Turf" [ref=f1e392]
+                    - cell "Nigel" [ref=f1e393]
+                    - cell "Turf Installation" [ref=f1e394]
+                    - cell "Brisbane" [ref=f1e395]
+                    - cell "Toowong" [ref=f1e396]
+                    - cell [ref=f1e397]
+                  - row [ref=f1e398]:
+                    - cell "75" [ref=f1e399]
+                    - cell "August" [ref=f1e400]
+                    - cell "Hanceys Turf" [ref=f1e401]
+                    - cell "Nigel" [ref=f1e402]
+                    - cell "Turf Installation" [ref=f1e403]
+                    - cell "Brisbane" [ref=f1e404]
+                    - cell "Wynnum" [ref=f1e405]
+                    - cell [ref=f1e406]
+                  - row [ref=f1e407]:
+                    - cell "76" [ref=f1e408]
+                    - cell "August" [ref=f1e409]
+                    - cell "Hanceys Turf" [ref=f1e410]
+                    - cell "Nigel" [ref=f1e411]
+                    - cell "Turf Installation" [ref=f1e412]
+                    - cell "Brisbane" [ref=f1e413]
+                    - cell "Redcliffe" [ref=f1e414]
+                    - cell [ref=f1e415]
+                  - row [ref=f1e416]:
+                    - cell "77" [ref=f1e417]
+                    - cell "August" [ref=f1e418]
+                    - cell "Hanceys Turf" [ref=f1e419]
+                    - cell "Nigel" [ref=f1e420]
+                    - cell "Turf Installation" [ref=f1e421]
+                    - cell "Brisbane" [ref=f1e422]
+                    - cell "Ipswich" [ref=f1e423]
+                    - cell [ref=f1e424]
+                  - row [ref=f1e425]:
+                    - cell "78" [ref=f1e426]
+                    - cell "August" [ref=f1e427]
+                    - cell "Hanceys Turf" [ref=f1e428]
+                    - cell "Nigel" [ref=f1e429]
+                    - cell "Turf Installation" [ref=f1e430]
+                    - cell "Brisbane" [ref=f1e431]
+                    - cell "Logan Central" [ref=f1e432]
+                    - cell [ref=f1e433]
+                  - row [ref=f1e434]:
+                    - cell "80" [ref=f1e435]
+                    - cell "September" [ref=f1e436]
+                    - cell "Hanceys Turf" [ref=f1e437]
+                    - cell "Nigel" [ref=f1e438]
+                    - cell "Turf delivery" [ref=f1e439]
+                    - cell "Brisbane" [ref=f1e440]
+                    - cell "North Lakes" [ref=f1e441]
+                    - cell [ref=f1e442]
+                  - row [ref=f1e443]:
+                    - cell "81" [ref=f1e444]
+                    - cell "September" [ref=f1e445]
+                    - cell "Hanceys Turf" [ref=f1e446]
+                    - cell "Nigel" [ref=f1e447]
+                    - cell "Turf delivery" [ref=f1e448]
+                    - cell "Brisbane" [ref=f1e449]
+                    - cell "Chermside" [ref=f1e450]
+                    - cell [ref=f1e451]
+                  - row [ref=f1e452]:
+                    - cell "82" [ref=f1e453]
+                    - cell "September" [ref=f1e454]
+                    - cell "Hanceys Turf" [ref=f1e455]
+                    - cell "Nigel" [ref=f1e456]
+                    - cell "Turf delivery" [ref=f1e457]
+                    - cell "Brisbane" [ref=f1e458]
+                    - cell "Carindale" [ref=f1e459]
+                    - cell [ref=f1e460]
+                  - row [ref=f1e461]:
+                    - cell "83" [ref=f1e462]
+                    - cell "September" [ref=f1e463]
+                    - cell "Hanceys Turf" [ref=f1e464]
+                    - cell "Nigel" [ref=f1e465]
+                    - cell "Turf delivery" [ref=f1e466]
+                    - cell "Brisbane" [ref=f1e467]
+                    - cell "Indooroopilly" [ref=f1e468]
+                    - cell [ref=f1e469]
+                  - row [ref=f1e470]:
+                    - cell "85" [ref=f1e471]
+                    - cell "October" [ref=f1e472]
+                    - cell "Hanceys Turf" [ref=f1e473]
+                    - cell "Nigel" [ref=f1e474]
+                    - cell "Turf delivery" [ref=f1e475]
+                    - cell "Brisbane" [ref=f1e476]
+                    - cell "Sunnybank" [ref=f1e477]
+                    - cell [ref=f1e478]
+                  - row [ref=f1e479]:
+                    - cell "86" [ref=f1e480]
+                    - cell "October" [ref=f1e481]
+                    - cell "Hanceys Turf" [ref=f1e482]
+                    - cell "Nigel" [ref=f1e483]
+                    - cell "Turf delivery" [ref=f1e484]
+                    - cell "Brisbane" [ref=f1e485]
+                    - cell "Eight Mile Plains" [ref=f1e486]
+                    - cell [ref=f1e487]
+                  - row [ref=f1e488]:
+                    - cell "87" [ref=f1e489]
+                    - cell "October" [ref=f1e490]
+                    - cell "Hanceys Turf" [ref=f1e491]
+                    - cell "Nigel" [ref=f1e492]
+                    - cell "Turf delivery" [ref=f1e493]
+                    - cell "Brisbane" [ref=f1e494]
+                    - cell "Mount Gravatt" [ref=f1e495]
+                    - cell [ref=f1e496]
+                  - row [ref=f1e497]:
+                    - cell "88" [ref=f1e498]
+                    - cell "October" [ref=f1e499]
+                    - cell "Hanceys Turf" [ref=f1e500]
+                    - cell "Nigel" [ref=f1e501]
+                    - cell "Turf delivery" [ref=f1e502]
+                    - cell "Brisbane" [ref=f1e503]
+                    - cell "Toowong" [ref=f1e504]
+                    - cell [ref=f1e505]
+                  - row [ref=f1e506]:
+                    - cell "90" [ref=f1e507]
+                    - cell "November" [ref=f1e508]
+                    - cell "Hanceys Turf" [ref=f1e509]
+                    - cell "Nigel" [ref=f1e510]
+                    - cell "Turf delivery" [ref=f1e511]
+                    - cell "Brisbane" [ref=f1e512]
+                    - cell "Wynnum" [ref=f1e513]
+                    - cell [ref=f1e514]
+                  - row [ref=f1e515]:
+                    - cell "91" [ref=f1e516]
+                    - cell "November" [ref=f1e517]
+                    - cell "Hanceys Turf" [ref=f1e518]
+                    - cell "Nigel" [ref=f1e519]
+                    - cell "Turf delivery" [ref=f1e520]
+                    - cell "Brisbane" [ref=f1e521]
+                    - cell "Redcliffe" [ref=f1e522]
+                    - cell [ref=f1e523]
+                  - row [ref=f1e524]:
+                    - cell "92" [ref=f1e525]
+                    - cell "November" [ref=f1e526]
+                    - cell "Hanceys Turf" [ref=f1e527]
+                    - cell "Nigel" [ref=f1e528]
+                    - cell "Turf delivery" [ref=f1e529]
+                    - cell "Brisbane" [ref=f1e530]
+                    - cell "Ipswich" [ref=f1e531]
+                    - cell [ref=f1e532]
+                  - row [ref=f1e533]:
+                    - cell "93" [ref=f1e534]
+                    - cell "November" [ref=f1e535]
+                    - cell "Hanceys Turf" [ref=f1e536]
+                    - cell "Nigel" [ref=f1e537]
+                    - cell "Turf delivery" [ref=f1e538]
+                    - cell "Brisbane" [ref=f1e539]
+                    - cell "Logan Central" [ref=f1e540]
+                    - cell [ref=f1e541]
+            - group [ref=f1e542]:
+              - strong [ref=f1e544] [cursor=pointer]: 📋 Leafshield Gutter Protection — (31 missing rows)
+            - group [ref=f1e545]:
+              - strong [ref=f1e547] [cursor=pointer]: 📋 Morrison's Maintenance Plumbing — (31 missing rows)
+            - group [ref=f1e548]:
+              - strong [ref=f1e550] [cursor=pointer]: 📋 Northside Mini Mix — (31 missing rows)
+            - group [ref=f1e551]:
+              - strong [ref=f1e553] [cursor=pointer]: 📋 A Vision Windscreens — (30 missing rows)
+            - group [ref=f1e554]:
+              - strong [ref=f1e556] [cursor=pointer]: 📋 Journeyman Movers — (30 missing rows)
+            - group [ref=f1e557]:
+              - strong [ref=f1e559] [cursor=pointer]: 📋 Wagner Soil Testing — (30 missing rows)
+            - group [ref=f1e560]:
+              - strong [ref=f1e562] [cursor=pointer]: 📋 Lomandra Accounting — (26 missing rows)
+            - group [ref=f1e563]:
+              - strong [ref=f1e565] [cursor=pointer]: 📋 Neptunes Pool Care — (26 missing rows)
+            - group [ref=f1e566]:
+              - strong [ref=f1e568] [cursor=pointer]: 📋 Care Technical Service — (25 missing rows)
+            - group [ref=f1e569]:
+              - strong [ref=f1e571] [cursor=pointer]: 📋 Lockbell Commercial Linings — (25 missing rows)
+            - group [ref=f1e572]:
+              - strong [ref=f1e574] [cursor=pointer]: 📋 Smith Tree Solutions — (25 missing rows)
+            - group [ref=f1e575]:
+              - strong [ref=f1e577] [cursor=pointer]: 📋 B & J Whitsed Waterproofing — (24 missing rows)
+            - group [ref=f1e578]:
+              - strong [ref=f1e580] [cursor=pointer]: 📋 Burke Industries — (24 missing rows)
+            - group [ref=f1e581]:
+              - strong [ref=f1e583] [cursor=pointer]: 📋 Deadlock Garage Doors — (24 missing rows)
+            - group [ref=f1e584]:
+              - strong [ref=f1e586] [cursor=pointer]: 📋 FAA Property — (24 missing rows)
+            - group [ref=f1e587]:
+              - strong [ref=f1e589] [cursor=pointer]: 📋 Pine Rivers Crane Hire — (24 missing rows)
+            - group [ref=f1e590]:
+              - strong [ref=f1e592] [cursor=pointer]: 📋 Snowys Painting — (24 missing rows)
+            - group [ref=f1e593]:
+              - strong [ref=f1e595] [cursor=pointer]: 📋 Sunshine Coast Home & Office Removals — (24 missing rows)
+            - group [ref=f1e596]:
+              - strong [ref=f1e598] [cursor=pointer]: 📋 Tile Factory Outlet — (24 missing rows)
+            - group [ref=f1e599]:
+              - strong [ref=f1e601] [cursor=pointer]: 📋 Auto Glass Caboolture — (23 missing rows)
+            - group [ref=f1e602]:
+              - strong [ref=f1e604] [cursor=pointer]: 📋 Billabong Robotic Pool Cleaners — (23 missing rows)
+            - group [ref=f1e605]:
+              - strong [ref=f1e607] [cursor=pointer]: 📋 Catton Roderick Lawyers Birtinya — (23 missing rows)
+            - group [ref=f1e608]:
+              - strong [ref=f1e610] [cursor=pointer]: 📋 Catton Roderick Lawyers Redcliffe — (23 missing rows)
+            - group [ref=f1e611]:
+              - strong [ref=f1e613] [cursor=pointer]: 📋 Integrity Lounge Designs — (23 missing rows)
+            - group [ref=f1e614]:
+              - strong [ref=f1e616] [cursor=pointer]: 📋 Liverpool Garage Doors — (23 missing rows)
+            - group [ref=f1e617]:
+              - strong [ref=f1e619] [cursor=pointer]: 📋 Rasura Alexandra Headlands — (23 missing rows)
+            - group [ref=f1e620]:
+              - strong [ref=f1e622] [cursor=pointer]: 📋 Rasura Chiropractic — (23 missing rows)
+            - group [ref=f1e623]:
+              - strong [ref=f1e625] [cursor=pointer]: 📋 Billabong Pool Services & Supply Caloundra — (21 missing rows)
+            - group [ref=f1e626]:
+              - strong [ref=f1e628] [cursor=pointer]: 📋 BN Painting Services Pty Ltd — (21 missing rows)
+            - group [ref=f1e629]:
+              - strong [ref=f1e631] [cursor=pointer]: 📋 Embroidery FX — (21 missing rows)
+            - group [ref=f1e632]:
+              - strong [ref=f1e634] [cursor=pointer]: 📋 Luxe Lighting — (21 missing rows)
+            - group [ref=f1e635]:
+              - strong [ref=f1e637] [cursor=pointer]: 📋 Catton Roderick Lawyers — (20 missing rows)
+            - group [ref=f1e638]:
+              - strong [ref=f1e640] [cursor=pointer]: 📋 Neptunes Pool Care — (20 missing rows)
+            - group [ref=f1e641]:
+              - strong [ref=f1e643] [cursor=pointer]: 📋 Neptunes Pool Care — (20 missing rows)
+            - group [ref=f1e644]:
+              - strong [ref=f1e646] [cursor=pointer]: 📋 Captivating Concrete Solutions — (19 missing rows)
+            - group [ref=f1e647]:
+              - strong [ref=f1e649] [cursor=pointer]: 📋 Micks Gasfitting Services — (19 missing rows)
+            - group [ref=f1e650]:
+              - strong [ref=f1e652] [cursor=pointer]: 📋 Southern Cross Concrete Cutting — (19 missing rows)
+            - group [ref=f1e653]:
+              - strong [ref=f1e655] [cursor=pointer]: 📋 Australian Boating College — (18 missing rows)
+            - group [ref=f1e656]:
+              - strong [ref=f1e658] [cursor=pointer]: 📋 Kitchens R Us — (17 missing rows)
+            - group [ref=f1e659]:
+              - strong [ref=f1e661] [cursor=pointer]: 📋 Smith Tree Solutions Chevallum — (17 missing rows)
+            - group [ref=f1e662]:
+              - strong [ref=f1e664] [cursor=pointer]: 📋 Dolphin Marine — (15 missing rows)
+            - group [ref=f1e665]:
+              - strong [ref=f1e667] [cursor=pointer]: 📋 Hancey's Turf Sunshine Coast — (13 missing rows)
+            - group [ref=f1e668]:
+              - strong [ref=f1e670] [cursor=pointer]: 📋 Roebuck Concepts — (13 missing rows)
+            - group [ref=f1e671]:
+              - strong [ref=f1e673] [cursor=pointer]: 📋 Jerry & the Tilemakers — (12 missing rows)
+            - group [ref=f1e674]:
+              - strong [ref=f1e676] [cursor=pointer]: 📋 Ace Posts and Beams — (11 missing rows)
+            - group [ref=f1e677]:
+              - strong [ref=f1e679] [cursor=pointer]: 📋 Jim Monger Plumbing — (11 missing rows)
+            - group [ref=f1e680]:
+              - strong [ref=f1e682] [cursor=pointer]: 📋 Bob Gunn Termite Solutions Loganholme — (10 missing rows)
+            - group [ref=f1e683]:
+              - strong [ref=f1e685] [cursor=pointer]: 📋 Above All Roof Painting and Repairs — (9 missing rows)
+            - group [ref=f1e686]:
+              - strong [ref=f1e688] [cursor=pointer]: 📋 Yandina Station — (7 missing rows)
+            - group [ref=f1e689]:
+              - strong [ref=f1e691] [cursor=pointer]: 📋 Ferngully Productions — (6 missing rows)
+            - group [ref=f1e692]:
+              - strong [ref=f1e694] [cursor=pointer]: 📋 Stone & Rock Baringa — (4 missing rows)
+            - group [ref=f1e695]:
+              - strong [ref=f1e697] [cursor=pointer]: 📋 Stone & Rock Springwood — (4 missing rows)
+            - group [ref=f1e698]:
+              - strong [ref=f1e700] [cursor=pointer]: 📋 LiveEdge Landscaping — (3 missing rows)
+            - group [ref=f1e701]:
+              - strong [ref=f1e703] [cursor=pointer]: 📋 Bob Gunn Termite Solutions — (2 missing rows)
+            - group [ref=f1e704]:
+              - strong [ref=f1e706] [cursor=pointer]: 📋 noosa pool & spa Centre — (2 missing rows)
+            - group [ref=f1e707]:
+              - strong [ref=f1e709] [cursor=pointer]: 📋 Bob Gunn Flagstone — (1 missing rows)
+            - group [ref=f1e710]:
+              - strong [ref=f1e712] [cursor=pointer]: 📋 Caboolture Physical Therapy Centre — (1 missing rows)
+          - paragraph [ref=f1e713]:
+            - emphasis [ref=f1e714]: Ask "Which months don't have landing pages for [client]?" to see one client on its own.
+        - generic [ref=f1e715]:
+          - button "Copy answer" [ref=f1e716] [cursor=pointer]
+          - button "Retry this answer" [ref=f1e721] [cursor=pointer]:
+            - generic [ref=f1e725]: Retry
+    - generic [ref=f1e91]:
+      - generic [ref=f1e92]:
+        - generic [ref=f1e93]: Your question
+        - textbox "Your question" [ref=f1e94]:
+          - /placeholder: Ask anything about landing page url...
+        - button "Send message" [disabled] [ref=f1e95]
+      - paragraph [ref=f1e98]: "Tip: include the client name, e.g. Wagner, Yandina or Coolum."

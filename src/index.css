@@ -1112,6 +1112,70 @@ button:disabled {
   z-index: 1;
 }
 
+/* Multi-client audit box: Google Sheets style tab strip + one collapsible raw table per client tab */
+.scroll-box.has-tabs {
+  max-height: 440px;
+  padding: 0 12px 12px;
+  background: var(--surface-2);
+}
+
+.scroll-box.has-tabs .table-wrap {
+  margin: 8px 0 4px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.scroll-box.has-tabs th {
+  position: static;
+}
+
+.scroll-box.has-tabs .sheet-details {
+  margin: 0 0 8px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 56px;
+}
+
+.sheet-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  margin: 0 -12px 12px;
+  padding: 10px 12px 0;
+  border-bottom: 2px solid var(--border);
+  background: var(--surface-2);
+  scrollbar-width: thin;
+}
+
+.sheet-tab {
+  flex: none;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: var(--surface);
+  color: var(--muted) !important;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  text-decoration: none !important;
+}
+
+.sheet-tab:hover {
+  color: var(--text) !important;
+  background: var(--hover);
+}
+
+.sheet-tab.active {
+  color: var(--accent) !important;
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
 .table-link {
   display: inline;
 }

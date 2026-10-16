@@ -1,0 +1,15 @@
+[     592ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:15804
+[     725ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5179/favicon.ico:0
+[    1084ms] [ERROR] Access to fetch at 'https://peter-basson-pa.app.n8n.cloud/webhook/b26f3117-945b-4b78-8bf8-a2561644f189/chat' from origin 'http://localhost:5179' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The 'Access-Control-Allow-Origin' header has a value 'http://localhost:5173' that is not equal to the supplied origin. Have the server send the header with a valid value. @ http://localhost:5179/:0
+[    1085ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://peter-basson-pa.app.n8n.cloud/webhook/b26f3117-945b-4b78-8bf8-a2561644f189/chat:0
+[    1085ms] [ERROR] Assistant request error: TypeError: Failed to fetch
+    at sendChatMessage (http://localhost:5179/src/lib/api.js:24:21)
+    at fetchClients (http://localhost:5179/src/lib/clients.js:51:23)
+    at http://localhost:5179/src/App.jsx:72:21
+    at http://localhost:5179/src/App.jsx:82:35
+    at Object.react_stack_bottom_frame (http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:14178:13)
+    at runWithFiberInDEV (http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:944:66)
+    at commitHookEffectListMount (http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:6901:153)
+    at commitHookPassiveMountEffects (http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:6936:55)
+    at commitPassiveMountOnFiber (http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:8313:22)
+    at recursivelyTraversePassiveMountEffects (http://localhost:5179/node_modules/.vite/deps/react-dom_client.js?v=970f454b:8300:313) @ http://localhost:5179/@vite/client:356
