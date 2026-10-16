@@ -7,6 +7,7 @@ import { fetchClients, getCachedClients } from './lib/clients.js';
 import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
+const STOPPED_MSG = '_Response stopped._';
 
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
@@ -21,12 +22,10 @@ function useMediaQuery(query) {
 
 function useTheme() {
   const [theme, setTheme] = useState(loadTheme);
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const resolved = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
 
   useEffect(() => {
-    document.documentElement.dataset.theme = resolved;
-  }, [resolved]);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   const choose = useCallback((t) => {
     setTheme(t);
@@ -41,6 +40,8 @@ export default function App() {
   const [activeId, setActiveId] = useState(null);
   const [pending, setPending] = useState({});
   const [errors, setErrors] = useState({});
+  // one AbortController per chat with a request in flight (the Stop button aborts it)
+  const controllers = useRef({});
 
   const [panel, setPanel] = useState('chats');
   const [query, setQuery] = useState('');
@@ -95,10 +96,13 @@ export default function App() {
 
   const request = useCallback(
     async (chatId, sessionId, text) => {
+      const controller = new AbortController();
+      controllers.current[chatId] = controller;
       setPending((p) => ({ ...p, [chatId]: true }));
       setErrors((e) => ({ ...e, [chatId]: false }));
       try {
-        const output = await sendChatMessage(sessionId, text);
+        const output = await sendChatMessage(sessionId, text, { signal: controller.signal });
+        if (controller.signal.aborted) return;
         const now = Date.now();
         updateChat(chatId, (c) => ({
           ...c,
@@ -106,9 +110,13 @@ export default function App() {
           messages: [...c.messages, { role: 'assistant', content: output.trim() ? output : NO_ANSWER_MSG, createdAt: now }],
         }));
       } catch {
-        setErrors((e) => ({ ...e, [chatId]: true }));
+        if (!controller.signal.aborted) setErrors((e) => ({ ...e, [chatId]: true }));
       } finally {
-        setPending((p) => ({ ...p, [chatId]: false }));
+        // a stopped request was already cleaned up by stop(); a newer request may own this chat now
+        if (controllers.current[chatId] === controller) {
+          delete controllers.current[chatId];
+          setPending((p) => ({ ...p, [chatId]: false }));
+        }
       }
     },
     [updateChat]
@@ -130,6 +138,22 @@ export default function App() {
       setActiveId(chat.id);
     }
     request(chat.id, chat.sessionId, chatInput);
+  }
+
+  // Stop button: cancel the pending request and unlock the composer straight away
+  function stop() {
+    const chat = activeChat;
+    const controller = chat && controllers.current[chat.id];
+    if (!controller) return;
+    controller.abort();
+    delete controllers.current[chat.id];
+    setPending((p) => ({ ...p, [chat.id]: false }));
+    const now = Date.now();
+    updateChat(chat.id, (c) => ({
+      ...c,
+      updatedAt: now,
+      messages: [...c.messages, { role: 'assistant', content: STOPPED_MSG, createdAt: now }],
+    }));
   }
 
   // Resend the user message that produced the assistant answer at `index`
@@ -226,6 +250,7 @@ export default function App() {
           error={Boolean(activeChat && errors[activeChat.id])}
           clients={clients}
           onSend={send}
+          onStop={stop}
           onRetry={retryAnswer}
           onRetryError={retryAfterError}
         />

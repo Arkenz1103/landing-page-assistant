@@ -86,13 +86,15 @@ export function saveChats(chats) {
   writeJson(CHATS_KEY, kept);
 }
 
+// 'light' or 'dark'; with nothing saved (or an old 'system' value) it starts from the OS preference
 export function loadTheme() {
   try {
     const t = localStorage.getItem(THEME_KEY);
-    return t === 'light' || t === 'dark' ? t : 'system';
+    if (t === 'light' || t === 'dark') return t;
   } catch {
-    return 'system';
+    // ignore
   }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 export function saveTheme(theme) {

@@ -1,4 +1,4 @@
-import { CircleHelp, MessageSquare, Monitor, Moon, PanelLeftClose, Search, SquarePen, Sun, Users } from 'lucide-react';
+import { CircleHelp, MessageSquare, Moon, PanelLeftClose, Search, SquarePen, Sun, Users } from 'lucide-react';
 import ChatsPanel from './ChatsPanel.jsx';
 import ClientsPanel from './ClientsPanel.jsx';
 import HelpPanel from './HelpPanel.jsx';
@@ -12,7 +12,6 @@ const NAV = [
 const THEMES = [
   { key: 'light', label: 'Light', icon: Sun },
   { key: 'dark', label: 'Dark', icon: Moon },
-  { key: 'system', label: 'System', icon: Monitor },
 ];
 
 export default function Sidebar({

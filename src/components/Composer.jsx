@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, Square } from 'lucide-react';
 
 const MAX_HEIGHT = 220;
 
-export default function Composer({ onSend, waiting, large = false, autoFocus = false }) {
+export default function Composer({ onSend, onStop, waiting, large = false, autoFocus = false }) {
   const [value, setValue] = useState('');
   const ref = useRef(null);
 
@@ -54,9 +54,15 @@ export default function Composer({ onSend, waiting, large = false, autoFocus = f
           placeholder="Ask anything about landing page url..."
           rows={large ? 2 : 1}
         />
-        <button type="submit" className="send-btn" disabled={!canSend} aria-label="Send message" title="Send">
-          <ArrowUp size={18} aria-hidden="true" />
-        </button>
+        {waiting && onStop ? (
+          <button type="button" className="send-btn stop-btn" onClick={onStop} aria-label="Stop generating" title="Stop generating">
+            <Square size={14} fill="currentColor" aria-hidden="true" />
+          </button>
+        ) : (
+          <button type="submit" className="send-btn" disabled={!canSend} aria-label="Send message" title="Send">
+            <ArrowUp size={18} aria-hidden="true" />
+          </button>
+        )}
       </div>
       <p className="hint">Tip: include the client name, e.g. Wagner, Yandina or Coolum.</p>
     </form>

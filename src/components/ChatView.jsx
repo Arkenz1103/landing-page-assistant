@@ -42,7 +42,7 @@ function Waiting() {
   );
 }
 
-export default function ChatView({ chat, waiting, error, clients, onSend, onRetry, onRetryError }) {
+export default function ChatView({ chat, waiting, error, clients, onSend, onStop, onRetry, onRetryError }) {
   const bottomRef = useRef(null);
   const messages = chat?.messages ?? [];
 
@@ -119,7 +119,7 @@ export default function ChatView({ chat, waiting, error, clients, onSend, onRetr
         </div>
       </div>
       <div className="composer-dock">
-        <Composer onSend={onSend} waiting={waiting} />
+        <Composer onSend={onSend} onStop={onStop} waiting={waiting} />
       </div>
     </>
   );

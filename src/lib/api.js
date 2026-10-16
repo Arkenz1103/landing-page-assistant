@@ -15,15 +15,23 @@ function extractOutput(data) {
  * Sends one message to the n8n chat workflow.
  * Resolves to the markdown output string (may be empty).
  * Throws on network error, non-200 or timeout (details are logged).
+ * Pass `signal` to cancel the request (e.g. the Stop button); it then throws an AbortError.
  */
-export async function sendChatMessage(sessionId, chatInput) {
+export async function sendChatMessage(sessionId, chatInput, { signal } = {}) {
   if (!CHAT_URL) {
     console.error('VITE_N8N_CHAT_URL is not set. Copy .env.example to .env and set it.');
     throw new Error('Missing VITE_N8N_CHAT_URL');
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, REQUEST_TIMEOUT_MS);
+  const onCancel = () => controller.abort();
+  if (signal?.aborted) controller.abort();
+  else signal?.addEventListener('abort', onCancel, { once: true });
 
   try {
     const res = await fetch(CHAT_URL, {
@@ -49,12 +57,13 @@ export async function sendChatMessage(sessionId, chatInput) {
     return output;
   } catch (err) {
     if (err.name === 'AbortError') {
-      console.error(`Assistant request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
+      if (timedOut) console.error(`Assistant request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
     } else if (!err.message?.startsWith('HTTP ')) {
       console.error('Assistant request error:', err);
     }
     throw err;
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener('abort', onCancel);
   }
 }
