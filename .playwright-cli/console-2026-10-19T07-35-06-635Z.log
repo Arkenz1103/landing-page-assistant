@@ -1,0 +1,11 @@
+[    1148ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/react-dom_client.js?v=37219663:15804
+[    1271ms] [ERROR] Could not parse client list: SyntaxError: Unexpected token 'O', "OK none" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parseClients (http://localhost:5173/src/lib/clients.js?t=1792395270288:41:20)
+    at fetchClients (http://localhost:5173/src/lib/clients.js?t=1792395270288:54:13)
+    at async http://localhost:5173/src/App.jsx?t=1792395286949:80:15 OK none @ http://localhost:5173/src/lib/clients.js?t=1792395270288:55
+[    1525ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/react-dom_client.js?v=37219663:15804
+[    5806ms] [ERROR] Could not parse master sheet data: SyntaxError: Unexpected token 'O', "OK none" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at fetchMaster (http://localhost:5173/src/lib/master.js?t=1792395270288:87:18)
+    at async http://localhost:5173/src/App.jsx?t=1792395286949:95:14 OK none @ http://localhost:5173/src/lib/master.js?t=1792395270288:89

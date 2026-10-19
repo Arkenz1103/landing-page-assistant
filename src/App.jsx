@@ -124,18 +124,29 @@ export default function App() {
   }, []);
 
   const request = useCallback(
-    async (chatId, sessionId, text) => {
+    // `prior`: the chat's messages before `text`, sent as history so a follow-up ("How about Ace Restumping?") keeps the context
+    async ({ id: chatId, sessionId, client, tableState }, text, prior = []) => {
       const controller = new AbortController();
       controllers.current[chatId] = controller;
       setPending((p) => ({ ...p, [chatId]: true }));
       setErrors((e) => ({ ...e, [chatId]: false }));
       try {
-        const output = await sendChatMessage(sessionId, text, { signal: controller.signal });
+        // a chat bound to a client sends it along, so "who is assigned?" needs no client name
+        // the chat's table state (row filter + column layout) goes out with the message and comes back updated
+        let nextTableState = null;
+        const output = await sendChatMessage(sessionId, text, {
+          signal: controller.signal,
+          client,
+          history: prior,
+          tableState,
+          onTableState: (s) => (nextTableState = s),
+        });
         if (controller.signal.aborted) return;
         const now = Date.now();
         updateChat(chatId, (c) => ({
           ...c,
           updatedAt: now,
+          ...(nextTableState && { tableState: nextTableState }),
           messages: [...c.messages, { role: 'assistant', content: output.trim() ? output : NO_ANSWER_MSG, createdAt: now }],
         }));
       } catch {
@@ -151,23 +162,26 @@ export default function App() {
     [updateChat]
   );
 
-  function send(text, { newChat = false } = {}) {
+  // `client` ({ sheet, name }): the question is about that client, so it goes to a chat bound to it
+  // (the open chat when it is already bound to that client, otherwise a new one)
+  function send(text, { newChat = false, client = null } = {}) {
     const chatInput = text.trim();
     if (!chatInput) return;
 
     setView('chat');
     const now = Date.now();
     const userMsg = { role: 'user', content: chatInput, createdAt: now };
-    let chat = newChat ? null : activeChat;
+    let chat = newChat || (client && activeChat?.client?.sheet !== client.sheet) ? null : activeChat;
+    const prior = chat ? chat.messages : [];
     if (chat) {
       if (pending[chat.id]) return;
       updateChat(chat.id, (c) => ({ ...c, updatedAt: now, messages: [...c.messages, userMsg] }));
     } else {
-      chat = { ...createChat(chatInput), messages: [userMsg] };
+      chat = { ...createChat(chatInput), messages: [userMsg], ...(client && { client }) };
       setChats((list) => [chat, ...list]);
       setActiveId(chat.id);
     }
-    request(chat.id, chat.sessionId, chatInput);
+    request(chat, chatInput, prior);
   }
 
   // Stop button: cancel the pending request and unlock the composer straight away
@@ -192,14 +206,14 @@ export default function App() {
     const userMsg = chat?.messages[index - 1];
     if (!chat || pending[chat.id] || userMsg?.role !== 'user') return;
     updateChat(chat.id, (c) => ({ ...c, messages: c.messages.slice(0, index) }));
-    request(chat.id, chat.sessionId, userMsg.content);
+    request(chat, userMsg.content, chat.messages.slice(0, index - 1));
   }
 
   function retryAfterError() {
     const chat = activeChat;
     const last = chat?.messages[chat.messages.length - 1];
     if (!chat || pending[chat.id] || last?.role !== 'user') return;
-    request(chat.id, chat.sessionId, last.content);
+    request(chat, last.content, chat.messages.slice(0, -1));
   }
 
   function closeDrawerOnMobile() {
@@ -251,10 +265,11 @@ export default function App() {
   }
 
   // Clients / Help quick questions: show the answer in the Chats view
-  function askFromSidebar(question) {
+  // (a client tab's quick question binds the chat to that client)
+  function askFromSidebar(question, client) {
     closeDrawerOnMobile();
     setPanel('chats');
-    send(question);
+    send(question, { client: client ? { sheet: client.sheet, name: client.name || client.sheet } : null });
   }
 
   const chatHandlers = {

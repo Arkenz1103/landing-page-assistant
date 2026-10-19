@@ -120,7 +120,7 @@ export default function ClientsPanel({ clients, status, onRefresh, onAsk, active
               {open && (
                 <div className="quick-actions">
                   {QUICK_ACTIONS.map((a) => (
-                    <button key={a.key} type="button" className="quick-btn" onClick={() => onAsk(QUESTIONS[a.key](c.sheet))}>
+                    <button key={a.key} type="button" className="quick-btn" onClick={() => onAsk(QUESTIONS[a.key](c.sheet), c)}>
                       {a.label}
                     </button>
                   ))}
