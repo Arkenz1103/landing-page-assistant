@@ -108,13 +108,23 @@ export default function App() {
     }
   }, []);
 
-  // Load the master sheet the first time the Clients view opens (a fresh cached copy is used as is)
+  // Load the master sheet in the background shortly after the app opens, or straight away when the Clients view
+  // opens first, so it is usually ready before it is needed (a fresh cached copy is used as is)
   useEffect(() => {
-    if (view !== 'clients' || masterRequested.current) return;
-    masterRequested.current = true;
-    const cached = getCachedMaster();
-    if (cached) setMaster(cached.data);
-    if (!cached?.fresh) loadMaster();
+    if (masterRequested.current) return;
+    const start = () => {
+      if (masterRequested.current) return;
+      masterRequested.current = true;
+      const cached = getCachedMaster();
+      if (cached) setMaster(cached.data);
+      if (!cached?.fresh) loadMaster();
+    };
+    if (view === 'clients') {
+      start();
+      return;
+    }
+    const timer = setTimeout(start, 2000);
+    return () => clearTimeout(timer);
   }, [view, loadMaster]);
 
   const activeChat = chats.find((c) => c.id === activeId) ?? null;
