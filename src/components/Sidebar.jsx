@@ -28,6 +28,9 @@ export default function Sidebar({
   clientStatus,
   onRefreshClients,
   onAsk,
+  activeSheet,
+  onOpenSheet,
+  onOpenClient,
   theme,
   onTheme,
 }) {
@@ -77,7 +80,15 @@ export default function Sidebar({
       <div className="sidebar-panel">
         {panel === 'chats' && <ChatsPanel chats={chats} query={query} activeId={activeId} {...chatHandlers} />}
         {panel === 'clients' && (
-          <ClientsPanel clients={clients} status={clientStatus} onRefresh={onRefreshClients} onAsk={onAsk} />
+          <ClientsPanel
+            clients={clients}
+            status={clientStatus}
+            onRefresh={onRefreshClients}
+            onAsk={onAsk}
+            activeSheet={activeSheet}
+            onOpenSheet={onOpenSheet}
+            onOpenClient={onOpenClient}
+          />
         )}
         {panel === 'help' && <HelpPanel onAsk={onAsk} />}
       </div>

@@ -1,0 +1,39 @@
+- generic [ref=f1e3]:
+  - complementary "Sidebar" [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - heading "Landing Page Assistant" [level=1] [ref=f1e7]
+        - button "Close sidebar" [ref=f1e8] [cursor=pointer]
+      - button "New chat" [ref=f1e12] [cursor=pointer]
+      - searchbox "Search chats" [ref=f1e20]
+      - navigation "Sidebar sections" [ref=f1e21]:
+        - button "Chats" [pressed] [ref=f1e22] [cursor=pointer]
+        - button "Clients" [ref=f1e25] [cursor=pointer]
+        - button "Help" [ref=f1e31] [cursor=pointer]
+      - region "Today" [ref=f1e1293]:
+        - heading "Today" [level=3] [ref=f1e1294]
+        - list [ref=f1e1295]:
+          - listitem [ref=f1e1296]:
+            - button "Where are we at for Test Tab?" [ref=f1e1297] [cursor=pointer]
+            - button "Options for Where are we at for Test Tab?" [ref=f1e1298] [cursor=pointer]
+      - radiogroup "Colour theme" [ref=f1e37]:
+        - radio "Light" [ref=f1e38] [cursor=pointer]
+        - radio "Dark" [checked] [ref=f1e45] [cursor=pointer]
+  - main [ref=f1e48]:
+    - generic [ref=f1e49]: Where are we at for Test Tab?
+    - generic [ref=f1e1304]:
+      - generic [ref=f1e1305]: Where are we at for Test Tab?
+      - generic [ref=f1e1307]:
+        - paragraph [ref=f1e1309]: "{\"type\":\"clients\",\"clients\":[{\"sheet\":\"Wagner Soil Testing\",\"name\":\"Wagner Soil Testing\"}]}"
+        - generic [ref=f1e1310]:
+          - button "Copy answer" [ref=f1e1311] [cursor=pointer]
+          - button "Retry this answer" [ref=f1e1316] [cursor=pointer]:
+            - generic [ref=f1e1320]: Retry
+    - generic [ref=f1e1322]:
+      - generic [ref=f1e1323]:
+        - generic [ref=f1e1324]: Your question
+        - textbox "Your question" [ref=f1e1325]:
+          - /placeholder: Ask anything about landing page url...
+        - button "Click to speak" [ref=f1e1326] [cursor=pointer]
+        - button "Send message" [disabled] [ref=f1e1330]
+      - status [ref=f1e1333]: "Tip: include the client name, e.g. Wagner, Yandina or Column."

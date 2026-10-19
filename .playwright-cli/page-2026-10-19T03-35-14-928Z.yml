@@ -1,0 +1,32 @@
+- generic [ref=e3]:
+  - complementary "Sidebar" [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Landing Page Assistant" [level=1] [ref=e7]
+        - button "Close sidebar" [ref=e8] [cursor=pointer]
+      - button "New chat" [ref=e12] [cursor=pointer]
+      - searchbox "Search chats" [ref=e20]
+      - navigation "Sidebar sections" [ref=e21]:
+        - button "Chats" [pressed] [ref=e22] [cursor=pointer]
+        - button "Clients" [ref=e25] [cursor=pointer]
+        - button "Help" [ref=e31] [cursor=pointer]
+      - paragraph [ref=e36]: No chats yet. Ask a question to start one.
+      - radiogroup "Colour theme" [ref=e37]:
+        - radio "Light" [checked] [ref=e38] [cursor=pointer]
+        - radio "Dark" [ref=e45] [cursor=pointer]
+  - main [ref=e48]:
+    - generic [ref=e51]:
+      - heading "What would you like to check?" [level=2] [ref=e52]
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - generic [ref=e55]: Your question
+          - textbox "Your question" [active] [ref=e56]:
+            - /placeholder: Ask anything about landing page url...
+          - button "Click to speak" [ref=e57] [cursor=pointer]
+          - button "Send message" [disabled] [ref=e61]
+        - status [ref=e64]: "Tip: include the client name, e.g. Wagner, Yandina or Column."
+      - generic [ref=e65]:
+        - button "Where are we at for Wagner Soil Testing?" [ref=e66] [cursor=pointer]
+        - button "Who is assigned to Bruin Pest Management?" [ref=e67] [cursor=pointer]
+        - button "Show the September landing pages for Wagner Soil Testing" [ref=e68] [cursor=pointer]
+        - button "Which months don't have landing pages for A Vision Windscreens?" [ref=e69] [cursor=pointer]

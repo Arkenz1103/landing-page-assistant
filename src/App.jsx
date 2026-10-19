@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { PanelLeftOpen, SquarePen } from 'lucide-react';
 import Sidebar from './components/Sidebar.jsx';
 import ChatView from './components/ChatView.jsx';
+import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
 import { NO_ANSWER_MSG, sendChatMessage } from './lib/api.js';
-import { fetchClients, getCachedClients } from './lib/clients.js';
+import { QUESTIONS, fetchClients, getCachedClients } from './lib/clients.js';
+import { fetchMaster, getCachedMaster } from './lib/master.js';
 import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
@@ -44,6 +46,10 @@ export default function App() {
   const controllers = useRef({});
 
   const [panel, setPanel] = useState('chats');
+  // main area: the chat, or the clients master sheet (opened from the Clients tab)
+  const [view, setView] = useState('chat');
+  // clients workbook: the active sheet ('summary', 'master' or a client sheet)
+  const [sheet, setSheet] = useState('summary');
   const [query, setQuery] = useState('');
   const [theme, setTheme] = useTheme();
 
@@ -55,6 +61,11 @@ export default function App() {
   const [clients, setClients] = useState(() => getCachedClients()?.clients ?? null);
   const [clientStatus, setClientStatus] = useState('idle');
   const clientsRequested = useRef(false);
+
+  // { rows, summary } from the master workbook
+  const [master, setMaster] = useState(null);
+  const [masterStatus, setMasterStatus] = useState('idle');
+  const masterRequested = useRef(false);
 
   useEffect(() => {
     saveChats(chats);
@@ -87,6 +98,25 @@ export default function App() {
     clientsRequested.current = true;
     if (!getCachedClients()?.fresh) loadClients();
   }, [loadClients]);
+
+  const loadMaster = useCallback(async () => {
+    setMasterStatus('loading');
+    try {
+      setMaster(await fetchMaster());
+      setMasterStatus('ok');
+    } catch {
+      setMasterStatus('error');
+    }
+  }, []);
+
+  // Load the master sheet the first time the Clients view opens (a fresh cached copy is used as is)
+  useEffect(() => {
+    if (view !== 'clients' || masterRequested.current) return;
+    masterRequested.current = true;
+    const cached = getCachedMaster();
+    if (cached) setMaster(cached.data);
+    if (!cached?.fresh) loadMaster();
+  }, [view, loadMaster]);
 
   const activeChat = chats.find((c) => c.id === activeId) ?? null;
 
@@ -122,13 +152,14 @@ export default function App() {
     [updateChat]
   );
 
-  function send(text) {
+  function send(text, { newChat = false } = {}) {
     const chatInput = text.trim();
     if (!chatInput) return;
 
+    setView('chat');
     const now = Date.now();
     const userMsg = { role: 'user', content: chatInput, createdAt: now };
-    let chat = activeChat;
+    let chat = newChat ? null : activeChat;
     if (chat) {
       if (pending[chat.id]) return;
       updateChat(chat.id, (c) => ({ ...c, updatedAt: now, messages: [...c.messages, userMsg] }));
@@ -178,7 +209,31 @@ export default function App() {
 
   function newChat() {
     setActiveId(null);
+    setView('chat');
     closeDrawerOnMobile();
+  }
+
+  function choosePanel(key) {
+    setPanel(key);
+    // on mobile the drawer stays open so a sheet or client can be picked from the list
+    setView(key === 'clients' ? 'clients' : 'chat');
+  }
+
+  function openSheet(key) {
+    setSheet(key);
+    setView('clients');
+  }
+
+  // Sidebar: a client name opens its sheet
+  function openClientSheet(client) {
+    openSheet(clientSheetKey(client));
+    closeDrawerOnMobile();
+  }
+
+  // "Chat about this client" on a client sheet: a new chat asking for that client's status
+  function chatAboutClient(client) {
+    setPanel('chats');
+    send(QUESTIONS.status(client), { newChat: true });
   }
 
   function askFromSidebar(question) {
@@ -189,6 +244,7 @@ export default function App() {
   const chatHandlers = {
     onOpen: (id) => {
       setActiveId(id);
+      setView('chat');
       closeDrawerOnMobile();
     },
     onPin: (id) => updateChat(id, (c) => ({ ...c, pinned: !c.pinned })),
@@ -211,7 +267,7 @@ export default function App() {
       <aside className="sidebar" aria-label="Sidebar" aria-hidden={!sidebarVisible} inert={!sidebarVisible ? true : undefined}>
         <Sidebar
           panel={panel}
-          onPanel={setPanel}
+          onPanel={choosePanel}
           query={query}
           onQuery={setQuery}
           onNewChat={newChat}
@@ -223,6 +279,12 @@ export default function App() {
           clientStatus={clientStatus}
           onRefreshClients={loadClients}
           onAsk={askFromSidebar}
+          activeSheet={view === 'clients' ? sheet : null}
+          onOpenSheet={(key) => {
+            openSheet(key);
+            closeDrawerOnMobile();
+          }}
+          onOpenClient={openClientSheet}
           theme={theme}
           onTheme={setTheme}
         />
@@ -240,20 +302,32 @@ export default function App() {
               </button>
             </>
           )}
-          <span className="topbar-title">{activeChat?.title ?? ''}</span>
+          <span className="topbar-title">{view === 'clients' ? 'Clients' : activeChat?.title ?? ''}</span>
         </header>
 
-        <ChatView
-          key={activeChat?.id ?? 'new'}
-          chat={activeChat}
-          waiting={Boolean(activeChat && pending[activeChat.id])}
-          error={Boolean(activeChat && errors[activeChat.id])}
-          clients={clients}
-          onSend={send}
-          onStop={stop}
-          onRetry={retryAnswer}
-          onRetryError={retryAfterError}
-        />
+        {view === 'clients' ? (
+          <ClientsMasterView
+            rows={master?.rows ?? null}
+            summary={master?.summary ?? null}
+            status={masterStatus}
+            onRefresh={loadMaster}
+            onChat={chatAboutClient}
+            sheet={sheet}
+            onSheet={openSheet}
+          />
+        ) : (
+          <ChatView
+            key={activeChat?.id ?? 'new'}
+            chat={activeChat}
+            waiting={Boolean(activeChat && pending[activeChat.id])}
+            error={Boolean(activeChat && errors[activeChat.id])}
+            clients={clients}
+            onSend={send}
+            onStop={stop}
+            onRetry={retryAnswer}
+            onRetryError={retryAfterError}
+          />
+        )}
       </main>
     </div>
   );

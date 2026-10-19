@@ -24,6 +24,14 @@
   --link: #9a4a2c;
   --error-bg: #fdf0ee;
   --error-text: #a3321f;
+  --live-bg: #e6f2e8;
+  --live-text: #2d6a3a;
+  --missing-bg: #fbeee0;
+  --missing-text: #9a5310;
+  --row-divider: #f0eee8;
+  --row-hover: #f8f7f3;
+  --header-bg: #f7f6f2;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --focus: #c15f3c;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
   --radius: 12px;
@@ -57,6 +65,14 @@
   --link: #e8a080;
   --error-bg: #3b2723;
   --error-text: #f2a593;
+  --live-bg: #243a29;
+  --live-text: #8fd19e;
+  --missing-bg: #42301f;
+  --missing-text: #f0b878;
+  --row-divider: #383836;
+  --row-hover: #353533;
+  --header-bg: #2c2c2a;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --focus: #e48a6c;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
@@ -1247,6 +1263,581 @@ button:disabled {
   font-size: 0.72rem;
 }
 
+/* ---------- Clients workbook ---------- */
+
+.master-view {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 24px 0;
+}
+
+.master-empty {
+  margin: auto;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.master-empty p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.master-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.master-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.master-sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.sheet-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sheet-section {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.sheet-note {
+  margin: -4px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.sheet-count {
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.master-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.master-search {
+  flex: 1 1 280px;
+  max-width: 460px;
+}
+
+.status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.status-pill:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.status-pill.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.pill-count {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.coverage-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--missing-bg);
+  overflow: hidden;
+}
+
+.coverage-bar span {
+  display: block;
+  height: 100%;
+  background: var(--live-text);
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress .coverage-bar {
+  flex: 1;
+  min-width: 60px;
+}
+
+.progress-text {
+  min-width: 3ch;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Tables */
+
+.master-table-wrap {
+  flex: 1;
+  min-height: 160px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.master-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+/* sticky header: small uppercase labels on a faint band */
+.master-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 10px 14px;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.master-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--row-divider);
+  vertical-align: middle;
+  transition: background-color 0.15s ease;
+}
+
+.master-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* opaque hover colour, so the sticky row-number column never shows content scrolling underneath */
+.master-table tbody tr:hover td {
+  background: var(--row-hover);
+}
+
+.master-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.master-table tbody tr[tabindex] {
+  cursor: pointer;
+}
+
+.master-table tbody tr:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.master-client {
+  font-weight: 500;
+  min-width: 140px;
+}
+
+.cell-sub {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.master-url-cell {
+  max-width: 20rem;
+}
+
+.master-url,
+.master-note {
+  display: block;
+  max-width: 20rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.master-url {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.master-url:hover {
+  text-decoration: underline;
+}
+
+.master-note {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.master-blank {
+  color: var(--muted);
+}
+
+.master-none {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.master-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 22%, transparent);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-badge.live {
+  background: var(--live-bg);
+  color: var(--live-text);
+}
+
+.status-badge.missing {
+  background: var(--missing-bg);
+  color: var(--missing-text);
+}
+
+.status-badge.note {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* Client sheet header banner */
+
+.client-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.banner-main {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.banner-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.banner-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.banner-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+}
+
+.banner-facts dt {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.banner-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.banner-stats {
+  flex: 0 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.banner-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.banner-numbers strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.banner-numbers .live strong {
+  color: var(--live-text);
+}
+
+.banner-numbers .missing strong {
+  color: var(--missing-text);
+}
+
+.banner-chat {
+  align-self: flex-start;
+}
+
+/* Spreadsheet-style sheet tab bar (all sheets menu + one tab per sheet) */
+
+.wb-bar {
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 0 -24px;
+  padding: 0 24px 8px 16px;
+  border-top: 1px solid var(--border-strong);
+  background: var(--surface-2);
+}
+
+.wb-menu {
+  position: relative;
+  flex: none;
+  padding-top: 3px;
+}
+
+.wb-menu-list {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 10;
+  width: min(300px, calc(100vw - 32px));
+  max-height: min(420px, 60vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.wb-menu-list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.wb-menu-list button:hover {
+  background: var(--hover);
+}
+
+.wb-menu-list button.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.wb-menu-gap {
+  flex: none;
+  width: 13px;
+}
+
+.wb-tabs {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.wb-tab {
+  flex: none;
+  margin-top: -1px;
+  padding: 6px 14px 7px;
+  border: 1px solid transparent;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.wb-tab:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.wb-tab[aria-selected='true'] {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* Summary worksheet: raw cells, one line each */
+
+.summary-sheet .summary-cell {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contact-link {
+  color: var(--link);
+  font-weight: 500;
+  text-align: left;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+/* Client sheet table: the workbook's own columns */
+
+.sheet-table td {
+  white-space: nowrap;
+}
+
+.sheet-table .row-head {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 1%;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: var(--header-bg);
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet-table th.row-head {
+  z-index: 2;
+}
+
+.link-col {
+  max-width: 200px;
+}
+
+.link-cell {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sidebar sheet links */
+
+.sheet-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 8px;
+}
+
+.sheet-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.sheet-link svg {
+  color: var(--muted);
+}
+
+.sheet-link:hover {
+  background: var(--hover);
+}
+
+.sheet-link.active,
+.client.current .client-btn {
+  background: var(--active);
+  font-weight: 500;
+}
+
 /* ---------- Mobile ---------- */
 
 @media (max-width: 767px) {
@@ -1264,5 +1855,35 @@ button:disabled {
 
   .bubble {
     max-width: 92%;
+  }
+
+  .master-view {
+    padding: 4px 16px 0;
+  }
+
+  .master-search {
+    max-width: none;
+  }
+
+  /* the whole sheet scrolls on phones so the banner doesn't squeeze the table */
+  .master-view {
+    overflow-y: auto;
+  }
+
+  .sheet-body {
+    flex: none;
+  }
+
+  .master-table-wrap {
+    flex: none;
+    max-height: 70vh;
+  }
+
+  .wb-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin: 0 -16px;
+    padding: 0 16px 8px 8px;
   }
 }

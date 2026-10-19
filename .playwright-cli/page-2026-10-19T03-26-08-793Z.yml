@@ -1,0 +1,1072 @@
+- generic [ref=f2e3]:
+  - complementary "Sidebar" [ref=f2e4]:
+    - generic [ref=f2e5]:
+      - generic [ref=f2e6]:
+        - heading "Landing Page Assistant" [level=1] [ref=f2e7]
+        - button "Close sidebar" [ref=f2e8] [cursor=pointer]
+      - button "New chat" [ref=f2e12] [cursor=pointer]
+      - searchbox "Search chats" [ref=f2e20]
+      - navigation "Sidebar sections" [ref=f2e21]:
+        - button "Chats" [ref=f2e22] [cursor=pointer]
+        - button "Clients" [active] [pressed] [ref=f2e25] [cursor=pointer]
+        - button "Help" [ref=f2e31] [cursor=pointer]
+      - generic [ref=f2e70]:
+        - generic [ref=f2e71]:
+          - generic [ref=f2e72]: Clients (82)
+          - button "Refresh client list" [ref=f2e73] [cursor=pointer]: Refresh
+        - generic [ref=f2e79]:
+          - button "Summary sheet" [ref=f2e80] [cursor=pointer]
+          - button "Clients master sheet" [ref=f2e86] [cursor=pointer]
+        - searchbox "Filter clients" [ref=f2e94]
+        - list [ref=f2e95]:
+          - listitem [ref=f2e96]:
+            - button "A Vision Windscreens" [ref=f2e97] [cursor=pointer]
+          - listitem [ref=f2e102]:
+            - button "Above All Roof Bellmere Above All Roof Painting and Repairs" [ref=f2e103] [cursor=pointer]:
+              - generic [ref=f2e106]:
+                - generic [ref=f2e107]: Above All Roof Bellmere
+                - generic [ref=f2e108]: Above All Roof Painting and Repairs
+          - listitem [ref=f2e109]:
+            - button "Above All Roof Painters and Rep Above All Roof Painting and Repairs" [ref=f2e110] [cursor=pointer]:
+              - generic [ref=f2e113]:
+                - generic [ref=f2e114]: Above All Roof Painters and Rep
+                - generic [ref=f2e115]: Above All Roof Painting and Repairs
+          - listitem [ref=f2e116]:
+            - button "Access Alarms" [ref=f2e117] [cursor=pointer]
+          - listitem [ref=f2e122]:
+            - button "Ace Posts And Beams" [ref=f2e123] [cursor=pointer]
+          - listitem [ref=f2e128]:
+            - button "Ace Restumping" [ref=f2e129] [cursor=pointer]
+          - listitem [ref=f2e134]:
+            - button "Australian Boating College" [ref=f2e135] [cursor=pointer]
+          - listitem [ref=f2e140]:
+            - button "Auto Glass Caboolture" [ref=f2e141] [cursor=pointer]
+          - listitem [ref=f2e146]:
+            - button "B & J Whitsed Waterproofing" [ref=f2e147] [cursor=pointer]
+          - listitem [ref=f2e152]:
+            - button "Billabong Pool Service Caloundr Billabong Pool Services & Supply Caloundra" [ref=f2e153] [cursor=pointer]:
+              - generic [ref=f2e156]:
+                - generic [ref=f2e157]: Billabong Pool Service Caloundr
+                - generic [ref=f2e158]: Billabong Pool Services & Supply Caloundra
+          - listitem [ref=f2e159]:
+            - button "Billabong Pool Service Noosa Billabong Pool Services & Supply Noosaville" [ref=f2e160] [cursor=pointer]:
+              - generic [ref=f2e163]:
+                - generic [ref=f2e164]: Billabong Pool Service Noosa
+                - generic [ref=f2e165]: Billabong Pool Services & Supply Noosaville
+          - listitem [ref=f2e166]:
+            - button "Billabong Pools Maroochydore Billabong Pool Services & Supply" [ref=f2e167] [cursor=pointer]:
+              - generic [ref=f2e170]:
+                - generic [ref=f2e171]: Billabong Pools Maroochydore
+                - generic [ref=f2e172]: Billabong Pool Services & Supply
+          - listitem [ref=f2e173]:
+            - button "Billabong Robotic Pool Cleaners" [ref=f2e174] [cursor=pointer]
+          - listitem [ref=f2e179]:
+            - button "BJH Law Bowen Hills BJH Bowen Hills" [ref=f2e180] [cursor=pointer]:
+              - generic [ref=f2e183]:
+                - generic [ref=f2e184]: BJH Law Bowen Hills
+                - generic [ref=f2e185]: BJH Bowen Hills
+          - listitem [ref=f2e186]:
+            - button "BN Painting Services Pty Ltd" [ref=f2e187] [cursor=pointer]
+          - listitem [ref=f2e192]:
+            - button "Bob Gunn Termite Flagstone Bob Gunn Flagstone" [ref=f2e193] [cursor=pointer]:
+              - generic [ref=f2e196]:
+                - generic [ref=f2e197]: Bob Gunn Termite Flagstone
+                - generic [ref=f2e198]: Bob Gunn Flagstone
+          - listitem [ref=f2e199]:
+            - button "Bob Gunn Termite Solutions Loga Bob Gunn Termite Solutions Loganholme" [ref=f2e200] [cursor=pointer]:
+              - generic [ref=f2e203]:
+                - generic [ref=f2e204]: Bob Gunn Termite Solutions Loga
+                - generic [ref=f2e205]: Bob Gunn Termite Solutions Loganholme
+          - listitem [ref=f2e206]:
+            - button "Bob Gunn Termite Zillmere Bob Gunn Termite Solutions" [ref=f2e207] [cursor=pointer]:
+              - generic [ref=f2e210]:
+                - generic [ref=f2e211]: Bob Gunn Termite Zillmere
+                - generic [ref=f2e212]: Bob Gunn Termite Solutions
+          - listitem [ref=f2e213]:
+            - button "Boomerang Pools" [ref=f2e214] [cursor=pointer]
+          - listitem [ref=f2e219]:
+            - button "Bruin Pest Management" [ref=f2e220] [cursor=pointer]
+          - listitem [ref=f2e225]:
+            - button "Burke Industries" [ref=f2e226] [cursor=pointer]
+          - listitem [ref=f2e231]:
+            - button "Caboolture Physical Therapy Caboolture Physical Therapy Centre" [ref=f2e232] [cursor=pointer]:
+              - generic [ref=f2e235]:
+                - generic [ref=f2e236]: Caboolture Physical Therapy
+                - generic [ref=f2e237]: Caboolture Physical Therapy Centre
+          - listitem [ref=f2e238]:
+            - button "Captivating Concrete Solutions" [ref=f2e239] [cursor=pointer]
+          - listitem [ref=f2e244]:
+            - button "Care Technical Service" [ref=f2e245] [cursor=pointer]
+          - listitem [ref=f2e250]:
+            - button "Catton Roderick Birtinya Catton Roderick Lawyers Birtinya" [ref=f2e251] [cursor=pointer]:
+              - generic [ref=f2e254]:
+                - generic [ref=f2e255]: Catton Roderick Birtinya
+                - generic [ref=f2e256]: Catton Roderick Lawyers Birtinya
+          - listitem [ref=f2e257]:
+            - button "Catton Roderick Lawyers Caboolt Catton Roderick Lawyers" [ref=f2e258] [cursor=pointer]:
+              - generic [ref=f2e261]:
+                - generic [ref=f2e262]: Catton Roderick Lawyers Caboolt
+                - generic [ref=f2e263]: Catton Roderick Lawyers
+          - listitem [ref=f2e264]:
+            - button "Catton Roderick Lawyers Redclif Catton Roderick Lawyers Redcliffe" [ref=f2e265] [cursor=pointer]:
+              - generic [ref=f2e268]:
+                - generic [ref=f2e269]: Catton Roderick Lawyers Redclif
+                - generic [ref=f2e270]: Catton Roderick Lawyers Redcliffe
+          - listitem [ref=f2e271]:
+            - button "Cuzkell Pty Ltd. Cuzkell Pty Ltd" [ref=f2e272] [cursor=pointer]:
+              - generic [ref=f2e275]:
+                - generic [ref=f2e276]: Cuzkell Pty Ltd.
+                - generic [ref=f2e277]: Cuzkell Pty Ltd
+          - listitem [ref=f2e278]:
+            - button "Deadlock Garage Doors" [ref=f2e279] [cursor=pointer]
+          - listitem [ref=f2e284]:
+            - button "Dolphin Marine" [ref=f2e285] [cursor=pointer]
+          - listitem [ref=f2e290]:
+            - button "Eco Air & Electrical Eco Air and Electrical" [ref=f2e291] [cursor=pointer]:
+              - generic [ref=f2e294]:
+                - generic [ref=f2e295]: Eco Air & Electrical
+                - generic [ref=f2e296]: Eco Air and Electrical
+          - listitem [ref=f2e297]:
+            - button "Embroidery FX" [ref=f2e298] [cursor=pointer]
+          - listitem [ref=f2e303]:
+            - button "Ezi2Build" [ref=f2e304] [cursor=pointer]
+          - listitem [ref=f2e309]:
+            - button "FAA Property" [ref=f2e310] [cursor=pointer]
+          - listitem [ref=f2e315]:
+            - button "Ferngully Productions" [ref=f2e316] [cursor=pointer]
+          - listitem [ref=f2e321]:
+            - button "Griffiths Concrete & Constructi Griffiths Concrete & Construction Services" [ref=f2e322] [cursor=pointer]:
+              - generic [ref=f2e325]:
+                - generic [ref=f2e326]: Griffiths Concrete & Constructi
+                - generic [ref=f2e327]: Griffiths Concrete & Construction Services
+          - listitem [ref=f2e328]:
+            - button "Guaranteed Gutter Protection" [ref=f2e329] [cursor=pointer]
+          - listitem [ref=f2e334]:
+            - button "Hanceys Turf" [ref=f2e335] [cursor=pointer]
+          - listitem [ref=f2e340]:
+            - button "Hanceys Turf Sunshine Coast Hancey's Turf Sunshine Coast" [ref=f2e341] [cursor=pointer]:
+              - generic [ref=f2e344]:
+                - generic [ref=f2e345]: Hanceys Turf Sunshine Coast
+                - generic [ref=f2e346]: Hancey's Turf Sunshine Coast
+          - listitem [ref=f2e347]:
+            - button "Integrity Lounge Designs" [ref=f2e348] [cursor=pointer]
+          - listitem [ref=f2e353]:
+            - button "Jerry and the Tilemakers Jerry & the Tilemakers" [ref=f2e354] [cursor=pointer]:
+              - generic [ref=f2e357]:
+                - generic [ref=f2e358]: Jerry and the Tilemakers
+                - generic [ref=f2e359]: Jerry & the Tilemakers
+          - listitem [ref=f2e360]:
+            - button "Jim Monger Plumbing" [ref=f2e361] [cursor=pointer]
+          - listitem [ref=f2e366]:
+            - button "Journeyman Movers" [ref=f2e367] [cursor=pointer]
+          - listitem [ref=f2e372]:
+            - button "Kitchens R Us" [ref=f2e373] [cursor=pointer]
+          - listitem [ref=f2e378]:
+            - button "L.J. Shop Fitters" [ref=f2e379] [cursor=pointer]
+          - listitem [ref=f2e384]:
+            - button "Leafshield Gutter Protection" [ref=f2e385] [cursor=pointer]
+          - listitem [ref=f2e390]:
+            - button "LiveEdge LiveEdge Landscaping" [ref=f2e391] [cursor=pointer]:
+              - generic [ref=f2e394]:
+                - generic [ref=f2e395]: LiveEdge
+                - generic [ref=f2e396]: LiveEdge Landscaping
+          - listitem [ref=f2e397]:
+            - button "Liverpool Garage Doors" [ref=f2e398] [cursor=pointer]
+          - listitem [ref=f2e403]:
+            - button "Lockbell Commercial Linings" [ref=f2e404] [cursor=pointer]
+          - listitem [ref=f2e409]:
+            - button "Lomandra Accounting" [ref=f2e410] [cursor=pointer]
+          - listitem [ref=f2e415]:
+            - button "Luxe Electrical Industries" [ref=f2e416] [cursor=pointer]
+          - listitem [ref=f2e421]:
+            - button "Luxe Lighting - E-commerce Luxe Lighting" [ref=f2e422] [cursor=pointer]:
+              - generic [ref=f2e425]:
+                - generic [ref=f2e426]: Luxe Lighting - E-commerce
+                - generic [ref=f2e427]: Luxe Lighting
+          - listitem [ref=f2e428]:
+            - button "Micks Gas Fitting Micks Gasfitting Services" [ref=f2e429] [cursor=pointer]:
+              - generic [ref=f2e432]:
+                - generic [ref=f2e433]: Micks Gas Fitting
+                - generic [ref=f2e434]: Micks Gasfitting Services
+          - listitem [ref=f2e435]:
+            - button "Morrison's Maintenance Plumbing" [ref=f2e436] [cursor=pointer]
+          - listitem [ref=f2e441]:
+            - button "Neptunes Pool Care Kallangur Neptunes Pool Care" [ref=f2e442] [cursor=pointer]:
+              - generic [ref=f2e445]:
+                - generic [ref=f2e446]: Neptunes Pool Care Kallangur
+                - generic [ref=f2e447]: Neptunes Pool Care
+          - listitem [ref=f2e448]:
+            - button "Neptunes Pool Care Morayfield Neptunes Pool Care" [ref=f2e449] [cursor=pointer]:
+              - generic [ref=f2e452]:
+                - generic [ref=f2e453]: Neptunes Pool Care Morayfield
+                - generic [ref=f2e454]: Neptunes Pool Care
+          - listitem [ref=f2e455]:
+            - button "Neptunes Pool Care Redcliffe Neptunes Pool Care" [ref=f2e456] [cursor=pointer]:
+              - generic [ref=f2e459]:
+                - generic [ref=f2e460]: Neptunes Pool Care Redcliffe
+                - generic [ref=f2e461]: Neptunes Pool Care
+          - listitem [ref=f2e462]:
+            - button "Noosa Pool & Spa Centre" [ref=f2e463] [cursor=pointer]
+          - listitem [ref=f2e468]:
+            - button "Northside Mini-Mix Northside Mini Mix" [ref=f2e469] [cursor=pointer]:
+              - generic [ref=f2e472]:
+                - generic [ref=f2e473]: Northside Mini-Mix
+                - generic [ref=f2e474]: Northside Mini Mix
+          - listitem [ref=f2e475]:
+            - button "Pine Rivers Crane Hire" [ref=f2e476] [cursor=pointer]
+          - listitem [ref=f2e481]:
+            - button "Queensland Paint Supplies" [ref=f2e482] [cursor=pointer]
+          - listitem [ref=f2e487]:
+            - button "Rasura Alex Headlands Rasura Alexandra Headlands" [ref=f2e488] [cursor=pointer]:
+              - generic [ref=f2e491]:
+                - generic [ref=f2e492]: Rasura Alex Headlands
+                - generic [ref=f2e493]: Rasura Alexandra Headlands
+          - listitem [ref=f2e494]:
+            - button "Rasura Coolum Beach Rasura Chiropractic" [ref=f2e495] [cursor=pointer]:
+              - generic [ref=f2e498]:
+                - generic [ref=f2e499]: Rasura Coolum Beach
+                - generic [ref=f2e500]: Rasura Chiropractic
+          - listitem [ref=f2e501]:
+            - button "RCM Hotwater RCM Hot Water Services" [ref=f2e502] [cursor=pointer]:
+              - generic [ref=f2e505]:
+                - generic [ref=f2e506]: RCM Hotwater
+                - generic [ref=f2e507]: RCM Hot Water Services
+          - listitem [ref=f2e508]:
+            - button "Ritchie Plumbing & Gas Ricthies Plumbing & Gas" [ref=f2e509] [cursor=pointer]:
+              - generic [ref=f2e512]:
+                - generic [ref=f2e513]: Ritchie Plumbing & Gas
+                - generic [ref=f2e514]: Ricthies Plumbing & Gas
+          - listitem [ref=f2e515]:
+            - button "Roebuck Concepts" [ref=f2e516] [cursor=pointer]
+          - listitem [ref=f2e521]:
+            - button "Rowdy's Car Carriers Rowdy's Car Carrier" [ref=f2e522] [cursor=pointer]:
+              - generic [ref=f2e525]:
+                - generic [ref=f2e526]: Rowdy's Car Carriers
+                - generic [ref=f2e527]: Rowdy's Car Carrier
+          - listitem [ref=f2e528]:
+            - button "RYNO Fencing" [ref=f2e529] [cursor=pointer]
+          - listitem [ref=f2e534]:
+            - button "S & J Cleaning Crew" [ref=f2e535] [cursor=pointer]
+          - listitem [ref=f2e540]:
+            - button "Smith Tree Solutions Chevallum" [ref=f2e541] [cursor=pointer]
+          - listitem [ref=f2e546]:
+            - button "Smith Tree Solutions Gympie Smith Tree Solutions" [ref=f2e547] [cursor=pointer]:
+              - generic [ref=f2e550]:
+                - generic [ref=f2e551]: Smith Tree Solutions Gympie
+                - generic [ref=f2e552]: Smith Tree Solutions
+          - listitem [ref=f2e553]:
+            - button "Snowys Painting" [ref=f2e554] [cursor=pointer]
+          - listitem [ref=f2e559]:
+            - button "Southern Cross Concrete Cutting" [ref=f2e560] [cursor=pointer]
+          - listitem [ref=f2e565]:
+            - button "Stone & Rock Baringa" [ref=f2e566] [cursor=pointer]
+          - listitem [ref=f2e571]:
+            - button "Stone & Rock Springwood" [ref=f2e572] [cursor=pointer]
+          - listitem [ref=f2e577]:
+            - button "Suncoast Hydroponics" [ref=f2e578] [cursor=pointer]
+          - listitem [ref=f2e583]:
+            - button "Sunshine Coast Home & Office R Sunshine Coast Home & Office Removals" [ref=f2e584] [cursor=pointer]:
+              - generic [ref=f2e587]:
+                - generic [ref=f2e588]: Sunshine Coast Home & Office R
+                - generic [ref=f2e589]: Sunshine Coast Home & Office Removals
+          - listitem [ref=f2e590]:
+            - button "Superior Glass Brisbane" [ref=f2e591] [cursor=pointer]
+          - listitem [ref=f2e596]:
+            - button "Sureline Fencing" [ref=f2e597] [cursor=pointer]
+          - listitem [ref=f2e602]:
+            - button "Tile Factory Outlet" [ref=f2e603] [cursor=pointer]
+          - listitem [ref=f2e608]:
+            - button "Wagner Soil Testing" [ref=f2e609] [cursor=pointer]
+          - listitem [ref=f2e614]:
+            - button "Yandina Station" [ref=f2e615] [cursor=pointer]
+      - radiogroup "Colour theme" [ref=f2e37]:
+        - radio "Light" [checked] [ref=f2e38] [cursor=pointer]
+        - radio "Dark" [ref=f2e45] [cursor=pointer]
+  - main [ref=f2e48]:
+    - generic [ref=f2e49]: Clients
+    - generic [ref=f2e621]:
+      - generic [ref=f2e622]:
+        - generic [ref=f2e623]:
+          - heading "Summary" [level=2] [ref=f2e624]
+          - paragraph [ref=f2e625]: Clients workbook · 82 client sheets
+        - button "Refresh master sheet" [ref=f2e626] [cursor=pointer]: Refresh
+      - generic [ref=f2e632]:
+        - generic [ref=f2e633]:
+          - generic [ref=f2e634]:
+            - generic [ref=f2e635]: "82"
+            - generic [ref=f2e636]: Total clients
+          - generic [ref=f2e637]:
+            - generic [ref=f2e638]: 6,244
+            - generic [ref=f2e639]: Total suburb rows
+          - generic [ref=f2e640]:
+            - generic [ref=f2e641]: 3,759
+            - generic [ref=f2e642]: Live URLs
+          - generic [ref=f2e643]:
+            - generic [ref=f2e644]: 2,403
+            - generic [ref=f2e645]: Missing URLs
+          - generic [ref=f2e646]:
+            - generic [ref=f2e647]: 60%
+            - generic [ref=f2e648]: Overall completion
+        - paragraph [ref=f2e651]: 82 rows hold a note instead of a URL (e.g. “start refreshing content”); they count as neither live nor missing.
+        - generic [ref=f2e652]:
+          - heading "Client progress" [level=3] [ref=f2e653]
+          - searchbox "Search clients" [ref=f2e658]
+        - table [ref=f2e660]:
+          - rowgroup [ref=f2e661]:
+            - row [ref=f2e662]:
+              - columnheader [ref=f2e663]:
+                - button "Client" [ref=f2e664] [cursor=pointer]
+              - columnheader [ref=f2e667]:
+                - button "Assigned To" [ref=f2e668] [cursor=pointer]
+              - columnheader [ref=f2e669]:
+                - button "Total Rows" [ref=f2e670] [cursor=pointer]
+              - columnheader [ref=f2e671]:
+                - button "Live" [ref=f2e672] [cursor=pointer]
+              - columnheader [ref=f2e673]:
+                - button "Missing" [ref=f2e674] [cursor=pointer]
+              - columnheader [ref=f2e675]:
+                - button "Progress" [ref=f2e676] [cursor=pointer]
+          - rowgroup [ref=f2e677]:
+            - row [ref=f2e678] [cursor=pointer]:
+              - cell "A Vision Windscreens" [ref=f2e679]
+              - cell "Johnny" [ref=f2e680]
+              - cell "67" [ref=f2e681]
+              - cell "36" [ref=f2e682]
+              - cell "30" [ref=f2e683]
+              - cell [ref=f2e684]:
+                - img "54% live" [ref=f2e685]:
+                  - generic [ref=f2e688]: 54%
+            - row [ref=f2e689] [cursor=pointer]:
+              - cell "Above All Roof Painting and Repairs" [ref=f2e690]
+              - cell "Johnny" [ref=f2e691]
+              - cell "144" [ref=f2e692]
+              - cell "111" [ref=f2e693]
+              - cell "32" [ref=f2e694]
+              - cell [ref=f2e695]:
+                - img "77% live" [ref=f2e696]:
+                  - generic [ref=f2e699]: 77%
+            - row [ref=f2e700] [cursor=pointer]:
+              - cell "Above All Roof Painting and Repairs" [ref=f2e701]
+              - cell "Johnny" [ref=f2e702]
+              - cell "122" [ref=f2e703]
+              - cell "112" [ref=f2e704]
+              - cell "9" [ref=f2e705]
+              - cell [ref=f2e706]:
+                - img "92% live" [ref=f2e707]:
+                  - generic [ref=f2e710]: 92%
+            - row [ref=f2e711] [cursor=pointer]:
+              - cell "Access Alarms" [ref=f2e712]
+              - cell "Nigel" [ref=f2e713]
+              - cell "144" [ref=f2e714]
+              - cell "36" [ref=f2e715]
+              - cell "108" [ref=f2e716]
+              - cell [ref=f2e717]:
+                - img "25% live" [ref=f2e718]:
+                  - generic [ref=f2e721]: 25%
+            - row [ref=f2e722] [cursor=pointer]:
+              - cell "Ace Posts and Beams" [ref=f2e723]
+              - cell "Johnny" [ref=f2e724]
+              - cell "72" [ref=f2e725]
+              - cell "60" [ref=f2e726]
+              - cell "11" [ref=f2e727]
+              - cell [ref=f2e728]:
+                - img "83% live" [ref=f2e729]:
+                  - generic [ref=f2e732]: 83%
+            - row [ref=f2e733] [cursor=pointer]:
+              - cell "Ace Restumping" [ref=f2e734]
+              - cell "Jason" [ref=f2e735]
+              - cell "92" [ref=f2e736]
+              - cell "52" [ref=f2e737]
+              - cell "39" [ref=f2e738]
+              - cell [ref=f2e739]:
+                - img "57% live" [ref=f2e740]:
+                  - generic [ref=f2e743]: 57%
+            - row [ref=f2e744] [cursor=pointer]:
+              - cell "Australian Boating College" [ref=f2e745]
+              - cell "Johnny" [ref=f2e746]
+              - cell "72" [ref=f2e747]
+              - cell "53" [ref=f2e748]
+              - cell "18" [ref=f2e749]
+              - cell [ref=f2e750]:
+                - img "74% live" [ref=f2e751]:
+                  - generic [ref=f2e754]: 74%
+            - row [ref=f2e755] [cursor=pointer]:
+              - cell "Auto Glass Caboolture" [ref=f2e756]
+              - cell "Jason" [ref=f2e757]
+              - cell "72" [ref=f2e758]
+              - cell "48" [ref=f2e759]
+              - cell "23" [ref=f2e760]
+              - cell [ref=f2e761]:
+                - img "67% live" [ref=f2e762]:
+                  - generic [ref=f2e765]: 67%
+            - row [ref=f2e766] [cursor=pointer]:
+              - cell "B & J Whitsed Waterproofing" [ref=f2e767]
+              - cell "Johnny" [ref=f2e768]
+              - cell "36" [ref=f2e769]
+              - cell "12" [ref=f2e770]
+              - cell "24" [ref=f2e771]
+              - cell [ref=f2e772]:
+                - img "33% live" [ref=f2e773]:
+                  - generic [ref=f2e776]: 33%
+            - row [ref=f2e777] [cursor=pointer]:
+              - cell "Billabong Pool Services & Supply" [ref=f2e778]
+              - cell "Jason" [ref=f2e779]
+              - cell "85" [ref=f2e780]
+              - cell "38" [ref=f2e781]
+              - cell "46" [ref=f2e782]
+              - cell [ref=f2e783]:
+                - img "45% live" [ref=f2e784]:
+                  - generic [ref=f2e787]: 45%
+            - row [ref=f2e788] [cursor=pointer]:
+              - cell "Billabong Pool Services & Supply Caloundra" [ref=f2e789]
+              - cell "Jason" [ref=f2e790]
+              - cell "58" [ref=f2e791]
+              - cell "36" [ref=f2e792]
+              - cell "21" [ref=f2e793]
+              - cell [ref=f2e794]:
+                - img "62% live" [ref=f2e795]:
+                  - generic [ref=f2e798]: 62%
+            - row [ref=f2e799] [cursor=pointer]:
+              - cell "Billabong Pool Services & Supply Noosaville" [ref=f2e800]
+              - cell "Jason" [ref=f2e801]
+              - cell "79" [ref=f2e802]
+              - cell "47" [ref=f2e803]
+              - cell "31" [ref=f2e804]
+              - cell [ref=f2e805]:
+                - img "59% live" [ref=f2e806]:
+                  - generic [ref=f2e809]: 59%
+            - row [ref=f2e810] [cursor=pointer]:
+              - cell "Billabong Robotic Pool Cleaners" [ref=f2e811]
+              - cell "Jason" [ref=f2e812]
+              - cell "31" [ref=f2e813]
+              - cell "8" [ref=f2e814]
+              - cell "23" [ref=f2e815]
+              - cell [ref=f2e816]:
+                - img "26% live" [ref=f2e817]:
+                  - generic [ref=f2e820]: 26%
+            - row [ref=f2e821] [cursor=pointer]:
+              - cell "BJH Bowen Hills" [ref=f2e822]
+              - cell "Nigel" [ref=f2e823]
+              - cell "73" [ref=f2e824]
+              - cell "73" [ref=f2e825]
+              - cell "0" [ref=f2e826]
+              - cell [ref=f2e827]:
+                - img "100% live" [ref=f2e828]:
+                  - generic [ref=f2e831]: 100%
+            - row [ref=f2e832] [cursor=pointer]:
+              - cell "BN Painting Services Pty Ltd" [ref=f2e833]
+              - cell "Jason" [ref=f2e834]
+              - cell "45" [ref=f2e835]
+              - cell "24" [ref=f2e836]
+              - cell "21" [ref=f2e837]
+              - cell [ref=f2e838]:
+                - img "53% live" [ref=f2e839]:
+                  - generic [ref=f2e842]: 53%
+            - row [ref=f2e843] [cursor=pointer]:
+              - cell "Bob Gunn Flagstone" [ref=f2e844]
+              - cell "Nigel" [ref=f2e845]
+              - cell "108" [ref=f2e846]
+              - cell "106" [ref=f2e847]
+              - cell "1" [ref=f2e848]
+              - cell [ref=f2e849]:
+                - img "98% live" [ref=f2e850]:
+                  - generic [ref=f2e853]: 98%
+            - row [ref=f2e854] [cursor=pointer]:
+              - cell "Bob Gunn Termite Solutions" [ref=f2e855]
+              - cell "Johnny" [ref=f2e856]
+              - cell "141" [ref=f2e857]
+              - cell "138" [ref=f2e858]
+              - cell "2" [ref=f2e859]
+              - cell [ref=f2e860]:
+                - img "98% live" [ref=f2e861]:
+                  - generic [ref=f2e864]: 98%
+            - row [ref=f2e865] [cursor=pointer]:
+              - cell "Bob Gunn Termite Solutions Loganholme" [ref=f2e866]
+              - cell "Jason" [ref=f2e867]
+              - cell "117" [ref=f2e868]
+              - cell "106" [ref=f2e869]
+              - cell "10" [ref=f2e870]
+              - cell [ref=f2e871]:
+                - img "91% live" [ref=f2e872]:
+                  - generic [ref=f2e875]: 91%
+            - row [ref=f2e876] [cursor=pointer]:
+              - cell "Boomerang Pools" [ref=f2e877]
+              - cell "Johnny" [ref=f2e878]
+              - cell "31" [ref=f2e879]
+              - cell "30" [ref=f2e880]
+              - cell "0" [ref=f2e881]
+              - cell [ref=f2e882]:
+                - img "97% live" [ref=f2e883]:
+                  - generic [ref=f2e886]: 97%
+            - row [ref=f2e887] [cursor=pointer]:
+              - cell "Bruin Pest Management" [ref=f2e888]
+              - cell "Johhny" [ref=f2e889]
+              - cell "56" [ref=f2e890]
+              - cell "8" [ref=f2e891]
+              - cell "48" [ref=f2e892]
+              - cell [ref=f2e893]:
+                - img "14% live" [ref=f2e894]:
+                  - generic [ref=f2e897]: 14%
+            - row [ref=f2e898] [cursor=pointer]:
+              - cell "Burke Industries" [ref=f2e899]
+              - cell "Nigel" [ref=f2e900]
+              - cell "73" [ref=f2e901]
+              - cell "49" [ref=f2e902]
+              - cell "24" [ref=f2e903]
+              - cell [ref=f2e904]:
+                - img "67% live" [ref=f2e905]:
+                  - generic [ref=f2e908]: 67%
+            - row [ref=f2e909] [cursor=pointer]:
+              - cell "Caboolture Physical Therapy Centre" [ref=f2e910]
+              - cell "Nigel" [ref=f2e911]
+              - cell "49" [ref=f2e912]
+              - cell "48" [ref=f2e913]
+              - cell "1" [ref=f2e914]
+              - cell [ref=f2e915]:
+                - img "98% live" [ref=f2e916]:
+                  - generic [ref=f2e919]: 98%
+            - row [ref=f2e920] [cursor=pointer]:
+              - cell "Captivating Concrete Solutions" [ref=f2e921]
+              - cell "Jason" [ref=f2e922]
+              - cell "80" [ref=f2e923]
+              - cell "60" [ref=f2e924]
+              - cell "19" [ref=f2e925]
+              - cell [ref=f2e926]:
+                - img "75% live" [ref=f2e927]:
+                  - generic [ref=f2e930]: 75%
+            - row [ref=f2e931] [cursor=pointer]:
+              - cell "Care Technical Service" [ref=f2e932]
+              - cell "Johnny" [ref=f2e933]
+              - cell "97" [ref=f2e934]
+              - cell "71" [ref=f2e935]
+              - cell "25" [ref=f2e936]
+              - cell [ref=f2e937]:
+                - img "73% live" [ref=f2e938]:
+                  - generic [ref=f2e941]: 73%
+            - row [ref=f2e942] [cursor=pointer]:
+              - cell "Catton Roderick Lawyers" [ref=f2e943]
+              - cell "Jason" [ref=f2e944]
+              - cell "57" [ref=f2e945]
+              - cell "36" [ref=f2e946]
+              - cell "20" [ref=f2e947]
+              - cell [ref=f2e948]:
+                - img "63% live" [ref=f2e949]:
+                  - generic [ref=f2e952]: 63%
+            - row [ref=f2e953] [cursor=pointer]:
+              - cell "Catton Roderick Lawyers Birtinya" [ref=f2e954]
+              - cell "Johnny" [ref=f2e955]
+              - cell "60" [ref=f2e956]
+              - cell "36" [ref=f2e957]
+              - cell "23" [ref=f2e958]
+              - cell [ref=f2e959]:
+                - img "60% live" [ref=f2e960]:
+                  - generic [ref=f2e963]: 60%
+            - row [ref=f2e964] [cursor=pointer]:
+              - cell "Catton Roderick Lawyers Redcliffe" [ref=f2e965]
+              - cell "Nigel" [ref=f2e966]
+              - cell "60" [ref=f2e967]
+              - cell "36" [ref=f2e968]
+              - cell "23" [ref=f2e969]
+              - cell [ref=f2e970]:
+                - img "60% live" [ref=f2e971]:
+                  - generic [ref=f2e974]: 60%
+            - row [ref=f2e975] [cursor=pointer]:
+              - cell "Cuzkell Pty Ltd" [ref=f2e976]
+              - cell "Jason" [ref=f2e977]
+              - cell "148" [ref=f2e978]
+              - cell "96" [ref=f2e979]
+              - cell "51" [ref=f2e980]
+              - cell [ref=f2e981]:
+                - img "65% live" [ref=f2e982]:
+                  - generic [ref=f2e985]: 65%
+            - row [ref=f2e986] [cursor=pointer]:
+              - cell "Deadlock Garage Doors" [ref=f2e987]
+              - cell "Johnny" [ref=f2e988]
+              - cell "72" [ref=f2e989]
+              - cell "47" [ref=f2e990]
+              - cell "24" [ref=f2e991]
+              - cell [ref=f2e992]:
+                - img "65% live" [ref=f2e993]:
+                  - generic [ref=f2e996]: 65%
+            - row [ref=f2e997] [cursor=pointer]:
+              - cell "Dolphin Marine" [ref=f2e998]
+              - cell "Johnny" [ref=f2e999]
+              - cell "48" [ref=f2e1000]
+              - cell "32" [ref=f2e1001]
+              - cell "15" [ref=f2e1002]
+              - cell [ref=f2e1003]:
+                - img "67% live" [ref=f2e1004]:
+                  - generic [ref=f2e1007]: 67%
+            - row [ref=f2e1008] [cursor=pointer]:
+              - cell "Eco Air and Electrical" [ref=f2e1009]
+              - cell "Johnny" [ref=f2e1010]
+              - cell "160" [ref=f2e1011]
+              - cell "104" [ref=f2e1012]
+              - cell "55" [ref=f2e1013]
+              - cell [ref=f2e1014]:
+                - img "65% live" [ref=f2e1015]:
+                  - generic [ref=f2e1018]: 65%
+            - row [ref=f2e1019] [cursor=pointer]:
+              - cell "Embroidery FX" [ref=f2e1020]
+              - cell "Jason" [ref=f2e1021]
+              - cell "39" [ref=f2e1022]
+              - cell "18" [ref=f2e1023]
+              - cell "21" [ref=f2e1024]
+              - cell [ref=f2e1025]:
+                - img "46% live" [ref=f2e1026]:
+                  - generic [ref=f2e1029]: 46%
+            - row [ref=f2e1030] [cursor=pointer]:
+              - cell "Ezi2Build" [ref=f2e1031]
+              - cell "Nigel" [ref=f2e1032]
+              - cell "24" [ref=f2e1033]
+              - cell "24" [ref=f2e1034]
+              - cell "0" [ref=f2e1035]
+              - cell [ref=f2e1036]:
+                - img "100% live" [ref=f2e1037]:
+                  - generic [ref=f2e1040]: 100%
+            - row [ref=f2e1041] [cursor=pointer]:
+              - cell "FAA Property" [ref=f2e1042]
+              - cell "Jason" [ref=f2e1043]
+              - cell "64" [ref=f2e1044]
+              - cell "40" [ref=f2e1045]
+              - cell "24" [ref=f2e1046]
+              - cell [ref=f2e1047]:
+                - img "63% live" [ref=f2e1048]:
+                  - generic [ref=f2e1051]: 63%
+            - row [ref=f2e1052] [cursor=pointer]:
+              - cell "Ferngully Productions" [ref=f2e1053]
+              - cell "Nigel" [ref=f2e1054]
+              - cell "26" [ref=f2e1055]
+              - cell "20" [ref=f2e1056]
+              - cell "6" [ref=f2e1057]
+              - cell [ref=f2e1058]:
+                - img "77% live" [ref=f2e1059]:
+                  - generic [ref=f2e1062]: 77%
+            - row [ref=f2e1063] [cursor=pointer]:
+              - cell "Griffiths Concrete & Construction Services" [ref=f2e1064]
+              - cell "Jason" [ref=f2e1065]
+              - cell "94" [ref=f2e1066]
+              - cell "12" [ref=f2e1067]
+              - cell "46" [ref=f2e1068]
+              - cell [ref=f2e1069]:
+                - img "13% live" [ref=f2e1070]:
+                  - generic [ref=f2e1073]: 13%
+            - row [ref=f2e1074] [cursor=pointer]:
+              - cell "Guaranteed Gutter Protection" [ref=f2e1075]
+              - cell "Johnny" [ref=f2e1076]
+              - cell "132" [ref=f2e1077]
+              - cell "0" [ref=f2e1078]
+              - cell "132" [ref=f2e1079]
+              - cell [ref=f2e1080]:
+                - img "0% live" [ref=f2e1081]:
+                  - generic [ref=f2e1083]: 0%
+            - row [ref=f2e1084] [cursor=pointer]:
+              - cell "Hancey's Turf Sunshine Coast" [ref=f2e1085]
+              - cell "Johnny" [ref=f2e1086]
+              - cell "49" [ref=f2e1087]
+              - cell "35" [ref=f2e1088]
+              - cell "13" [ref=f2e1089]
+              - cell [ref=f2e1090]:
+                - img "71% live" [ref=f2e1091]:
+                  - generic [ref=f2e1094]: 71%
+            - row [ref=f2e1095] [cursor=pointer]:
+              - cell "Hanceys Turf" [ref=f2e1096]
+              - cell "Nigel" [ref=f2e1097]
+              - cell "69" [ref=f2e1098]
+              - cell "37" [ref=f2e1099]
+              - cell "31" [ref=f2e1100]
+              - cell [ref=f2e1101]:
+                - img "54% live" [ref=f2e1102]:
+                  - generic [ref=f2e1105]: 54%
+            - row [ref=f2e1106] [cursor=pointer]:
+              - cell "Integrity Lounge Designs" [ref=f2e1107]
+              - cell "Jason" [ref=f2e1108]
+              - cell "60" [ref=f2e1109]
+              - cell "36" [ref=f2e1110]
+              - cell "23" [ref=f2e1111]
+              - cell [ref=f2e1112]:
+                - img "60% live" [ref=f2e1113]:
+                  - generic [ref=f2e1116]: 60%
+            - row [ref=f2e1117] [cursor=pointer]:
+              - cell "Jerry & the Tilemakers" [ref=f2e1118]
+              - cell "Johnny" [ref=f2e1119]
+              - cell "73" [ref=f2e1120]
+              - cell "60" [ref=f2e1121]
+              - cell "12" [ref=f2e1122]
+              - cell [ref=f2e1123]:
+                - img "82% live" [ref=f2e1124]:
+                  - generic [ref=f2e1127]: 82%
+            - row [ref=f2e1128] [cursor=pointer]:
+              - cell "Jim Monger Plumbing" [ref=f2e1129]
+              - cell "Jason" [ref=f2e1130]
+              - cell "77" [ref=f2e1131]
+              - cell "65" [ref=f2e1132]
+              - cell "11" [ref=f2e1133]
+              - cell [ref=f2e1134]:
+                - img "84% live" [ref=f2e1135]:
+                  - generic [ref=f2e1138]: 84%
+            - row [ref=f2e1139] [cursor=pointer]:
+              - cell "Journeyman Movers" [ref=f2e1140]
+              - cell "Jason" [ref=f2e1141]
+              - cell "79" [ref=f2e1142]
+              - cell "48" [ref=f2e1143]
+              - cell "30" [ref=f2e1144]
+              - cell [ref=f2e1145]:
+                - img "61% live" [ref=f2e1146]:
+                  - generic [ref=f2e1149]: 61%
+            - row [ref=f2e1150] [cursor=pointer]:
+              - cell "Kitchens R Us" [ref=f2e1151]
+              - cell "Johnny" [ref=f2e1152]
+              - cell "49" [ref=f2e1153]
+              - cell "32" [ref=f2e1154]
+              - cell "17" [ref=f2e1155]
+              - cell [ref=f2e1156]:
+                - img "65% live" [ref=f2e1157]:
+                  - generic [ref=f2e1160]: 65%
+            - row [ref=f2e1161] [cursor=pointer]:
+              - cell "L.J. Shop Fitters" [ref=f2e1162]
+              - cell "Jason" [ref=f2e1163]
+              - cell "47" [ref=f2e1164]
+              - cell "8" [ref=f2e1165]
+              - cell "39" [ref=f2e1166]
+              - cell [ref=f2e1167]:
+                - img "17% live" [ref=f2e1168]:
+                  - generic [ref=f2e1171]: 17%
+            - row [ref=f2e1172] [cursor=pointer]:
+              - cell "Leafshield Gutter Protection" [ref=f2e1173]
+              - cell "Johnny" [ref=f2e1174]
+              - cell "120" [ref=f2e1175]
+              - cell "88" [ref=f2e1176]
+              - cell "31" [ref=f2e1177]
+              - cell [ref=f2e1178]:
+                - img "73% live" [ref=f2e1179]:
+                  - generic [ref=f2e1182]: 73%
+            - row [ref=f2e1183] [cursor=pointer]:
+              - cell "LiveEdge Landscaping" [ref=f2e1184]
+              - cell "Nigel" [ref=f2e1185]
+              - cell "27" [ref=f2e1186]
+              - cell "24" [ref=f2e1187]
+              - cell "3" [ref=f2e1188]
+              - cell [ref=f2e1189]:
+                - img "89% live" [ref=f2e1190]:
+                  - generic [ref=f2e1193]: 89%
+            - row [ref=f2e1194] [cursor=pointer]:
+              - cell "Liverpool Garage Doors" [ref=f2e1195]
+              - cell "Johnny" [ref=f2e1196]
+              - cell "72" [ref=f2e1197]
+              - cell "48" [ref=f2e1198]
+              - cell "23" [ref=f2e1199]
+              - cell [ref=f2e1200]:
+                - img "67% live" [ref=f2e1201]:
+                  - generic [ref=f2e1204]: 67%
+            - row [ref=f2e1205] [cursor=pointer]:
+              - cell "Lockbell Commercial Linings" [ref=f2e1206]
+              - cell "Jason" [ref=f2e1207]
+              - cell "49" [ref=f2e1208]
+              - cell "24" [ref=f2e1209]
+              - cell "25" [ref=f2e1210]
+              - cell [ref=f2e1211]:
+                - img "49% live" [ref=f2e1212]:
+                  - generic [ref=f2e1215]: 49%
+            - row [ref=f2e1216] [cursor=pointer]:
+              - cell "Lomandra Accounting" [ref=f2e1217]
+              - cell "Jason" [ref=f2e1218]
+              - cell "75" [ref=f2e1219]
+              - cell "48" [ref=f2e1220]
+              - cell "26" [ref=f2e1221]
+              - cell [ref=f2e1222]:
+                - img "64% live" [ref=f2e1223]:
+                  - generic [ref=f2e1226]: 64%
+            - row [ref=f2e1227] [cursor=pointer]:
+              - cell "Luxe Electrical Industries" [ref=f2e1228]
+              - cell "Jason" [ref=f2e1229]
+              - cell "92" [ref=f2e1230]
+              - cell "56" [ref=f2e1231]
+              - cell "36" [ref=f2e1232]
+              - cell [ref=f2e1233]:
+                - img "61% live" [ref=f2e1234]:
+                  - generic [ref=f2e1237]: 61%
+            - row [ref=f2e1238] [cursor=pointer]:
+              - cell "Luxe Lighting" [ref=f2e1239]
+              - cell "Jason" [ref=f2e1240]
+              - cell "38" [ref=f2e1241]
+              - cell "17" [ref=f2e1242]
+              - cell "21" [ref=f2e1243]
+              - cell [ref=f2e1244]:
+                - img "45% live" [ref=f2e1245]:
+                  - generic [ref=f2e1248]: 45%
+            - row [ref=f2e1249] [cursor=pointer]:
+              - cell "Micks Gasfitting Services" [ref=f2e1250]
+              - cell "Johnny" [ref=f2e1251]
+              - cell "76" [ref=f2e1252]
+              - cell "56" [ref=f2e1253]
+              - cell "19" [ref=f2e1254]
+              - cell [ref=f2e1255]:
+                - img "74% live" [ref=f2e1256]:
+                  - generic [ref=f2e1259]: 74%
+            - row [ref=f2e1260] [cursor=pointer]:
+              - cell "Morrison's Maintenance Plumbing" [ref=f2e1261]
+              - cell "Jason, Johnny" [ref=f2e1262]
+              - cell "80" [ref=f2e1263]
+              - cell "48" [ref=f2e1264]
+              - cell "31" [ref=f2e1265]
+              - cell [ref=f2e1266]:
+                - img "60% live" [ref=f2e1267]:
+                  - generic [ref=f2e1270]: 60%
+            - row [ref=f2e1271] [cursor=pointer]:
+              - cell "Neptunes Pool Care" [ref=f2e1272]
+              - cell "Jason" [ref=f2e1273]
+              - cell "44" [ref=f2e1274]
+              - cell "18" [ref=f2e1275]
+              - cell "26" [ref=f2e1276]
+              - cell [ref=f2e1277]:
+                - img "41% live" [ref=f2e1278]:
+                  - generic [ref=f2e1281]: 41%
+            - row [ref=f2e1282] [cursor=pointer]:
+              - cell "Neptunes Pool Care" [ref=f2e1283]
+              - cell "Jason" [ref=f2e1284]
+              - cell "44" [ref=f2e1285]
+              - cell "24" [ref=f2e1286]
+              - cell "20" [ref=f2e1287]
+              - cell [ref=f2e1288]:
+                - img "55% live" [ref=f2e1289]:
+                  - generic [ref=f2e1292]: 55%
+            - row [ref=f2e1293] [cursor=pointer]:
+              - cell "Neptunes Pool Care" [ref=f2e1294]
+              - cell "Jason" [ref=f2e1295]
+              - cell "44" [ref=f2e1296]
+              - cell "24" [ref=f2e1297]
+              - cell "20" [ref=f2e1298]
+              - cell [ref=f2e1299]:
+                - img "55% live" [ref=f2e1300]:
+                  - generic [ref=f2e1303]: 55%
+            - row [ref=f2e1304] [cursor=pointer]:
+              - cell "noosa pool & spa Centre" [ref=f2e1305]
+              - cell "johnny" [ref=f2e1306]
+              - cell "24" [ref=f2e1307]
+              - cell "22" [ref=f2e1308]
+              - cell "2" [ref=f2e1309]
+              - cell [ref=f2e1310]:
+                - img "92% live" [ref=f2e1311]:
+                  - generic [ref=f2e1314]: 92%
+            - row [ref=f2e1315] [cursor=pointer]:
+              - cell "Northside Mini Mix" [ref=f2e1316]
+              - cell "Jason" [ref=f2e1317]
+              - cell "92" [ref=f2e1318]
+              - cell "60" [ref=f2e1319]
+              - cell "31" [ref=f2e1320]
+              - cell [ref=f2e1321]:
+                - img "65% live" [ref=f2e1322]:
+                  - generic [ref=f2e1325]: 65%
+            - row [ref=f2e1326] [cursor=pointer]:
+              - cell "Pine Rivers Crane Hire" [ref=f2e1327]
+              - cell "Johnny" [ref=f2e1328]
+              - cell "24" [ref=f2e1329]
+              - cell "0" [ref=f2e1330]
+              - cell "24" [ref=f2e1331]
+              - cell [ref=f2e1332]:
+                - img "0% live" [ref=f2e1333]:
+                  - generic [ref=f2e1335]: 0%
+            - row [ref=f2e1336] [cursor=pointer]:
+              - cell "Queensland Paint Supplies" [ref=f2e1337]
+              - cell "Jason" [ref=f2e1338]
+              - cell "69" [ref=f2e1339]
+              - cell "32" [ref=f2e1340]
+              - cell "37" [ref=f2e1341]
+              - cell [ref=f2e1342]:
+                - img "46% live" [ref=f2e1343]:
+                  - generic [ref=f2e1346]: 46%
+            - row [ref=f2e1347] [cursor=pointer]:
+              - cell "Rasura Alexandra Headlands" [ref=f2e1348]
+              - cell "Johnny" [ref=f2e1349]
+              - cell "72" [ref=f2e1350]
+              - cell "48" [ref=f2e1351]
+              - cell "23" [ref=f2e1352]
+              - cell [ref=f2e1353]:
+                - img "67% live" [ref=f2e1354]:
+                  - generic [ref=f2e1357]: 67%
+            - row [ref=f2e1358] [cursor=pointer]:
+              - cell "Rasura Chiropractic" [ref=f2e1359]
+              - cell "Johnny" [ref=f2e1360]
+              - cell "72" [ref=f2e1361]
+              - cell "48" [ref=f2e1362]
+              - cell "23" [ref=f2e1363]
+              - cell [ref=f2e1364]:
+                - img "67% live" [ref=f2e1365]:
+                  - generic [ref=f2e1368]: 67%
+            - row [ref=f2e1369] [cursor=pointer]:
+              - cell "RCM Hot Water Services" [ref=f2e1370]
+              - cell "Nigel" [ref=f2e1371]
+              - cell "240" [ref=f2e1372]
+              - cell "32" [ref=f2e1373]
+              - cell "208" [ref=f2e1374]
+              - cell [ref=f2e1375]:
+                - img "13% live" [ref=f2e1376]:
+                  - generic [ref=f2e1379]: 13%
+            - row [ref=f2e1380] [cursor=pointer]:
+              - cell "Ricthies Plumbing & Gas" [ref=f2e1381]
+              - cell "Jason" [ref=f2e1382]
+              - cell "93" [ref=f2e1383]
+              - cell "60" [ref=f2e1384]
+              - cell "32" [ref=f2e1385]
+              - cell [ref=f2e1386]:
+                - img "65% live" [ref=f2e1387]:
+                  - generic [ref=f2e1390]: 65%
+            - row [ref=f2e1391] [cursor=pointer]:
+              - cell "Roebuck Concepts" [ref=f2e1392]
+              - cell "nigel" [ref=f2e1393]
+              - cell "41" [ref=f2e1394]
+              - cell "28" [ref=f2e1395]
+              - cell "13" [ref=f2e1396]
+              - cell [ref=f2e1397]:
+                - img "68% live" [ref=f2e1398]:
+                  - generic [ref=f2e1401]: 68%
+            - row [ref=f2e1402] [cursor=pointer]:
+              - cell "Rowdy's Car Carrier" [ref=f2e1403]
+              - cell "Johnny" [ref=f2e1404]
+              - cell "192" [ref=f2e1405]
+              - cell "95" [ref=f2e1406]
+              - cell "95" [ref=f2e1407]
+              - cell [ref=f2e1408]:
+                - img "49% live" [ref=f2e1409]:
+                  - generic [ref=f2e1412]: 49%
+            - row [ref=f2e1413] [cursor=pointer]:
+              - cell "RYNO Fencing" [ref=f2e1414]
+              - cell "Jason" [ref=f2e1415]
+              - cell "185" [ref=f2e1416]
+              - cell "96" [ref=f2e1417]
+              - cell "88" [ref=f2e1418]
+              - cell [ref=f2e1419]:
+                - img "52% live" [ref=f2e1420]:
+                  - generic [ref=f2e1423]: 52%
+            - row [ref=f2e1424] [cursor=pointer]:
+              - cell "S & J Cleaning Crew" [ref=f2e1425]
+              - cell "Johnny" [ref=f2e1426]
+              - cell "24" [ref=f2e1427]
+              - cell "24" [ref=f2e1428]
+              - cell "0" [ref=f2e1429]
+              - cell [ref=f2e1430]:
+                - img "100% live" [ref=f2e1431]:
+                  - generic [ref=f2e1434]: 100%
+            - row [ref=f2e1435] [cursor=pointer]:
+              - cell "Smith Tree Solutions" [ref=f2e1436]
+              - cell "Johnny" [ref=f2e1437]
+              - cell "62" [ref=f2e1438]
+              - cell "36" [ref=f2e1439]
+              - cell "25" [ref=f2e1440]
+              - cell [ref=f2e1441]:
+                - img "58% live" [ref=f2e1442]:
+                  - generic [ref=f2e1445]: 58%
+            - row [ref=f2e1446] [cursor=pointer]:
+              - cell "Smith Tree Solutions Chevallum" [ref=f2e1447]
+              - cell "Johnny" [ref=f2e1448]
+              - cell "49" [ref=f2e1449]
+              - cell "32" [ref=f2e1450]
+              - cell "17" [ref=f2e1451]
+              - cell [ref=f2e1452]:
+                - img "65% live" [ref=f2e1453]:
+                  - generic [ref=f2e1456]: 65%
+            - row [ref=f2e1457] [cursor=pointer]:
+              - cell "Snowys Painting" [ref=f2e1458]
+              - cell "Johnny" [ref=f2e1459]
+              - cell "48" [ref=f2e1460]
+              - cell "24" [ref=f2e1461]
+              - cell "24" [ref=f2e1462]
+              - cell [ref=f2e1463]:
+                - img "50% live" [ref=f2e1464]:
+                  - generic [ref=f2e1467]: 50%
+            - row [ref=f2e1468] [cursor=pointer]:
+              - cell "Southern Cross Concrete Cutting" [ref=f2e1469]
+              - cell "Jason" [ref=f2e1470]
+              - cell "62" [ref=f2e1471]
+              - cell "42" [ref=f2e1472]
+              - cell "19" [ref=f2e1473]
+              - cell [ref=f2e1474]:
+                - img "68% live" [ref=f2e1475]:
+                  - generic [ref=f2e1478]: 68%
+            - row [ref=f2e1479] [cursor=pointer]:
+              - cell "Stone & Rock Baringa" [ref=f2e1480]
+              - cell "Nigel" [ref=f2e1481]
+              - cell "24" [ref=f2e1482]
+              - cell "20" [ref=f2e1483]
+              - cell "4" [ref=f2e1484]
+              - cell [ref=f2e1485]:
+                - img "83% live" [ref=f2e1486]:
+                  - generic [ref=f2e1489]: 83%
+            - row [ref=f2e1490] [cursor=pointer]:
+              - cell "Stone & Rock Springwood" [ref=f2e1491]
+              - cell "Nigel" [ref=f2e1492]
+              - cell "24" [ref=f2e1493]
+              - cell "20" [ref=f2e1494]
+              - cell "4" [ref=f2e1495]
+              - cell [ref=f2e1496]:
+                - img "83% live" [ref=f2e1497]:
+                  - generic [ref=f2e1500]: 83%
+            - row [ref=f2e1501] [cursor=pointer]:
+              - cell "Suncoast Hydroponics" [ref=f2e1502]
+              - cell "Jason" [ref=f2e1503]
+              - cell "32" [ref=f2e1504]
+              - cell "0" [ref=f2e1505]
+              - cell "32" [ref=f2e1506]
+              - cell [ref=f2e1507]:
+                - img "0% live" [ref=f2e1508]:
+                  - generic [ref=f2e1510]: 0%
+            - row [ref=f2e1511] [cursor=pointer]:
+              - cell "Sunshine Coast Home & Office Removals" [ref=f2e1512]
+              - cell "Johnny" [ref=f2e1513]
+              - cell "48" [ref=f2e1514]
+              - cell "24" [ref=f2e1515]
+              - cell "24" [ref=f2e1516]
+              - cell [ref=f2e1517]:
+                - img "50% live" [ref=f2e1518]:
+                  - generic [ref=f2e1521]: 50%
+            - row [ref=f2e1522] [cursor=pointer]:
+              - cell "Superior Glass Brisbane" [ref=f2e1523]
+              - cell "Nigel, Julius" [ref=f2e1524]
+              - cell "190" [ref=f2e1525]
+              - cell "94" [ref=f2e1526]
+              - cell "95" [ref=f2e1527]
+              - cell [ref=f2e1528]:
+                - img "49% live" [ref=f2e1529]:
+                  - generic [ref=f2e1532]: 49%
+            - row [ref=f2e1533] [cursor=pointer]:
+              - cell "Sureline Fencing" [ref=f2e1534]
+              - cell "Johnny" [ref=f2e1535]
+              - cell "180" [ref=f2e1536]
+              - cell "120" [ref=f2e1537]
+              - cell "59" [ref=f2e1538]
+              - cell [ref=f2e1539]:
+                - img "67% live" [ref=f2e1540]:
+                  - generic [ref=f2e1543]: 67%
+            - row [ref=f2e1544] [cursor=pointer]:
+              - cell "Tile Factory Outlet" [ref=f2e1545]
+              - cell "Jason" [ref=f2e1546]
+              - cell "73" [ref=f2e1547]
+              - cell "48" [ref=f2e1548]
+              - cell "24" [ref=f2e1549]
+              - cell [ref=f2e1550]:
+                - img "66% live" [ref=f2e1551]:
+                  - generic [ref=f2e1554]: 66%
+            - row [ref=f2e1555] [cursor=pointer]:
+              - cell "Wagner Soil Testing" [ref=f2e1556]
+              - cell "Nigel" [ref=f2e1557]
+              - cell "60" [ref=f2e1558]
+              - cell "30" [ref=f2e1559]
+              - cell "30" [ref=f2e1560]
+              - cell [ref=f2e1561]:
+                - img "50% live" [ref=f2e1562]:
+                  - generic [ref=f2e1565]: 50%
+            - row [ref=f2e1566] [cursor=pointer]:
+              - cell "Yandina Station" [ref=f2e1567]
+              - cell "Jason" [ref=f2e1568]
+              - cell "72" [ref=f2e1569]
+              - cell "65" [ref=f2e1570]
+              - cell "7" [ref=f2e1571]
+              - cell [ref=f2e1572]:
+                - img "90% live" [ref=f2e1573]:
+                  - generic [ref=f2e1576]: 90%
+      - tablist "Sheets" [ref=f2e1577]:
+        - tab "📊 Summary Sheet" [selected] [ref=f2e1578] [cursor=pointer]
+        - tab "📄 Master Sheet (6,244 rows)" [ref=f2e1579] [cursor=pointer]:
+          - text: 📄 Master Sheet
+          - generic [ref=f2e1580]: (6,244 rows)

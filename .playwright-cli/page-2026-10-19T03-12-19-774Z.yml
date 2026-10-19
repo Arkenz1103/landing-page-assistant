@@ -1,0 +1,277 @@
+- generic [ref=f1e3]:
+  - complementary "Sidebar" [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - heading "Landing Page Assistant" [level=1] [ref=f1e7]
+        - button "Close sidebar" [ref=f1e8] [cursor=pointer]
+      - button "New chat" [ref=f1e12] [cursor=pointer]
+      - searchbox "Search chats" [ref=f1e20]
+      - navigation "Sidebar sections" [ref=f1e21]:
+        - button "Chats" [ref=f1e22] [cursor=pointer]
+        - button "Clients" [pressed] [ref=f1e25] [cursor=pointer]
+        - button "Help" [ref=f1e31] [cursor=pointer]
+      - generic [ref=f1e70]:
+        - generic [ref=f1e71]:
+          - generic [ref=f1e72]: Clients (1)
+          - button "Refresh client list" [ref=f1e73] [cursor=pointer]: Refresh
+        - searchbox "Filter clients" [ref=f1e83]
+        - list [ref=f1e84]:
+          - listitem [ref=f1e85]:
+            - button "Wagner Soil Testing" [ref=f1e86] [cursor=pointer]
+      - radiogroup "Colour theme" [ref=f1e37]:
+        - radio "Light" [checked] [ref=f1e38] [cursor=pointer]
+        - radio "Dark" [ref=f1e45] [cursor=pointer]
+  - main [ref=f1e48]:
+    - generic [ref=f1e49]: Clients
+    - generic [ref=f1e92]:
+      - generic [ref=f1e93]:
+        - generic [ref=f1e94]:
+          - heading "Clients master sheet" [level=2] [ref=f1e95]
+          - paragraph [ref=f1e96]: 32 pages across 2 clients
+        - button "Refresh master sheet" [ref=f1e97] [cursor=pointer]: Refresh
+      - generic [ref=f1e103]:
+        - searchbox "Search master sheet" [ref=f1e108]
+        - radiogroup "Filter by URL status" [ref=f1e109]:
+          - radio "All 65" [ref=f1e110] [cursor=pointer]:
+            - text: All
+            - generic [ref=f1e111]: "65"
+          - radio "Live URLs 32" [ref=f1e112] [cursor=pointer]:
+            - text: Live URLs
+            - generic [ref=f1e113]: "32"
+          - radio "Missing URLs 32" [checked] [active] [ref=f1e114] [cursor=pointer]:
+            - text: Missing URLs
+            - generic [ref=f1e115]: "32"
+      - table [ref=f1e117]:
+        - rowgroup [ref=f1e118]:
+          - row [ref=f1e119]:
+            - columnheader "Client Name" [ref=f1e120]
+            - columnheader "Suburb / City" [ref=f1e121]
+            - columnheader "Service" [ref=f1e122]
+            - columnheader "Assigned Person" [ref=f1e123]
+            - columnheader "Landing Page URL" [ref=f1e124]
+            - columnheader "Status" [ref=f1e125]
+        - rowgroup [ref=f1e126]:
+          - row [ref=f1e135] [cursor=pointer]:
+            - cell "Test Client Pty Ltd" [ref=f1e136]
+            - cell "Springfield Lakes, Sunshine Coast" [ref=f1e137]
+            - cell "Soil Testing" [ref=f1e138]
+            - cell "Nigel" [ref=f1e139]
+            - cell "—" [ref=f1e140]
+            - cell "Missing" [ref=f1e141]
+          - row [ref=f1e143] [cursor=pointer]:
+            - cell "Test Client Pty Ltd" [ref=f1e144]
+            - cell "Flagstone, Sunshine Coast" [ref=f1e145]
+            - cell "Soil Testing" [ref=f1e146]
+            - cell "Nigel" [ref=f1e147]
+            - cell "—" [ref=f1e148]
+            - cell "Missing" [ref=f1e149]
+          - row [ref=f1e439] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e440]
+            - cell "Ripley, Sunshine Coast" [ref=f1e441]
+            - cell [ref=f1e442]
+            - cell "Nigel" [ref=f1e443]
+            - cell "—" [ref=f1e444]
+            - cell "Missing" [ref=f1e445]
+          - row [ref=f1e447] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e448]
+            - cell "Springfield Lakes, Sunshine Coast" [ref=f1e449]
+            - cell [ref=f1e450]
+            - cell "Nigel" [ref=f1e451]
+            - cell "—" [ref=f1e452]
+            - cell "Missing" [ref=f1e453]
+          - row [ref=f1e455] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e456]
+            - cell "Flagstone, Sunshine Coast" [ref=f1e457]
+            - cell [ref=f1e458]
+            - cell "Nigel" [ref=f1e459]
+            - cell "—" [ref=f1e460]
+            - cell "Missing" [ref=f1e461]
+          - row [ref=f1e463] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e464]
+            - cell "Yarrabilba, Sunshine Coast" [ref=f1e465]
+            - cell [ref=f1e466]
+            - cell "Nigel" [ref=f1e467]
+            - cell "—" [ref=f1e468]
+            - cell "Missing" [ref=f1e469]
+          - row [ref=f1e471] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e472]
+            - cell "Park Ridge, Sunshine Coast" [ref=f1e473]
+            - cell [ref=f1e474]
+            - cell "Nigel" [ref=f1e475]
+            - cell "—" [ref=f1e476]
+            - cell "Missing" [ref=f1e477]
+          - row [ref=f1e479] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e480]
+            - cell "Greenbank, Sunshine Coast" [ref=f1e481]
+            - cell [ref=f1e482]
+            - cell "Nigel" [ref=f1e483]
+            - cell "—" [ref=f1e484]
+            - cell "Missing" [ref=f1e485]
+          - row [ref=f1e487] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e488]
+            - cell "Redbank Plains, Sunshine Coast" [ref=f1e489]
+            - cell [ref=f1e490]
+            - cell "Nigel" [ref=f1e491]
+            - cell "—" [ref=f1e492]
+            - cell "Missing" [ref=f1e493]
+          - row [ref=f1e495] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e496]
+            - cell "Deebing Heights, Sunshine Coast" [ref=f1e497]
+            - cell [ref=f1e498]
+            - cell "Nigel" [ref=f1e499]
+            - cell "—" [ref=f1e500]
+            - cell "Missing" [ref=f1e501]
+          - row [ref=f1e503] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e504]
+            - cell "Pallara, Sunshine Coast" [ref=f1e505]
+            - cell [ref=f1e506]
+            - cell "Nigel" [ref=f1e507]
+            - cell "—" [ref=f1e508]
+            - cell "Missing" [ref=f1e509]
+          - row [ref=f1e511] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e512]
+            - cell "Jimboomba, Sunshine Coast" [ref=f1e513]
+            - cell [ref=f1e514]
+            - cell "Nigel" [ref=f1e515]
+            - cell "—" [ref=f1e516]
+            - cell "Missing" [ref=f1e517]
+          - row [ref=f1e519] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e520]
+            - cell "Samford Valley, Sunshine Coast" [ref=f1e521]
+            - cell [ref=f1e522]
+            - cell "Nigel" [ref=f1e523]
+            - cell "—" [ref=f1e524]
+            - cell "Missing" [ref=f1e525]
+          - row [ref=f1e527] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e528]
+            - cell "Pullenvale, Sunshine Coast" [ref=f1e529]
+            - cell [ref=f1e530]
+            - cell "Nigel" [ref=f1e531]
+            - cell "—" [ref=f1e532]
+            - cell "Missing" [ref=f1e533]
+          - row [ref=f1e535] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e536]
+            - cell "Cedar Creek, Sunshine Coast" [ref=f1e537]
+            - cell [ref=f1e538]
+            - cell "Nigel" [ref=f1e539]
+            - cell "—" [ref=f1e540]
+            - cell "Missing" [ref=f1e541]
+          - row [ref=f1e543] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e544]
+            - cell "Dayboro, Sunshine Coast" [ref=f1e545]
+            - cell [ref=f1e546]
+            - cell "Nigel" [ref=f1e547]
+            - cell "—" [ref=f1e548]
+            - cell "Missing" [ref=f1e549]
+          - row [ref=f1e551] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e552]
+            - cell "Highvale, Sunshine Coast" [ref=f1e553]
+            - cell [ref=f1e554]
+            - cell "Nigel" [ref=f1e555]
+            - cell "—" [ref=f1e556]
+            - cell "Missing" [ref=f1e557]
+          - row [ref=f1e559] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e560]
+            - cell "Elimbah, Sunshine Coast" [ref=f1e561]
+            - cell [ref=f1e562]
+            - cell "Nigel" [ref=f1e563]
+            - cell "—" [ref=f1e564]
+            - cell "Missing" [ref=f1e565]
+          - row [ref=f1e567] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e568]
+            - cell "Narangba, Sunshine Coast" [ref=f1e569]
+            - cell [ref=f1e570]
+            - cell "Nigel" [ref=f1e571]
+            - cell "—" [ref=f1e572]
+            - cell "Missing" [ref=f1e573]
+          - row [ref=f1e575] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e576]
+            - cell "Kurwongbah, Sunshine Coast" [ref=f1e577]
+            - cell [ref=f1e578]
+            - cell "Nigel" [ref=f1e579]
+            - cell "—" [ref=f1e580]
+            - cell "Missing" [ref=f1e581]
+          - row [ref=f1e583] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e584]
+            - cell "Caboolture, Sunshine Coast" [ref=f1e585]
+            - cell [ref=f1e586]
+            - cell "Nigel" [ref=f1e587]
+            - cell "—" [ref=f1e588]
+            - cell "Missing" [ref=f1e589]
+          - row [ref=f1e591] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e592]
+            - cell "Morayfield, Sunshine Coast" [ref=f1e593]
+            - cell [ref=f1e594]
+            - cell "Nigel" [ref=f1e595]
+            - cell "—" [ref=f1e596]
+            - cell "Missing" [ref=f1e597]
+          - row [ref=f1e599] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e600]
+            - cell "Ipswich, Sunshine Coast" [ref=f1e601]
+            - cell [ref=f1e602]
+            - cell "Nigel" [ref=f1e603]
+            - cell "—" [ref=f1e604]
+            - cell "Missing" [ref=f1e605]
+          - row [ref=f1e607] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e608]
+            - cell "Oxley, Sunshine Coast" [ref=f1e609]
+            - cell [ref=f1e610]
+            - cell "Nigel" [ref=f1e611]
+            - cell "—" [ref=f1e612]
+            - cell "Missing" [ref=f1e613]
+          - row [ref=f1e615] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e616]
+            - cell "Inala, Sunshine Coast" [ref=f1e617]
+            - cell [ref=f1e618]
+            - cell "Nigel" [ref=f1e619]
+            - cell "—" [ref=f1e620]
+            - cell "Missing" [ref=f1e621]
+          - row [ref=f1e623] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e624]
+            - cell "Rocklea, Sunshine Coast" [ref=f1e625]
+            - cell [ref=f1e626]
+            - cell "Nigel" [ref=f1e627]
+            - cell "—" [ref=f1e628]
+            - cell "Missing" [ref=f1e629]
+          - row [ref=f1e631] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e632]
+            - cell "Moorooka, Sunshine Coast" [ref=f1e633]
+            - cell [ref=f1e634]
+            - cell "Nigel" [ref=f1e635]
+            - cell "—" [ref=f1e636]
+            - cell "Missing" [ref=f1e637]
+          - row [ref=f1e639] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e640]
+            - cell "North Lakes, Sunshine Coast" [ref=f1e641]
+            - cell [ref=f1e642]
+            - cell "Nigel" [ref=f1e643]
+            - cell "—" [ref=f1e644]
+            - cell "Missing" [ref=f1e645]
+          - row [ref=f1e647] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e648]
+            - cell "Griffin, Sunshine Coast" [ref=f1e649]
+            - cell [ref=f1e650]
+            - cell "Nigel" [ref=f1e651]
+            - cell "—" [ref=f1e652]
+            - cell "Missing" [ref=f1e653]
+          - row [ref=f1e655] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e656]
+            - cell "Mango Hill, Sunshine Coast" [ref=f1e657]
+            - cell [ref=f1e658]
+            - cell "Nigel" [ref=f1e659]
+            - cell "—" [ref=f1e660]
+            - cell "Missing" [ref=f1e661]
+          - row [ref=f1e663] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e664]
+            - cell "Fitzgibbon, Sunshine Coast" [ref=f1e665]
+            - cell [ref=f1e666]
+            - cell "Nigel" [ref=f1e667]
+            - cell "—" [ref=f1e668]
+            - cell "Missing" [ref=f1e669]
+          - row [ref=f1e671] [cursor=pointer]:
+            - cell "Wagner Soil Testing" [ref=f1e672]
+            - cell "Burpengary East, Sunshine Coast" [ref=f1e673]
+            - cell [ref=f1e674]
+            - cell "Nigel" [ref=f1e675]
+            - cell "—" [ref=f1e676]
+            - cell "Missing" [ref=f1e677]

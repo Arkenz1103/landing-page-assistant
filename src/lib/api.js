@@ -16,8 +16,9 @@ function extractOutput(data) {
  * Resolves to the markdown output string (may be empty).
  * Throws on network error, non-200 or timeout (details are logged).
  * Pass `signal` to cancel the request (e.g. the Stop button); it then throws an AbortError.
+ * Pass `timeoutMs` for requests that need longer than the default (e.g. the full master sheet).
  */
-export async function sendChatMessage(sessionId, chatInput, { signal } = {}) {
+export async function sendChatMessage(sessionId, chatInput, { signal, timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
   if (!CHAT_URL) {
     console.error('VITE_N8N_CHAT_URL is not set. Copy .env.example to .env and set it.');
     throw new Error('Missing VITE_N8N_CHAT_URL');
@@ -28,7 +29,7 @@ export async function sendChatMessage(sessionId, chatInput, { signal } = {}) {
   const timer = setTimeout(() => {
     timedOut = true;
     controller.abort();
-  }, REQUEST_TIMEOUT_MS);
+  }, timeoutMs);
   const onCancel = () => controller.abort();
   if (signal?.aborted) controller.abort();
   else signal?.addEventListener('abort', onCancel, { once: true });
@@ -57,7 +58,7 @@ export async function sendChatMessage(sessionId, chatInput, { signal } = {}) {
     return output;
   } catch (err) {
     if (err.name === 'AbortError') {
-      if (timedOut) console.error(`Assistant request timed out after ${REQUEST_TIMEOUT_MS / 1000}s`);
+      if (timedOut) console.error(`Assistant request timed out after ${timeoutMs / 1000}s`);
     } else if (!err.message?.startsWith('HTTP ')) {
       console.error('Assistant request error:', err);
     }
