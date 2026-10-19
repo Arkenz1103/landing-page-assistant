@@ -4,7 +4,8 @@ import Markdown from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
 import { QUESTIONS, followUpChips } from '../lib/clients.js';
-import { UNREACHABLE_MSG } from '../lib/api.js';
+import { NO_ANSWER_MSG, STOPPED_MSG, UNREACHABLE_MSG } from '../lib/api.js';
+import { isWorkbookQuestion, splitMasterCta } from '../lib/master.js';
 
 // the same wording as the sidebar quick questions
 const STARTERS = [
@@ -59,6 +60,26 @@ function ClientWelcome({ client, onSend, waiting }) {
   );
 }
 
+// Under partial multi-client answers and whole-workbook answers: opens the Clients tab on Master Sheet Clients
+function MasterSheetCta({ onOpen }) {
+  return (
+    <div className="master-cta">
+      <p>For a complete side-by-side view across all clients, visit the master overview:</p>
+      <button type="button" className="master-cta-btn" onClick={onOpen}>
+        <span aria-hidden="true">📊</span> Open Master Sheet Clients
+      </button>
+    </div>
+  );
+}
+
+// The answer without the workflow's master sheet link, and whether to show the button
+// (the link was there, or the question was about the whole workbook)
+function answerParts(messages, i) {
+  const { text, cta } = splitMasterCta(messages[i].content);
+  const answered = text !== NO_ANSWER_MSG && text !== STOPPED_MSG;
+  return { text, cta: cta || (answered && isWorkbookQuestion(messages[i - 1]?.content)) };
+}
+
 function Waiting() {
   return (
     <div className="waiting" role="status" aria-live="polite">
@@ -72,7 +93,7 @@ function Waiting() {
   );
 }
 
-export default function ChatView({ chat, waiting, error, clients, onSend, onStop, onRetry, onRetryError }) {
+export default function ChatView({ chat, waiting, error, clients, onSend, onStop, onRetry, onRetryError, onOpenMaster }) {
   const bottomRef = useRef(null);
   const messages = chat?.messages ?? [];
 
@@ -85,6 +106,8 @@ export default function ChatView({ chat, waiting, error, clients, onSend, onStop
     if (waiting || !last || last.role !== 'assistant') return [];
     return followUpChips(messages, clients);
   }, [messages, last, waiting, clients]);
+
+  const answers = useMemo(() => messages.map((m, i) => (m.role === 'assistant' ? answerParts(messages, i) : null)), [messages]);
 
   if (!chat || messages.length === 0) {
     return (
@@ -109,9 +132,10 @@ export default function ChatView({ chat, waiting, error, clients, onSend, onStop
               </div>
             ) : (
               <div key={i} className="msg msg-assistant">
-                <Markdown>{m.content}</Markdown>
+                <Markdown>{answers[i].text}</Markdown>
+                {answers[i].cta && <MasterSheetCta onOpen={onOpenMaster} />}
                 <div className="msg-actions">
-                  <CopyButton text={m.content} label="Copy answer" />
+                  <CopyButton text={answers[i].text} label="Copy answer" />
                   <button
                     type="button"
                     className="action-btn"

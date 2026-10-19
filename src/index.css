@@ -724,6 +724,45 @@ button:disabled {
   color: var(--accent);
 }
 
+.master-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.master-cta p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.master-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.master-cta-btn:hover {
+  background: var(--accent-hover);
+}
+
+.master-cta-btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .waiting {
   display: flex;
   align-items: center;

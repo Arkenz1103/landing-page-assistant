@@ -3,6 +3,7 @@ const CHAT_URL = import.meta.env.VITE_N8N_CHAT_URL;
 export const REQUEST_TIMEOUT_MS = 30000;
 export const UNREACHABLE_MSG = "Can't reach the assistant right now. Please try again.";
 export const NO_ANSWER_MSG = "Sorry, I didn't get an answer. Please try again.";
+export const STOPPED_MSG = '_Response stopped._';
 
 function extractOutput(data) {
   // n8n may return an object or a single-item array

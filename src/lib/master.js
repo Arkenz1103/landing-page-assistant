@@ -96,6 +96,23 @@ export async function fetchMaster() {
   return data;
 }
 
+// The assistant ends partial multi-client and all-clients answers with this link; the chat shows it as a button
+const MASTER_CTA = /\n*(?:For a complete side-by-side view across all clients, visit the master overview:\s*)?\[[^\]]*\]\(#open-master-sheet\)\s*$/;
+// whole-workbook wording (same as the workflow's WORKBOOK_WIDE), for answers that came back without the link
+const WORKBOOK_QUESTION =
+  /\b(?:master sheets?|workbook|spreadsheet|(?:whole|entire|full) sheets?|(?:all|every|each) (?:the |of the |our |my )?clients?|across (?:the |our )?(?:sheets?|tabs)|all (?:the )?(?:sheets|tabs))\b/i;
+
+/** Splits the "Open Master Sheet Clients" link off an answer: { text, cta } (cta = whether the link was there). */
+export function splitMasterCta(content) {
+  const text = String(content ?? '');
+  const m = text.match(MASTER_CTA);
+  return m ? { text: text.slice(0, m.index).trimEnd(), cta: true } : { text, cta: false };
+}
+
+export function isWorkbookQuestion(question) {
+  return WORKBOOK_QUESTION.test(String(question ?? ''));
+}
+
 /** Totals for a set of rows (one client, or the whole sheet). */
 export function summarize(rows) {
   const count = (status) => rows.filter((r) => r.status === status).length;

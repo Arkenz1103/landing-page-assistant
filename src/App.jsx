@@ -3,13 +3,12 @@ import { PanelLeftOpen, SquarePen } from 'lucide-react';
 import Sidebar from './components/Sidebar.jsx';
 import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
-import { NO_ANSWER_MSG, sendChatMessage } from './lib/api.js';
+import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { fetchMaster, getCachedMaster } from './lib/master.js';
 import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
-const STOPPED_MSG = '_Response stopped._';
 
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
@@ -224,6 +223,13 @@ export default function App() {
     setView('clients');
   }
 
+  // "Open Master Sheet Clients" button in a chat answer: the Clients tab with the master overview sheet
+  function openMasterSheet() {
+    setPanel('clients');
+    openSheet('summary');
+    closeDrawerOnMobile();
+  }
+
   // Sidebar: a client name opens its sheet
   function openClientSheet(client) {
     openSheet(clientSheetKey(client));
@@ -339,6 +345,7 @@ export default function App() {
             onStop={stop}
             onRetry={retryAnswer}
             onRetryError={retryAfterError}
+            onOpenMaster={openMasterSheet}
           />
         )}
       </main>
