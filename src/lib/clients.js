@@ -75,7 +75,7 @@ export function questionType(question) {
   if (/\bmonths?\b/.test(q) && /(which|without|don't|dont|do not|missing|no landing|with landing)/.test(q)) {
     return 'months';
   }
-  if (/(assigned|who is|who's|service|city|gmb|yellow pages|true local|truelocal)/.test(q)) {
+  if (/(assigned|who is|who's|service|city|cities|suburb|location|gmb|yellow pages|true local|truelocal)/.test(q)) {
     return 'detail';
   }
   if (/landing pages?/.test(q)) return 'pages';
