@@ -14,23 +14,12 @@ const STATUS_LABEL = { live: 'Live', note: 'Note', missing: 'Missing' };
 
 const DEFAULT_UI = { query: '', filter: 'all', page: 0 };
 
-/** Sheet keys: 'summary', 'master', or 'client:<tab name>'. */
+/** Sheet keys: 'summary' (shown as Master Sheet Clients) or 'client:<tab name>'. */
 export const clientSheetKey = (sheet) => `client:${sheet}`;
 export const sheetOfKey = (key) => (key?.startsWith('client:') ? key.slice(7) : null);
 
 function StatusBadge({ status }) {
   return <span className={`status-badge ${status}`}>{STATUS_LABEL[status]}</span>;
-}
-
-function ProgressBar({ percent, label }) {
-  return (
-    <div className="progress" role="img" aria-label={label ?? `${percent}% live`}>
-      <div className="coverage-bar">
-        <span style={{ width: `${percent}%` }} />
-      </div>
-      <span className="progress-text">{percent}%</span>
-    </div>
-  );
 }
 
 function place(r) {
@@ -75,20 +64,6 @@ const SHEET_COLS = [
   { label: 'True Local Link', cell: (r) => <LinkCell value={r.trueLocal} />, className: 'link-col' },
   { label: 'ASSIGNED URL', cell: (r) => <LinkCell value={r.assignedUrl} />, className: 'link-col' },
 ];
-
-/** Makes a table row act like a button (click or Enter/Space). */
-function rowButton(onActivate) {
-  return {
-    tabIndex: 0,
-    onClick: onActivate,
-    onKeyDown: (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onActivate();
-      }
-    },
-  };
-}
 
 /* ---------- Summary sheet ---------- */
 
@@ -184,8 +159,8 @@ function SummarySheet({ summary, clients, onOpenClient }) {
           <Search size={15} aria-hidden="true" />
           <input
             type="search"
-            placeholder="Search the Summary sheet"
-            aria-label="Search the Summary sheet"
+            placeholder="Search Master Sheet Clients"
+            aria-label="Search Master Sheet Clients"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -234,58 +209,10 @@ function SummarySheet({ summary, clients, onOpenClient }) {
   );
 }
 
-/* ---------- Master sheet and client sheets ---------- */
+/* ---------- Client sheets ---------- */
 
-function ClientBanner({ client, onChat }) {
-  return (
-    <div className="client-banner">
-      <div className="banner-main">
-        <h3 className="banner-title">{client.name}</h3>
-        {client.name.toLowerCase() !== client.sheet.toLowerCase() && <span className="banner-sub">Tab: {client.sheet}</span>}
-        <dl className="banner-facts">
-          <div>
-            <dt>Assigned to</dt>
-            <dd>{client.assigned.join(', ') || 'Not listed'}</dd>
-          </div>
-          <div>
-            <dt>Primary services</dt>
-            <dd>
-              {client.services.slice(0, 3).join(', ') || 'Not listed'}
-              {client.services.length > 3 && ` +${client.services.length - 3} more`}
-            </dd>
-          </div>
-        </dl>
-      </div>
-      <div className="banner-stats">
-        <div className="banner-numbers">
-          <span>
-            <strong>{client.total}</strong> rows
-          </span>
-          <span className="live">
-            <strong>{client.live}</strong> live
-          </span>
-          <span className="missing">
-            <strong>{client.missing}</strong> missing
-          </span>
-          {client.note > 0 && (
-            <span>
-              <strong>{client.note}</strong> note{client.note === 1 ? '' : 's'}
-            </span>
-          )}
-        </div>
-        <ProgressBar percent={client.percent} label={`${client.percent}% of rows have a live URL`} />
-        <button type="button" className="small-btn banner-chat" onClick={() => onChat(client.sheet)}>
-          <MessageSquare size={13} aria-hidden="true" />
-          Chat about this client
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function RowsSheet({ rows, client, ui, onUi, onOpenClient, onChat }) {
+function RowsSheet({ rows, client, ui, onUi }) {
   const { query, filter, page } = ui;
-  const isMaster = !client;
 
   const searched = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -310,19 +237,16 @@ function RowsSheet({ rows, client, ui, onUi, onOpenClient, onChat }) {
   const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const current = Math.min(page, pages - 1);
   const pageRows = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE);
-  const clientCount = useMemo(() => (isMaster ? new Set(shown.map((r) => r.sheet)).size : 1), [shown, isMaster]);
 
   return (
     <div className="sheet-body">
-      {client && <ClientBanner client={client} onChat={onChat} />}
-
       <div className="master-controls">
         <div className="search-box master-search">
           <Search size={15} aria-hidden="true" />
           <input
             type="search"
-            placeholder={isMaster ? 'Search client, suburb, service, person or URL' : `Search ${client.name}`}
-            aria-label={isMaster ? 'Search master sheet' : `Search ${client.name} sheet`}
+            placeholder={`Search ${client.name}`}
+            aria-label={`Search ${client.name} sheet`}
             value={query}
             onChange={(e) => onUi({ query: e.target.value, page: 0 })}
           />
@@ -344,7 +268,6 @@ function RowsSheet({ rows, client, ui, onUi, onOpenClient, onChat }) {
         </div>
         <span className="sheet-count">
           {shown.length.toLocaleString()} row{shown.length === 1 ? '' : 's'}
-          {isMaster && ` · ${clientCount} client${clientCount === 1 ? '' : 's'}`}
         </span>
       </div>
 
@@ -363,7 +286,7 @@ function RowsSheet({ rows, client, ui, onUi, onOpenClient, onChat }) {
           </thead>
           <tbody>
             {pageRows.map((r) => (
-              <tr key={r.id} {...(isMaster ? { ...rowButton(() => onOpenClient(r.sheet)), title: `Open ${r.sheet} sheet` } : {})}>
+              <tr key={r.id}>
                 <td className="row-head">{r.row || ''}</td>
                 {SHEET_COLS.map((c) => (
                   <td key={c.label} className={c.className}>
@@ -487,8 +410,8 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   const updateUi = (patch) => setUi((all) => ({ ...all, [sheet]: { ...(all[sheet] ?? DEFAULT_UI), ...patch } }));
 
   const refreshBtn = (
-    <button type="button" className="small-btn" onClick={onRefresh} disabled={status === 'loading'} aria-label="Refresh master sheet">
-      <RefreshCw size={13} className={status === 'loading' ? 'spin' : ''} aria-hidden="true" />
+    <button type="button" className="head-btn" onClick={onRefresh} disabled={status === 'loading'} aria-label="Refresh master sheet">
+      <RefreshCw size={14} className={status === 'loading' ? 'spin' : ''} aria-hidden="true" />
       Refresh
     </button>
   );
@@ -513,16 +436,14 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   }
 
   const openClient = (s) => onSheet(clientSheetKey(s));
-  const title = sheet === 'summary' ? 'Summary' : sheet === 'master' ? 'Master sheet' : 'Client sheet';
+  const sheetTitle = sheet === 'summary' ? 'Master Sheet Clients' : client?.name || activeClient;
 
   let body;
   if (sheet === 'summary') {
     body = <SummarySheet summary={summary} clients={clients} onOpenClient={openClient} />;
-  } else if (sheet === 'master') {
-    body = <RowsSheet key="master" rows={rows} ui={sheetUi} onUi={updateUi} onOpenClient={openClient} onChat={onChat} />;
   } else if (client) {
     body = (
-      <RowsSheet key={sheet} rows={clientRows} client={client} ui={sheetUi} onUi={updateUi} onOpenClient={openClient} onChat={onChat} />
+      <RowsSheet key={sheet} rows={clientRows} client={client} ui={sheetUi} onUi={updateUi} />
     );
   } else {
     body = (
@@ -535,14 +456,22 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   return (
     <div className="master-view">
       <div className="master-head">
-        <div>
-          <h2 className="master-title">{title}</h2>
-          <p className="master-sub">
-            Clients workbook · {clients.length} client sheets
-            {status === 'error' && ' · couldn’t refresh, showing saved data'}
-          </p>
+        <p className="master-sub">
+          Clients workbook · {clients.length} client sheets
+          {status === 'error' && ' · couldn’t refresh, showing saved data'}
+        </p>
+        <div className="sheet-title-row">
+          <h2 className="master-title">{sheetTitle}</h2>
+          <div className="sheet-actions">
+            {client && (
+              <button type="button" className="head-btn primary" onClick={() => onChat(client)}>
+                <MessageSquare size={14} aria-hidden="true" />
+                Chat about this client
+              </button>
+            )}
+            {refreshBtn}
+          </div>
         </div>
-        {refreshBtn}
       </div>
 
       {body}

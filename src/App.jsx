@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar.jsx';
 import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
 import { NO_ANSWER_MSG, sendChatMessage } from './lib/api.js';
-import { QUESTIONS, fetchClients, getCachedClients } from './lib/clients.js';
+import { fetchClients, getCachedClients } from './lib/clients.js';
 import { fetchMaster, getCachedMaster } from './lib/master.js';
 import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
 
@@ -48,7 +48,7 @@ export default function App() {
   const [panel, setPanel] = useState('chats');
   // main area: the chat, or the clients master sheet (opened from the Clients tab)
   const [view, setView] = useState('chat');
-  // clients workbook: the active sheet ('summary', 'master' or a client sheet)
+  // clients workbook: the active sheet ('summary' = Master Sheet Clients, or a client sheet)
   const [sheet, setSheet] = useState('summary');
   const [query, setQuery] = useState('');
   const [theme, setTheme] = useTheme();
@@ -230,14 +230,24 @@ export default function App() {
     closeDrawerOnMobile();
   }
 
-  // "Chat about this client" on a client sheet: a new chat asking for that client's status
-  function chatAboutClient(client) {
+  // "Chat about this client" on a client sheet: an empty chat named after the client, showing its welcome guide
+  // (an unused one for the same client is reopened instead of adding another)
+  function chatAboutClient({ sheet, name }) {
+    const title = name || sheet;
+    let chat = chats.find((c) => c.client?.sheet === sheet && c.messages.length === 0);
+    if (!chat) {
+      chat = { ...createChat(title), title, client: { sheet, name: title } };
+      setChats((list) => [chat, ...list]);
+    }
+    setActiveId(chat.id);
     setPanel('chats');
-    send(QUESTIONS.status(client), { newChat: true });
+    setView('chat');
   }
 
+  // Clients / Help quick questions: show the answer in the Chats view
   function askFromSidebar(question) {
     closeDrawerOnMobile();
+    setPanel('chats');
     send(question);
   }
 
@@ -291,19 +301,22 @@ export default function App() {
       </aside>
 
       <main className="main">
-        <header className="topbar">
-          {!sidebarVisible && (
-            <>
-              <button type="button" className="icon-btn" onClick={toggleSidebar} aria-label="Open sidebar" title="Open sidebar">
-                <PanelLeftOpen size={18} aria-hidden="true" />
-              </button>
-              <button type="button" className="icon-btn" onClick={newChat} aria-label="New chat" title="New chat">
-                <SquarePen size={18} aria-hidden="true" />
-              </button>
-            </>
-          )}
-          <span className="topbar-title">{view === 'clients' ? 'Clients' : activeChat?.title ?? ''}</span>
-        </header>
+        {/* on the Clients view the bar would be empty while the sidebar is open, so it is dropped */}
+        {(view === 'chat' || !sidebarVisible) && (
+          <header className="topbar">
+            {!sidebarVisible && (
+              <>
+                <button type="button" className="icon-btn" onClick={toggleSidebar} aria-label="Open sidebar" title="Open sidebar">
+                  <PanelLeftOpen size={18} aria-hidden="true" />
+                </button>
+                <button type="button" className="icon-btn" onClick={newChat} aria-label="New chat" title="New chat">
+                  <SquarePen size={18} aria-hidden="true" />
+                </button>
+              </>
+            )}
+            {view === 'chat' && <span className="topbar-title">{activeChat?.title ?? ''}</span>}
+          </header>
+        )}
 
         {view === 'clients' ? (
           <ClientsMasterView

@@ -6,17 +6,17 @@ const CLIENTS_SESSION_ID = 'client-list';
 const CACHE_MS = 12 * 60 * 60 * 1000;
 
 export const QUESTIONS = {
-  status: (sheet) => `Where are we at for ${sheet}?`,
-  pages: (sheet) => `Show the landing pages for ${sheet}`,
-  months: (sheet) => `Which months don't have landing pages for ${sheet}?`,
+  status: (sheet) => `What is the status for ${sheet}?`,
+  pages: (sheet) => `Which months have landing page URLs for ${sheet}?`,
+  months: (sheet) => `Which months don't have landing page URLs for ${sheet}?`,
   assigned: (sheet) => `Who is assigned to ${sheet}?`,
 };
 
 export const QUICK_ACTIONS = [
   { key: 'status', label: 'Status' },
-  { key: 'pages', label: 'Landing pages' },
-  { key: 'months', label: 'Months without pages' },
-  { key: 'assigned', label: 'Assigned to' },
+  { key: 'pages', label: 'Landing pages url' },
+  { key: 'months', label: 'Without Landing pages url' },
+  { key: 'assigned', label: 'Who is assigned to' },
 ];
 
 export function getCachedClients() {
@@ -69,49 +69,50 @@ export function findClient(question, clients) {
   return best;
 }
 
-/** Classifies a question so follow-up chips can be suggested. */
+/** Classifies a question as one of the QUICK_ACTIONS keys ('detail' for other client facts), or null. */
 export function questionType(question) {
   const q = question.toLowerCase();
-  if (/\bmonths?\b/.test(q) && /(which|without|don't|dont|do not|missing|no landing|with landing)/.test(q)) {
-    return 'months';
-  }
-  if (/(assigned|who is|who's|service|city|cities|suburb|location|gmb|yellow pages|true local|truelocal)/.test(q)) {
-    return 'detail';
-  }
-  if (/landing pages?/.test(q)) return 'pages';
+  if (/\bmonths?\b/.test(q) && /(without|don't|dont|do not|missing|no landing|no url)/.test(q)) return 'months';
+  if (/(assigned|who is|who's)/.test(q)) return 'assigned';
+  if (/(service|city|cities|suburb|location|gmb|yellow pages|true local|truelocal)/.test(q)) return 'detail';
+  if (/(landing pages?|urls?)\b/.test(q)) return 'pages';
   if (/(where are we|status|progress|up to)/.test(q)) return 'status';
   return null;
 }
 
-const FOLLOW_UPS = {
-  status: [
-    { label: 'Show landing pages', key: 'pages' },
-    { label: 'Months without pages', key: 'months' },
-    { label: 'Who is assigned?', key: 'assigned' },
-  ],
-  pages: [
-    { label: 'Status', key: 'status' },
-    { label: 'Months without pages', key: 'months' },
-  ],
-  months: [
-    { label: 'Status', key: 'status' },
-    { label: 'Show landing pages', key: 'pages' },
-  ],
-  detail: [
-    { label: 'Status', key: 'status' },
-    { label: 'Show landing pages', key: 'pages' },
-  ],
-};
-
-export function followUpChips(lastQuestion, clients) {
-  const client = findClient(lastQuestion, clients);
-  if (!client) return [];
-  // Remove the client's own name first so e.g. "City Plumbing" isn't read as a city question
-  let rest = lastQuestion.toLowerCase();
+/** The question with the client's own name removed, so e.g. "City Plumbing" isn't read as a city question. */
+function typeFor(question, client) {
+  let rest = question.toLowerCase();
   for (const label of [client.sheet, client.name]) {
     if (label) rest = rest.split(label.toLowerCase()).join(' ');
   }
-  const type = questionType(rest);
-  if (!type) return [];
-  return FOLLOW_UPS[type].map((f) => ({ label: f.label, question: QUESTIONS[f.key](client.sheet) }));
+  return questionType(rest);
+}
+
+/** Quick actions the last answer shows would come back empty (its totals say "0 with URL" / "0 without"). */
+function emptyActions(answer = '') {
+  const empty = new Set();
+  if (/\b0 with url\b/i.test(answer)) empty.add('pages');
+  if (/\b0 without\b/i.test(answer)) empty.add('months');
+  return empty;
+}
+
+/**
+ * Follow-up chips after an answer: the client quick actions (same labels as the sidebar) for the client
+ * in the last question, leaving out every one already asked about that client in this chat and any the
+ * answer shows has nothing to list.
+ */
+export function followUpChips(messages, clients) {
+  const userQuestions = messages.filter((m) => m.role === 'user').map((m) => m.content);
+  const lastQuestion = userQuestions[userQuestions.length - 1];
+  const client = findClient(lastQuestion, clients);
+  if (!client || !typeFor(lastQuestion, client)) return [];
+  const asked = new Set(
+    userQuestions.filter((q) => findClient(q, clients) === client).map((q) => typeFor(q, client))
+  );
+  const empty = emptyActions(messages[messages.length - 1]?.content);
+  return QUICK_ACTIONS.filter((a) => !asked.has(a.key) && !empty.has(a.key)).map((a) => ({
+    label: a.label,
+    question: QUESTIONS[a.key](client.sheet),
+  }));
 }

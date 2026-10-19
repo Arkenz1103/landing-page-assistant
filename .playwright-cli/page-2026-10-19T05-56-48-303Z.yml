@@ -1,0 +1,284 @@
+- generic [ref=e3]:
+  - complementary "Sidebar" [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Landing Page Assistant" [level=1] [ref=e7]
+        - button "Close sidebar" [ref=e8] [cursor=pointer]
+      - button "New chat" [ref=e12] [cursor=pointer]
+      - searchbox "Search chats" [ref=e20]
+      - navigation "Sidebar sections" [ref=e21]:
+        - button "Chats" [ref=e22] [cursor=pointer]
+        - button "Clients" [active] [pressed] [ref=e25] [cursor=pointer]
+        - button "Help" [ref=e31] [cursor=pointer]
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]: Clients (82)
+          - button "Refresh client list" [ref=e73] [cursor=pointer]: Refresh
+        - button "Master Sheet Clients" [ref=e80] [cursor=pointer]
+        - searchbox "Filter clients" [ref=e90]
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - button "A Vision Windscreens" [ref=e93] [cursor=pointer]
+          - listitem [ref=e98]:
+            - button "Above All Roof Bellmere Above All Roof Painting and Repairs" [ref=e99] [cursor=pointer]:
+              - generic [ref=e102]:
+                - generic [ref=e103]: Above All Roof Bellmere
+                - generic [ref=e104]: Above All Roof Painting and Repairs
+          - listitem [ref=e105]:
+            - button "Above All Roof Painters and Rep Above All Roof Painting and Repairs" [ref=e106] [cursor=pointer]:
+              - generic [ref=e109]:
+                - generic [ref=e110]: Above All Roof Painters and Rep
+                - generic [ref=e111]: Above All Roof Painting and Repairs
+          - listitem [ref=e112]:
+            - button "Access Alarms" [ref=e113] [cursor=pointer]
+          - listitem [ref=e118]:
+            - button "Ace Posts And Beams" [ref=e119] [cursor=pointer]
+          - listitem [ref=e124]:
+            - button "Ace Restumping" [ref=e125] [cursor=pointer]
+          - listitem [ref=e130]:
+            - button "Australian Boating College" [ref=e131] [cursor=pointer]
+          - listitem [ref=e136]:
+            - button "Auto Glass Caboolture" [ref=e137] [cursor=pointer]
+          - listitem [ref=e142]:
+            - button "B & J Whitsed Waterproofing" [ref=e143] [cursor=pointer]
+          - listitem [ref=e148]:
+            - button "Billabong Pool Service Caloundr Billabong Pool Services & Supply Caloundra" [ref=e149] [cursor=pointer]:
+              - generic [ref=e152]:
+                - generic [ref=e153]: Billabong Pool Service Caloundr
+                - generic [ref=e154]: Billabong Pool Services & Supply Caloundra
+          - listitem [ref=e155]:
+            - button "Billabong Pool Service Noosa Billabong Pool Services & Supply Noosaville" [ref=e156] [cursor=pointer]:
+              - generic [ref=e159]:
+                - generic [ref=e160]: Billabong Pool Service Noosa
+                - generic [ref=e161]: Billabong Pool Services & Supply Noosaville
+          - listitem [ref=e162]:
+            - button "Billabong Pools Maroochydore Billabong Pool Services & Supply" [ref=e163] [cursor=pointer]:
+              - generic [ref=e166]:
+                - generic [ref=e167]: Billabong Pools Maroochydore
+                - generic [ref=e168]: Billabong Pool Services & Supply
+          - listitem [ref=e169]:
+            - button "Billabong Robotic Pool Cleaners" [ref=e170] [cursor=pointer]
+          - listitem [ref=e175]:
+            - button "BJH Law Bowen Hills BJH Bowen Hills" [ref=e176] [cursor=pointer]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: BJH Law Bowen Hills
+                - generic [ref=e181]: BJH Bowen Hills
+          - listitem [ref=e182]:
+            - button "BN Painting Services Pty Ltd" [ref=e183] [cursor=pointer]
+          - listitem [ref=e188]:
+            - button "Bob Gunn Termite Flagstone Bob Gunn Flagstone" [ref=e189] [cursor=pointer]:
+              - generic [ref=e192]:
+                - generic [ref=e193]: Bob Gunn Termite Flagstone
+                - generic [ref=e194]: Bob Gunn Flagstone
+          - listitem [ref=e195]:
+            - button "Bob Gunn Termite Solutions Loga Bob Gunn Termite Solutions Loganholme" [ref=e196] [cursor=pointer]:
+              - generic [ref=e199]:
+                - generic [ref=e200]: Bob Gunn Termite Solutions Loga
+                - generic [ref=e201]: Bob Gunn Termite Solutions Loganholme
+          - listitem [ref=e202]:
+            - button "Bob Gunn Termite Zillmere Bob Gunn Termite Solutions" [ref=e203] [cursor=pointer]:
+              - generic [ref=e206]:
+                - generic [ref=e207]: Bob Gunn Termite Zillmere
+                - generic [ref=e208]: Bob Gunn Termite Solutions
+          - listitem [ref=e209]:
+            - button "Boomerang Pools" [ref=e210] [cursor=pointer]
+          - listitem [ref=e215]:
+            - button "Bruin Pest Management" [ref=e216] [cursor=pointer]
+          - listitem [ref=e221]:
+            - button "Burke Industries" [ref=e222] [cursor=pointer]
+          - listitem [ref=e227]:
+            - button "Caboolture Physical Therapy Caboolture Physical Therapy Centre" [ref=e228] [cursor=pointer]:
+              - generic [ref=e231]:
+                - generic [ref=e232]: Caboolture Physical Therapy
+                - generic [ref=e233]: Caboolture Physical Therapy Centre
+          - listitem [ref=e234]:
+            - button "Captivating Concrete Solutions" [ref=e235] [cursor=pointer]
+          - listitem [ref=e240]:
+            - button "Care Technical Service" [ref=e241] [cursor=pointer]
+          - listitem [ref=e246]:
+            - button "Catton Roderick Birtinya Catton Roderick Lawyers Birtinya" [ref=e247] [cursor=pointer]:
+              - generic [ref=e250]:
+                - generic [ref=e251]: Catton Roderick Birtinya
+                - generic [ref=e252]: Catton Roderick Lawyers Birtinya
+          - listitem [ref=e253]:
+            - button "Catton Roderick Lawyers Caboolt Catton Roderick Lawyers" [ref=e254] [cursor=pointer]:
+              - generic [ref=e257]:
+                - generic [ref=e258]: Catton Roderick Lawyers Caboolt
+                - generic [ref=e259]: Catton Roderick Lawyers
+          - listitem [ref=e260]:
+            - button "Catton Roderick Lawyers Redclif Catton Roderick Lawyers Redcliffe" [ref=e261] [cursor=pointer]:
+              - generic [ref=e264]:
+                - generic [ref=e265]: Catton Roderick Lawyers Redclif
+                - generic [ref=e266]: Catton Roderick Lawyers Redcliffe
+          - listitem [ref=e267]:
+            - button "Cuzkell Pty Ltd. Cuzkell Pty Ltd" [ref=e268] [cursor=pointer]:
+              - generic [ref=e271]:
+                - generic [ref=e272]: Cuzkell Pty Ltd.
+                - generic [ref=e273]: Cuzkell Pty Ltd
+          - listitem [ref=e274]:
+            - button "Deadlock Garage Doors" [ref=e275] [cursor=pointer]
+          - listitem [ref=e280]:
+            - button "Dolphin Marine" [ref=e281] [cursor=pointer]
+          - listitem [ref=e286]:
+            - button "Eco Air & Electrical Eco Air and Electrical" [ref=e287] [cursor=pointer]:
+              - generic [ref=e290]:
+                - generic [ref=e291]: Eco Air & Electrical
+                - generic [ref=e292]: Eco Air and Electrical
+          - listitem [ref=e293]:
+            - button "Embroidery FX" [ref=e294] [cursor=pointer]
+          - listitem [ref=e299]:
+            - button "Ezi2Build" [ref=e300] [cursor=pointer]
+          - listitem [ref=e305]:
+            - button "FAA Property" [ref=e306] [cursor=pointer]
+          - listitem [ref=e311]:
+            - button "Ferngully Productions" [ref=e312] [cursor=pointer]
+          - listitem [ref=e317]:
+            - button "Griffiths Concrete & Constructi Griffiths Concrete & Construction Services" [ref=e318] [cursor=pointer]:
+              - generic [ref=e321]:
+                - generic [ref=e322]: Griffiths Concrete & Constructi
+                - generic [ref=e323]: Griffiths Concrete & Construction Services
+          - listitem [ref=e324]:
+            - button "Guaranteed Gutter Protection" [ref=e325] [cursor=pointer]
+          - listitem [ref=e330]:
+            - button "Hanceys Turf" [ref=e331] [cursor=pointer]
+          - listitem [ref=e336]:
+            - button "Hanceys Turf Sunshine Coast Hancey's Turf Sunshine Coast" [ref=e337] [cursor=pointer]:
+              - generic [ref=e340]:
+                - generic [ref=e341]: Hanceys Turf Sunshine Coast
+                - generic [ref=e342]: Hancey's Turf Sunshine Coast
+          - listitem [ref=e343]:
+            - button "Integrity Lounge Designs" [ref=e344] [cursor=pointer]
+          - listitem [ref=e349]:
+            - button "Jerry and the Tilemakers Jerry & the Tilemakers" [ref=e350] [cursor=pointer]:
+              - generic [ref=e353]:
+                - generic [ref=e354]: Jerry and the Tilemakers
+                - generic [ref=e355]: Jerry & the Tilemakers
+          - listitem [ref=e356]:
+            - button "Jim Monger Plumbing" [ref=e357] [cursor=pointer]
+          - listitem [ref=e362]:
+            - button "Journeyman Movers" [ref=e363] [cursor=pointer]
+          - listitem [ref=e368]:
+            - button "Kitchens R Us" [ref=e369] [cursor=pointer]
+          - listitem [ref=e374]:
+            - button "L.J. Shop Fitters" [ref=e375] [cursor=pointer]
+          - listitem [ref=e380]:
+            - button "Leafshield Gutter Protection" [ref=e381] [cursor=pointer]
+          - listitem [ref=e386]:
+            - button "LiveEdge LiveEdge Landscaping" [ref=e387] [cursor=pointer]:
+              - generic [ref=e390]:
+                - generic [ref=e391]: LiveEdge
+                - generic [ref=e392]: LiveEdge Landscaping
+          - listitem [ref=e393]:
+            - button "Liverpool Garage Doors" [ref=e394] [cursor=pointer]
+          - listitem [ref=e399]:
+            - button "Lockbell Commercial Linings" [ref=e400] [cursor=pointer]
+          - listitem [ref=e405]:
+            - button "Lomandra Accounting" [ref=e406] [cursor=pointer]
+          - listitem [ref=e411]:
+            - button "Luxe Electrical Industries" [ref=e412] [cursor=pointer]
+          - listitem [ref=e417]:
+            - button "Luxe Lighting - E-commerce Luxe Lighting" [ref=e418] [cursor=pointer]:
+              - generic [ref=e421]:
+                - generic [ref=e422]: Luxe Lighting - E-commerce
+                - generic [ref=e423]: Luxe Lighting
+          - listitem [ref=e424]:
+            - button "Micks Gas Fitting Micks Gasfitting Services" [ref=e425] [cursor=pointer]:
+              - generic [ref=e428]:
+                - generic [ref=e429]: Micks Gas Fitting
+                - generic [ref=e430]: Micks Gasfitting Services
+          - listitem [ref=e431]:
+            - button "Morrison's Maintenance Plumbing" [ref=e432] [cursor=pointer]
+          - listitem [ref=e437]:
+            - button "Neptunes Pool Care Kallangur Neptunes Pool Care" [ref=e438] [cursor=pointer]:
+              - generic [ref=e441]:
+                - generic [ref=e442]: Neptunes Pool Care Kallangur
+                - generic [ref=e443]: Neptunes Pool Care
+          - listitem [ref=e444]:
+            - button "Neptunes Pool Care Morayfield Neptunes Pool Care" [ref=e445] [cursor=pointer]:
+              - generic [ref=e448]:
+                - generic [ref=e449]: Neptunes Pool Care Morayfield
+                - generic [ref=e450]: Neptunes Pool Care
+          - listitem [ref=e451]:
+            - button "Neptunes Pool Care Redcliffe Neptunes Pool Care" [ref=e452] [cursor=pointer]:
+              - generic [ref=e455]:
+                - generic [ref=e456]: Neptunes Pool Care Redcliffe
+                - generic [ref=e457]: Neptunes Pool Care
+          - listitem [ref=e458]:
+            - button "Noosa Pool & Spa Centre" [ref=e459] [cursor=pointer]
+          - listitem [ref=e464]:
+            - button "Northside Mini-Mix Northside Mini Mix" [ref=e465] [cursor=pointer]:
+              - generic [ref=e468]:
+                - generic [ref=e469]: Northside Mini-Mix
+                - generic [ref=e470]: Northside Mini Mix
+          - listitem [ref=e471]:
+            - button "Pine Rivers Crane Hire" [ref=e472] [cursor=pointer]
+          - listitem [ref=e477]:
+            - button "Queensland Paint Supplies" [ref=e478] [cursor=pointer]
+          - listitem [ref=e483]:
+            - button "Rasura Alex Headlands Rasura Alexandra Headlands" [ref=e484] [cursor=pointer]:
+              - generic [ref=e487]:
+                - generic [ref=e488]: Rasura Alex Headlands
+                - generic [ref=e489]: Rasura Alexandra Headlands
+          - listitem [ref=e490]:
+            - button "Rasura Coolum Beach Rasura Chiropractic" [ref=e491] [cursor=pointer]:
+              - generic [ref=e494]:
+                - generic [ref=e495]: Rasura Coolum Beach
+                - generic [ref=e496]: Rasura Chiropractic
+          - listitem [ref=e497]:
+            - button "RCM Hotwater RCM Hot Water Services" [ref=e498] [cursor=pointer]:
+              - generic [ref=e501]:
+                - generic [ref=e502]: RCM Hotwater
+                - generic [ref=e503]: RCM Hot Water Services
+          - listitem [ref=e504]:
+            - button "Ritchie Plumbing & Gas Ricthies Plumbing & Gas" [ref=e505] [cursor=pointer]:
+              - generic [ref=e508]:
+                - generic [ref=e509]: Ritchie Plumbing & Gas
+                - generic [ref=e510]: Ricthies Plumbing & Gas
+          - listitem [ref=e511]:
+            - button "Roebuck Concepts" [ref=e512] [cursor=pointer]
+          - listitem [ref=e517]:
+            - button "Rowdy's Car Carriers Rowdy's Car Carrier" [ref=e518] [cursor=pointer]:
+              - generic [ref=e521]:
+                - generic [ref=e522]: Rowdy's Car Carriers
+                - generic [ref=e523]: Rowdy's Car Carrier
+          - listitem [ref=e524]:
+            - button "RYNO Fencing" [ref=e525] [cursor=pointer]
+          - listitem [ref=e530]:
+            - button "S & J Cleaning Crew" [ref=e531] [cursor=pointer]
+          - listitem [ref=e536]:
+            - button "Smith Tree Solutions Chevallum" [ref=e537] [cursor=pointer]
+          - listitem [ref=e542]:
+            - button "Smith Tree Solutions Gympie Smith Tree Solutions" [ref=e543] [cursor=pointer]:
+              - generic [ref=e546]:
+                - generic [ref=e547]: Smith Tree Solutions Gympie
+                - generic [ref=e548]: Smith Tree Solutions
+          - listitem [ref=e549]:
+            - button "Snowys Painting" [ref=e550] [cursor=pointer]
+          - listitem [ref=e555]:
+            - button "Southern Cross Concrete Cutting" [ref=e556] [cursor=pointer]
+          - listitem [ref=e561]:
+            - button "Stone & Rock Baringa" [ref=e562] [cursor=pointer]
+          - listitem [ref=e567]:
+            - button "Stone & Rock Springwood" [ref=e568] [cursor=pointer]
+          - listitem [ref=e573]:
+            - button "Suncoast Hydroponics" [ref=e574] [cursor=pointer]
+          - listitem [ref=e579]:
+            - button "Sunshine Coast Home & Office R Sunshine Coast Home & Office Removals" [ref=e580] [cursor=pointer]:
+              - generic [ref=e583]:
+                - generic [ref=e584]: Sunshine Coast Home & Office R
+                - generic [ref=e585]: Sunshine Coast Home & Office Removals
+          - listitem [ref=e586]:
+            - button "Superior Glass Brisbane" [ref=e587] [cursor=pointer]
+          - listitem [ref=e592]:
+            - button "Sureline Fencing" [ref=e593] [cursor=pointer]
+          - listitem [ref=e598]:
+            - button "Tile Factory Outlet" [ref=e599] [cursor=pointer]
+          - listitem [ref=e604]:
+            - button "Wagner Soil Testing" [ref=e605] [cursor=pointer]
+          - listitem [ref=e610]:
+            - button "Yandina Station" [ref=e611] [cursor=pointer]
+      - radiogroup "Colour theme" [ref=e37]:
+        - radio "Light" [checked] [ref=e38] [cursor=pointer]
+        - radio "Dark" [ref=e45] [cursor=pointer]
+  - main [ref=e48]:
+    - paragraph [ref=e618]: Loading the master sheet…

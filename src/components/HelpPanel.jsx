@@ -1,7 +1,7 @@
 const EXAMPLES = [
-  { type: 'Status', q: 'Where are we at for Wagner Soil Testing?' },
-  { type: 'Landing pages (optionally add a month)', q: 'Show the September landing pages for Wagner Soil Testing' },
-  { type: 'Months with / without pages', q: "Which months don't have landing pages for A Vision Windscreens?" },
+  { type: 'Status', q: 'What is the status for Wagner Soil Testing?' },
+  { type: 'Months with landing page URLs', q: 'Which months have landing page URLs for Wagner Soil Testing?' },
+  { type: 'Months without landing page URLs', q: "Which months don't have landing page URLs for A Vision Windscreens?" },
   { type: 'Assigned to', q: 'Who is assigned to Bruin Pest Management?' },
   { type: 'Service / City', q: 'What is the service and city for Wagner Soil Testing?' },
   { type: 'GMB / Yellow Pages / True Local link', q: 'What is the GMB link for Bruin Pest Management?' },

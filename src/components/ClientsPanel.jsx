@@ -1,15 +1,24 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronRight, FileSpreadsheet, LayoutDashboard, RefreshCw, Search } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ChevronDown, ChevronRight, LayoutDashboard, RefreshCw, Search } from 'lucide-react';
 import { QUESTIONS, QUICK_ACTIONS } from '../lib/clients.js';
 
 const SHEETS = [
-  { key: 'summary', label: 'Summary sheet', icon: LayoutDashboard },
-  { key: 'master', label: 'Clients master sheet', icon: FileSpreadsheet },
+  { key: 'summary', label: 'Master Sheet Clients', icon: LayoutDashboard },
 ];
 
 export default function ClientsPanel({ clients, status, onRefresh, onAsk, activeSheet, onOpenSheet, onOpenClient }) {
   const [filter, setFilter] = useState('');
   const [openSheet, setOpenSheet] = useState(null);
+  const listRef = useRef(null);
+
+  // a client sheet opened elsewhere (sheet tabs, Summary links): expand it here and scroll it into view,
+  // so the highlighted item is always the one that is showing
+  const currentClient = activeSheet?.startsWith('client:') ? activeSheet.slice(7) : null;
+  useEffect(() => {
+    if (!currentClient) return;
+    setOpenSheet(currentClient);
+    requestAnimationFrame(() => listRef.current?.querySelector('.client.current')?.scrollIntoView({ block: 'center' }));
+  }, [currentClient]);
 
   const header = (
     <div className="panel-head">
@@ -84,7 +93,7 @@ export default function ClientsPanel({ clients, status, onRefresh, onAsk, active
         />
       </div>
       {shown.length === 0 && <p className="panel-empty">No clients match.</p>}
-      <ul className="client-list">
+      <ul className="client-list" ref={listRef}>
         {shown.map((c) => {
           const open = openSheet === c.sheet;
           const current = activeSheet === `client:${c.sheet}`;

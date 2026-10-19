@@ -118,7 +118,7 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder={listening ? 'Listening...' : 'Ask anything about landing page url...'}
+          placeholder={listening ? 'Listening...' : 'Ask anything about landing page URLs...'}
           rows={large ? 2 : 1}
         />
         <button
@@ -142,7 +142,7 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
         )}
       </div>
       <p className={`hint ${notice ? 'hint-error' : ''}`} role="status" aria-live="polite">
-        {notice || 'Tip: include the client name, e.g. Wagner, Yandina or Column.'}
+        {notice || 'For best results, include the full client name — e.g. Wagner Soil Testing or Bruin Pest Management.'}
       </p>
     </form>
   );

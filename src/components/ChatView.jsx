@@ -3,14 +3,15 @@ import { CircleAlert, RotateCw } from 'lucide-react';
 import Markdown from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
-import { followUpChips } from '../lib/clients.js';
+import { QUESTIONS, followUpChips } from '../lib/clients.js';
 import { UNREACHABLE_MSG } from '../lib/api.js';
 
+// the same wording as the sidebar quick questions
 const STARTERS = [
-  'Where are we at for Wagner Soil Testing?',
-  'Who is assigned to Bruin Pest Management?',
-  'Show the September landing pages for Wagner Soil Testing',
-  "Which months don't have landing pages for A Vision Windscreens?",
+  QUESTIONS.status('Wagner Soil Testing'),
+  QUESTIONS.assigned('Bruin Pest Management'),
+  QUESTIONS.pages('Wagner Soil Testing'),
+  QUESTIONS.months('A Vision Windscreens'),
 ];
 
 function Welcome({ onSend, waiting }) {
@@ -25,6 +26,35 @@ function Welcome({ onSend, waiting }) {
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+// shown labels are generic; the question sent names the client's sheet so the agent can route it
+const CLIENT_PROMPTS = [
+  { key: 'status', icon: '📊', label: 'Where are we at for this client?' },
+  { key: 'pages', icon: '🔗', label: 'Show live landing pages' },
+  { key: 'months', icon: '❌', label: 'Which months are missing URLs?' },
+  { key: 'assigned', icon: '👤', label: 'Who is assigned to this client?' },
+];
+
+function ClientWelcome({ client, onSend, waiting }) {
+  return (
+    <div className="welcome">
+      <div className="client-welcome">
+        <h2 className="client-welcome-title">
+          {client.name} <span>— Ask anything about this client</span>
+        </h2>
+        <p className="client-welcome-help">Select a quick question below or type your query in the chat box.</p>
+        <div className="chips client-welcome-chips" aria-label="Suggested questions">
+          {CLIENT_PROMPTS.map((p) => (
+            <button key={p.key} type="button" className="chip" onClick={() => onSend(QUESTIONS[p.key](client.sheet))} disabled={waiting}>
+              <span aria-hidden="true">{p.icon}</span> {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <Composer onSend={onSend} waiting={waiting} large autoFocus />
     </div>
   );
 }
@@ -53,14 +83,17 @@ export default function ChatView({ chat, waiting, error, clients, onSend, onStop
   const last = messages[messages.length - 1];
   const chips = useMemo(() => {
     if (waiting || !last || last.role !== 'assistant') return [];
-    const lastUser = [...messages].reverse().find((m) => m.role === 'user');
-    return followUpChips(lastUser?.content, clients);
+    return followUpChips(messages, clients);
   }, [messages, last, waiting, clients]);
 
   if (!chat || messages.length === 0) {
     return (
       <div className="chat-scroll">
-        <Welcome onSend={onSend} waiting={waiting} />
+        {chat?.client ? (
+          <ClientWelcome client={chat.client} onSend={onSend} waiting={waiting} />
+        ) : (
+          <Welcome onSend={onSend} waiting={waiting} />
+        )}
       </div>
     );
   }
