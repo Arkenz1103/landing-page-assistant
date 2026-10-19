@@ -1,11 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUp, Square } from 'lucide-react';
+import { ArrowUp, Mic, Square } from 'lucide-react';
 
 const MAX_HEIGHT = 220;
+const NOTICE_MS = 5000;
+
+const SpeechRecognition =
+  typeof window !== 'undefined' ? window.SpeechRecognition || window.webkitSpeechRecognition : undefined;
+
+const SPEECH_ERRORS = {
+  'not-allowed': 'Microphone access was blocked. Allow it in your browser settings to use voice input.',
+  'service-not-allowed': 'Microphone access was blocked. Allow it in your browser settings to use voice input.',
+  'audio-capture': 'No microphone was found. Check that one is connected.',
+  'no-speech': "Didn't catch that. Click the mic and try again.",
+  network: 'Voice input needs an internet connection. Please try again.',
+};
 
 export default function Composer({ onSend, onStop, waiting, large = false, autoFocus = false }) {
   const [value, setValue] = useState('');
+  const [listening, setListening] = useState(false);
+  const [notice, setNotice] = useState('');
   const ref = useRef(null);
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -18,10 +33,60 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
     if (autoFocus) ref.current?.focus();
   }, [autoFocus]);
 
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(''), NOTICE_MS);
+    return () => clearTimeout(t);
+  }, [notice]);
+
+  // Stop the microphone if the composer goes away mid-dictation.
+  useEffect(() => () => recognitionRef.current?.abort(), []);
+
   const canSend = value.trim().length > 0 && !waiting;
+
+  function stopListening() {
+    recognitionRef.current?.stop();
+  }
+
+  function startListening() {
+    if (!SpeechRecognition) {
+      setNotice('Voice input is not supported in this browser. Try Chrome or Edge.');
+      return;
+    }
+    // Spoken words are added after whatever is already typed.
+    const base = value.trim() ? `${value.trimEnd()} ` : '';
+    const recognition = new SpeechRecognition();
+    recognition.lang = navigator.language || 'en-AU';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+
+    recognition.onresult = (e) => {
+      let text = '';
+      for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+      setValue(base + text.trimStart());
+    };
+    recognition.onerror = (e) => {
+      if (e.error !== 'aborted') setNotice(SPEECH_ERRORS[e.error] || 'Voice input stopped unexpectedly. Please try again.');
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+      ref.current?.focus();
+    };
+
+    try {
+      recognition.start();
+      recognitionRef.current = recognition;
+      setNotice('');
+      setListening(true);
+    } catch {
+      setNotice('Voice input could not start. Please try again.');
+    }
+  }
 
   function submit() {
     if (!canSend) return;
+    stopListening();
     onSend(value.trim());
     setValue('');
   }
@@ -32,6 +97,8 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
       submit();
     }
   }
+
+  const micLabel = listening ? 'Stop listening' : 'Click to speak';
 
   return (
     <form
@@ -51,9 +118,19 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Ask anything about landing page url..."
+          placeholder={listening ? 'Listening...' : 'Ask anything about landing page url...'}
           rows={large ? 2 : 1}
         />
+        <button
+          type="button"
+          className={`mic-btn ${listening ? 'listening' : ''}`}
+          onClick={listening ? stopListening : startListening}
+          aria-label={micLabel}
+          aria-pressed={listening}
+          title={micLabel}
+        >
+          <Mic size={18} aria-hidden="true" />
+        </button>
         {waiting && onStop ? (
           <button type="button" className="send-btn stop-btn" onClick={onStop} aria-label="Stop generating" title="Stop generating">
             <Square size={14} fill="currentColor" aria-hidden="true" />
@@ -64,7 +141,9 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
           </button>
         )}
       </div>
-      <p className="hint">Tip: include the client name, e.g. Wagner, Yandina or Coolum.</p>
+      <p className={`hint ${notice ? 'hint-error' : ''}`} role="status" aria-live="polite">
+        {notice || 'Tip: include the client name, e.g. Wagner, Yandina or Column.'}
+      </p>
     </form>
   );
 }

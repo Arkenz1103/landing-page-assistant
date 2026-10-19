@@ -905,11 +905,57 @@ button:disabled {
   background: var(--muted);
 }
 
+/* Voice input: sits left of the send arrow, pulses red while listening */
+.mic-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mic-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.mic-btn.listening,
+.mic-btn.listening:hover {
+  background: var(--error-bg);
+  color: var(--error-text);
+  animation: mic-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--error-text) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--error-text) 0%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mic-btn.listening {
+    animation: none;
+  }
+}
+
 .hint {
   margin: 8px 0 0;
   font-size: 0.78rem;
   color: var(--muted);
   text-align: center;
+}
+
+.hint-error {
+  color: var(--error-text);
 }
 
 /* ---------- Markdown ---------- */
