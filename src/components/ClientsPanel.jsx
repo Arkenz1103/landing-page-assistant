@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronRight, CircleAlert, LayoutDashboard, RefreshCw, Search } from 'lucide-react';
 import { QUESTIONS, QUICK_ACTIONS } from '../lib/clients.js';
+import { SHOW_MISSING_SHEET } from './ClientsMasterView.jsx';
 
 const SHEETS = [
   { key: 'summary', label: 'Master Sheet Clients', icon: LayoutDashboard },
   { key: 'missing', label: 'Missing URLs', icon: CircleAlert },
-];
+].filter((s) => s.key !== 'missing' || SHOW_MISSING_SHEET);
 
 export default function ClientsPanel({ clients, status, onRefresh, onAsk, activeSheet, onOpenSheet, onOpenClient }) {
   const [filter, setFilter] = useState('');

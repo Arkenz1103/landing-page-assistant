@@ -121,6 +121,7 @@ export function parseChatExport(text) {
         .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
         .map((m) => ({ role: m.role, content: m.content, createdAt: Number(m.createdAt) || now, ...(m.local && { local: true }) })),
       ...(c.client?.sheet && { client: { sheet: String(c.client.sheet), name: String(c.client.name || c.client.sheet) } }),
+      ...(c.scope === 'all' && { scope: 'all' }),
       ...(c.tableState && typeof c.tableState === 'object' && { tableState: c.tableState }),
     }));
 }

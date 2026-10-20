@@ -4,18 +4,10 @@ import Logo from './Logo.jsx';
 import Markdown from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
-import { QUESTIONS, followUpChips } from '../lib/clients.js';
+import { QUESTIONS, followUpChips, randomExamples } from '../lib/clients.js';
 import { ERROR_MSGS, NO_ANSWER_MSG, STOPPED_MSG, UNREACHABLE_MSG } from '../lib/api.js';
 import { isWorkbookQuestion, splitMasterCta } from '../lib/master.js';
 import { scrollBehavior } from '../lib/storage.js';
-
-// the same wording as the sidebar quick questions
-const STARTERS = [
-  QUESTIONS.status('Wagner Soil Testing'),
-  QUESTIONS.assigned('Bruin Pest Management'),
-  QUESTIONS.pages('Wagner Soil Testing'),
-  QUESTIONS.months('A Vision Windscreens'),
-];
 
 // landing screen greeting by local time; one line per period is picked when the period starts
 const GREETINGS = {
@@ -51,8 +43,11 @@ function useTimeGreeting() {
   return state.text;
 }
 
-function Welcome({ onSend, waiting, enterToSend }) {
+function Welcome({ clients, onSend, waiting, enterToSend }) {
   const greeting = useTimeGreeting();
+  // random starters, picked once per welcome screen (again when the client list first arrives) so they don't change while typing
+  const loaded = clients?.length > 0;
+  const starters = useMemo(() => randomExamples(clients, { count: 4 }), [loaded]);
   return (
     <div className="welcome">
       <h2 className="welcome-greeting">
@@ -62,7 +57,7 @@ function Welcome({ onSend, waiting, enterToSend }) {
       <p className="welcome-title">What would you like to check?</p>
       <Composer onSend={onSend} waiting={waiting} large autoFocus enterToSend={enterToSend} />
       <div className="starters">
-        {STARTERS.map((q) => (
+        {starters.map((q) => (
           <button key={q} type="button" className="starter" onClick={() => onSend(q)} disabled={waiting}>
             {q}
           </button>
@@ -91,6 +86,35 @@ function ClientWelcome({ client, onSend, waiting, enterToSend }) {
         <div className="chips client-welcome-chips" aria-label="Suggested questions">
           {CLIENT_PROMPTS.map((p) => (
             <button key={p.key} type="button" className="chip" onClick={() => onSend(QUESTIONS[p.key](client.sheet))} disabled={waiting}>
+              <span className="chip-icon" aria-hidden="true">{p.icon}</span> {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <Composer onSend={onSend} waiting={waiting} large autoFocus enterToSend={enterToSend} />
+    </div>
+  );
+}
+
+// the same card for a chat about every client (Ask Assistant on Master Sheet Clients); questions the workflow answers across the workbook
+const ALL_CLIENT_PROMPTS = [
+  { icon: '📋', label: 'Show all clients', question: 'Show all clients' },
+  { icon: '❌', label: 'Which clients are missing URLs?', question: 'Which clients are missing landing page URLs?' },
+  { icon: '👤', label: 'Which clients is Johnny assigned to?', question: 'Which clients is Johnny assigned to?' },
+  { icon: '📝', label: 'Which reports are not done yet?', question: 'Which reports are not done yet?' },
+];
+
+function AllClientsWelcome({ onSend, waiting, enterToSend }) {
+  return (
+    <div className="welcome">
+      <div className="client-welcome">
+        <h2 className="client-welcome-title">
+          Master Sheet Clients <span>— Ask anything about all clients</span>
+        </h2>
+        <p className="client-welcome-help">Select a quick question below or type your query in the chat box.</p>
+        <div className="chips client-welcome-chips" aria-label="Suggested questions">
+          {ALL_CLIENT_PROMPTS.map((p) => (
+            <button key={p.label} type="button" className="chip" onClick={() => onSend(p.question)} disabled={waiting}>
               <span className="chip-icon" aria-hidden="true">{p.icon}</span> {p.label}
             </button>
           ))}
@@ -166,8 +190,10 @@ export default function ChatView({
       <div className="chat-scroll">
         {chat?.client ? (
           <ClientWelcome client={chat.client} onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
+        ) : chat?.scope === 'all' ? (
+          <AllClientsWelcome onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
         ) : (
-          <Welcome onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
+          <Welcome clients={clients} onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
         )}
       </div>
     );

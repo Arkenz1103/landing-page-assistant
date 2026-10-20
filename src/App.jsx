@@ -4,10 +4,11 @@ import Sidebar from './components/Sidebar.jsx';
 import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
 import SettingsModal from './components/SettingsModal.jsx';
+import ChatTitle from './components/ChatTitle.jsx';
 import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { clearMasterCache, fetchMaster, getCachedMaster } from './lib/master.js';
-import { localGreeting } from './lib/greetings.js';
+import { localGreeting, withAppExamples } from './lib/greetings.js';
 import {
   createChat,
   loadChats,
@@ -215,12 +216,18 @@ export default function App() {
         });
         if (controller.signal.aborted) return;
         const now = Date.now();
-        updateChat(chatId, (c) => ({
-          ...c,
-          updatedAt: now,
-          ...(nextTableState && { tableState: nextTableState }),
-          messages: [...c.messages, { role: 'assistant', content: output.trim() ? output : NO_ANSWER_MSG, createdAt: now }],
-        }));
+        updateChat(chatId, (c) => {
+          // off-topic answers get the app's random example questions in place of the workflow's
+          const content = output.trim()
+            ? withAppExamples(output, { prior: c.messages, client: c.client, clients: getCachedClients()?.clients })
+            : NO_ANSWER_MSG;
+          return {
+            ...c,
+            updatedAt: now,
+            ...(nextTableState && { tableState: nextTableState }),
+            messages: [...c.messages, { role: 'assistant', content, createdAt: now }],
+          };
+        });
       } catch (err) {
         if (!controller.signal.aborted) setErrors((e) => ({ ...e, [chatId]: err.kind || 'network' }));
       } finally {
@@ -251,7 +258,7 @@ export default function App() {
     const userMsg = { role: 'user', content: chatInput, createdAt: now };
     const prior = chat ? chat.messages : [];
     // a pure greeting / thanks / "who are you" is answered here at once, without a workflow call
-    const greeting = localGreeting(chatInput, { prior, client: chat ? chat.client : client });
+    const greeting = localGreeting(chatInput, { prior, client: chat ? chat.client : client, clients });
     // `local`: answered here, so it has no Retry
     const added = greeting ? [userMsg, { role: 'assistant', content: greeting, local: true, createdAt: now }] : [userMsg];
     if (chat) {
@@ -343,6 +350,19 @@ export default function App() {
     let chat = chats.find((c) => c.client?.sheet === sheet && c.messages.length === 0);
     if (!chat) {
       chat = { ...createChat(title), title, client: { sheet, name: title } };
+      setChats((list) => [chat, ...list]);
+    }
+    setActiveId(chat.id);
+    setPanel('chats');
+    setView('chat');
+  }
+
+  // "Ask Assistant" on Master Sheet Clients: the same, for a chat about every client (`scope: 'all'`, not bound to one)
+  function chatAboutAllClients() {
+    const title = 'Master Sheet Clients';
+    let chat = chats.find((c) => c.scope === 'all' && c.messages.length === 0);
+    if (!chat) {
+      chat = { ...createChat(title), title, scope: 'all' };
       setChats((list) => [chat, ...list]);
     }
     setActiveId(chat.id);
@@ -488,7 +508,7 @@ export default function App() {
                 </button>
               </>
             )}
-            {view === 'chat' && <span className="topbar-title">{activeChat?.title ?? ''}</span>}
+            {view === 'chat' && activeChat && <ChatTitle key={activeChat.id} chat={activeChat} onRename={chatHandlers.onRename} />}
           </header>
         )}
 
@@ -506,7 +526,7 @@ export default function App() {
             status={masterStatus}
             onRefresh={loadMaster}
             onChat={chatAboutClient}
-            onAskAll={goHome}
+            onAskAll={chatAboutAllClients}
             sheet={sheet}
             onSheet={openSheet}
             rowLimit={settings.rowLimit}

@@ -207,12 +207,51 @@ button:disabled {
 }
 
 .topbar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: min(60%, 520px);
   margin-left: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
   font-size: 0.92rem;
   color: var(--muted);
+}
+
+.topbar-title:hover,
+.topbar-title:focus-visible {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.topbar-title-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.topbar-title-icon {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.topbar-title:hover .topbar-title-icon,
+.topbar-title:focus-visible .topbar-title-icon {
+  opacity: 1;
+}
+
+/* same footprint as the title pill; width follows the text (set inline) */
+.rename-input.topbar-rename-input {
+  min-width: 12ch;
+  max-width: min(60%, 520px);
+  margin-left: 6px;
+  padding: 3px 7px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  color: var(--text);
+  box-shadow: 0 0 0 3px var(--hover);
 }
 
 .icon-btn {
@@ -2478,4 +2517,9 @@ button .refresh-icon {
   padding-top: 3px;
   padding-bottom: 3px;
   line-height: 1.3;
+}
+
+/* Summary contact with no client tab: plain text, the tooltip says why */
+.contact-no-tab {
+  cursor: help;
 }

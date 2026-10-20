@@ -16,6 +16,8 @@ const DEFAULT_UI = { query: '', filter: 'all', page: 0, sort: null, month: '', a
 
 /** Sheet keys: 'summary' (shown as Master Sheet Clients), 'missing' (every client's rows without a URL) or 'client:<tab name>'. */
 export const clientSheetKey = (sheet) => `client:${sheet}`;
+// the Missing URLs sheet is hidden (no sidebar entry or bottom tab); set to true to show it again
+export const SHOW_MISSING_SHEET = false;
 export const sheetOfKey = (key) => (key?.startsWith('client:') ? key.slice(7) : null);
 
 function StatusBadge({ status }) {
@@ -155,10 +157,30 @@ function cellValue(cells, column) {
 
 const words = (s) => String(s).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 
+// the same word allowing a plural or a cut-off ending ("Pools" = "Pool", "Caloundra" = "Caloundr")
+const sameWord = (a, b) => a === b || (Math.min(a.length, b.length) >= 4 && (a.startsWith(b) || b.startsWith(a)));
+
+/**
+ * Looser match for names written differently in the Summary and the tab name: the letters run together
+ * ("Micks Gasfitting Service Pty Ltd" -> "Micks Gas Fitting"), or the same brand and location with other words
+ * left out ("Billabong Pools Caloundra" -> "Billabong Pool Service Caloundr"). 0 when it isn't a match.
+ */
+function looseScore(contact, label) {
+  const cw = words(contact);
+  const tw = words(label);
+  const c = cw.join('');
+  const t = tw.join('');
+  if (t.length >= 8 && (c.startsWith(t) || t.startsWith(c))) return 90;
+  // brand (first word) and location (last contact word) must both match; every contact word must be in the tab
+  if (cw.length < 2 || !sameWord(cw[0], tw[0]) || !tw.some((w) => sameWord(w, cw[cw.length - 1]))) return 0;
+  return cw.every((w) => tw.some((x) => sameWord(w, x))) ? 60 + cw.length : 0;
+}
+
 /**
  * The client tab for a Summary contact name. Best: the same name. Next: every word of the tab name is in the
  * contact name (the last tab word may be cut off, as tab names stop at 31 characters), preferring a tab that
  * has the contact's last word, usually the location ("... Repairs Bellmere" -> "Above All Roof Bellmere").
+ * Last: the looser match above.
  */
 function matchTab(contact, clients) {
   const c = headerKey(contact);
@@ -176,7 +198,7 @@ function matchTab(contact, clients) {
         // a short client name ("Smith Tree Solutions") fits every branch, so it only counts with the location word
         if (label !== t.sheet && !hasLast) continue;
         score = 100 + (hasLast ? 50 : 0) + tw.length;
-      }
+      } else score = looseScore(contact, label);
       if (!score || (best && score < best.score)) continue;
       // two different tabs equally good (e.g. both named "Smith Tree Solutions") = no link rather than a guess
       if (best && score === best.score && best.sheet !== t.sheet) best = { sheet: null, score };
@@ -186,17 +208,44 @@ function matchTab(contact, clients) {
   return best?.sheet ?? null;
 }
 
+// tabs of the same business at another location: every tab word but the last (the location) is in the contact name
+// ("Smith Tree Solutions Sunshine Coast" -> "Smith Tree Solutions Chevallum" and "... Gympie")
+function branchTabs(contact, clients) {
+  const cw = words(contact);
+  return clients
+    .filter((t) => {
+      const brand = words(t.sheet).slice(0, -1);
+      return brand.length >= 2 && brand.every((w) => cw.some((x) => sameWord(w, x)));
+    })
+    .map((t) => t.sheet);
+}
+
+/**
+ * The client tab for each Summary contact (null when none). A contact that matches no tab by name gets the one
+ * branch of its business that no other Summary row links to: the Summary has "Smith Tree Solutions Gympie" and
+ * "Smith Tree Solutions Sunshine Coast", the tabs are Gympie and Chevallum, so Sunshine Coast is Chevallum.
+ */
+function summaryTabs(contacts, clients) {
+  const tabs = contacts.map((c) => matchTab(c, clients));
+  const taken = new Set(tabs.filter(Boolean));
+  return tabs.map((tab, i) => {
+    if (tab || !contacts[i]) return tab;
+    const free = branchTabs(contacts[i], clients).filter((s) => !taken.has(s));
+    return free.length === 1 ? free[0] : null;
+  });
+}
+
 function SummarySheet({ summary, clients, onOpenClient }) {
   const [query, setQuery] = useState('');
 
-  const rows = useMemo(
-    () =>
-      (summary?.rows ?? []).map((r) => {
-        const values = SUMMARY_COLUMNS.map((col) => cellValue(r.cells, col));
-        return { row: r.row, values, tab: matchTab(values[0], clients) };
-      }),
-    [summary, clients]
-  );
+  const rows = useMemo(() => {
+    const list = (summary?.rows ?? []).map((r) => ({ row: r.row, values: SUMMARY_COLUMNS.map((col) => cellValue(r.cells, col)) }));
+    const tabs = summaryTabs(
+      list.map((r) => r.values[0]),
+      clients
+    );
+    return list.map((r, i) => ({ ...r, tab: tabs[i] }));
+  }, [summary, clients]);
 
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -252,6 +301,10 @@ function SummarySheet({ summary, clients, onOpenClient }) {
                       <button type="button" className="contact-link" onClick={() => onOpenClient(r.tab)} title={`Open ${r.tab} sheet`}>
                         {v}
                       </button>
+                    ) : i === 0 && v ? (
+                      <span className="contact-no-tab" title="No client sheet matches this name, so there's nothing to open">
+                        {v}
+                      </span>
                     ) : /^https?:\/\//i.test(v) ? (
                       <LinkCell value={v} />
                     ) : (
@@ -455,7 +508,11 @@ function SheetTabs({ active, clients, onSelect }) {
     onSelect(key);
   }
 
-  const sheets = [{ key: 'summary', label: 'Summary' }, { key: 'missing', label: 'Missing URLs' }, ...clients.map((c) => ({ key: clientSheetKey(c.sheet), label: c.sheet }))];
+  const sheets = [
+    { key: 'summary', label: 'Summary' },
+    ...(SHOW_MISSING_SHEET ? [{ key: 'missing', label: 'Missing URLs' }] : []),
+    ...clients.map((c) => ({ key: clientSheetKey(c.sheet), label: c.sheet })),
+  ];
 
   return (
     <div className="wb-bar">
