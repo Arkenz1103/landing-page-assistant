@@ -15,7 +15,7 @@ const SPEECH_ERRORS = {
   network: 'Voice input needs an internet connection. Please try again.',
 };
 
-export default function Composer({ onSend, onStop, waiting, large = false, autoFocus = false }) {
+export default function Composer({ onSend, onStop, waiting, large = false, autoFocus = false, enterToSend = true }) {
   const [value, setValue] = useState('');
   const [listening, setListening] = useState(false);
   const [notice, setNotice] = useState('');
@@ -91,8 +91,10 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
     setValue('');
   }
 
+  // Enter sends (Shift+Enter: new line); with "Press Enter to send" off, Ctrl/Cmd+Enter sends instead
   function onKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+    if (e.key !== 'Enter' || e.nativeEvent.isComposing) return;
+    if (enterToSend ? !e.shiftKey : e.ctrlKey || e.metaKey) {
       e.preventDefault();
       submit();
     }

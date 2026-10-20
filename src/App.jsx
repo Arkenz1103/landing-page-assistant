@@ -3,11 +3,12 @@ import { PanelLeftOpen, SquarePen } from 'lucide-react';
 import Sidebar from './components/Sidebar.jsx';
 import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
+import SettingsModal from './components/SettingsModal.jsx';
 import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { fetchMaster, getCachedMaster } from './lib/master.js';
 import { localGreeting } from './lib/greetings.js';
-import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
+import { createChat, loadChats, loadSettings, loadTheme, saveChats, saveSettings, saveTheme } from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
@@ -22,12 +23,14 @@ function useMediaQuery(query) {
   return matches;
 }
 
+// `theme` is the saved choice ('light', 'dark' or 'system'); the page gets the resolved light/dark one
 function useTheme() {
   const [theme, setTheme] = useState(loadTheme);
+  const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
+    document.documentElement.dataset.theme = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+  }, [theme, systemDark]);
 
   const choose = useCallback((t) => {
     setTheme(t);
@@ -35,6 +38,25 @@ function useTheme() {
   }, []);
 
   return [theme, choose];
+}
+
+// Text size, chat width and compact tables, applied as data attributes on <html> (index.css reads them)
+function useSettings() {
+  const [settings, setSettings] = useState(loadSettings);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.textSize = settings.textSize;
+    root.dataset.chatWidth = settings.chatWidth;
+    root.dataset.compactTables = settings.compactTables;
+  }, [settings]);
+
+  const update = useCallback((s) => {
+    setSettings(s);
+    saveSettings(s);
+  }, []);
+
+  return [settings, update];
 }
 
 export default function App() {
@@ -45,13 +67,16 @@ export default function App() {
   // one AbortController per chat with a request in flight (the Stop button aborts it)
   const controllers = useRef({});
 
-  const [panel, setPanel] = useState('chats');
+  // Settings > Default launch view: start on a new chat or on the clients workbook
+  const [panel, setPanel] = useState(() => (loadSettings().launchView === 'clients' ? 'clients' : 'chats'));
   // main area: the chat, or the clients master sheet (opened from the Clients tab)
-  const [view, setView] = useState('chat');
+  const [view, setView] = useState(() => (loadSettings().launchView === 'clients' ? 'clients' : 'chat'));
   // clients workbook: the active sheet ('summary' = Master Sheet Clients, or a client sheet)
   const [sheet, setSheet] = useState('summary');
   const [query, setQuery] = useState('');
   const [theme, setTheme] = useTheme();
+  const [settings, setSettings] = useSettings();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const [collapsed, setCollapsed] = useState(false);
@@ -60,6 +85,8 @@ export default function App() {
 
   const [clients, setClients] = useState(() => getCachedClients()?.clients ?? null);
   const [clientStatus, setClientStatus] = useState('idle');
+  // when the client list was last fetched (Settings > Data & Cache)
+  const [clientsSyncedAt, setClientsSyncedAt] = useState(() => getCachedClients()?.fetchedAt ?? null);
   const clientsRequested = useRef(false);
 
   // { rows, summary } from the master workbook
@@ -86,6 +113,7 @@ export default function App() {
     setClientStatus('loading');
     try {
       setClients(await fetchClients());
+      setClientsSyncedAt(Date.now());
       setClientStatus('ok');
     } catch {
       setClientStatus('error');
@@ -306,6 +334,14 @@ export default function App() {
     },
   };
 
+  // Settings > Clear conversation state: forget every chat's table filter / column layout but keep its messages.
+  // The workflow also keeps a copy per session id, so every chat gets a new one (its history still goes with each message).
+  function clearTableState() {
+    const count = chats.filter((c) => c.tableState).length;
+    setChats((list) => list.map(({ tableState: _dropped, ...c }) => ({ ...c, sessionId: crypto.randomUUID() })));
+    return count;
+  }
+
   function toggleSidebar() {
     if (isMobile) setDrawerOpen((o) => !o);
     else setCollapsed((c) => !c);
@@ -337,8 +373,10 @@ export default function App() {
             closeDrawerOnMobile();
           }}
           onOpenClient={openClientSheet}
-          theme={theme}
-          onTheme={setTheme}
+          onSettings={() => {
+            closeDrawerOnMobile();
+            setSettingsOpen(true);
+          }}
         />
       </aside>
 
@@ -367,8 +405,10 @@ export default function App() {
             status={masterStatus}
             onRefresh={loadMaster}
             onChat={chatAboutClient}
+            onAskAll={goHome}
             sheet={sheet}
             onSheet={openSheet}
+            rowLimit={settings.rowLimit}
           />
         ) : (
           <ChatView
@@ -382,9 +422,23 @@ export default function App() {
             onRetry={retryAnswer}
             onRetryError={retryAfterError}
             onOpenMaster={openMasterSheet}
+            enterToSend={settings.enterToSend}
           />
         )}
       </main>
+
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        theme={theme}
+        onTheme={setTheme}
+        settings={settings}
+        onSettings={setSettings}
+        clientStatus={clientStatus}
+        clientsSyncedAt={clientsSyncedAt}
+        onSyncClients={loadClients}
+        onClearTableState={clearTableState}
+      />
     </div>
   );
 }

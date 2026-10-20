@@ -2,6 +2,7 @@ import { createContext, memo, useContext, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import CopyButton from './CopyButton.jsx';
+import { scrollBehavior } from '../lib/storage.js';
 
 const InTableContext = createContext(false);
 
@@ -75,9 +76,9 @@ function TabStrip({ html }) {
     const strip = e.currentTarget.closest('.sheet-tabs');
     if (box) {
       const offset = target.getBoundingClientRect().top - box.getBoundingClientRect().top;
-      box.scrollTo({ top: box.scrollTop + offset - (strip ? strip.offsetHeight + 4 : 0), behavior: 'smooth' });
+      box.scrollTo({ top: box.scrollTop + offset - (strip ? strip.offsetHeight + 4 : 0), behavior: scrollBehavior() });
     } else {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
     }
   };
   return (

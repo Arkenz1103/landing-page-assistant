@@ -36,6 +36,8 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
   --radius: 12px;
   --sidebar-w: 260px;
+  --thread-w: 1100px;
+  --composer-w: 760px;
 
   color-scheme: light;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -44,6 +46,25 @@
   color: var(--text);
   background: var(--bg);
 }
+
+:root[data-text-size='small'] {
+  font-size: 14px;
+}
+
+:root[data-text-size='large'] {
+  font-size: 18px;
+}
+
+:root[data-chat-width='narrow'] {
+  --thread-w: 720px;
+  --composer-w: 640px;
+}
+
+:root[data-chat-width='medium'] {
+  --thread-w: 900px;
+  --composer-w: 720px;
+}
+
 
 :root[data-theme='dark'] {
   --bg: #262624;
@@ -657,36 +678,324 @@ button:disabled {
   color: var(--muted);
 }
 
-/* Theme toggle */
+/* Settings button (sidebar) */
 
-.theme-toggle {
+.settings-btn {
   display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.settings-btn:hover {
+  background: var(--hover);
+}
+
+/* ---------- Settings modal ---------- */
+
+.settings-modal {
+  width: min(56rem, calc(100vw - 32px));
+  max-width: none;
+  height: min(580px, calc(100dvh - 32px));
+  max-height: none;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+.settings-modal[open] {
+  animation: modal-in 0.16s ease-out;
+}
+
+.settings-modal::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+  animation: fade-in 0.16s ease-out;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-modal[open],
+  .settings-modal::backdrop {
+    animation: none;
+  }
+}
+
+.settings-layout {
+  display: flex;
+  height: 100%;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+  width: 16rem;
+  padding: 16px;
+  border-right: 1px solid var(--border);
+  background: var(--sidebar-bg);
+}
+
+.settings-nav-title {
+  margin: 12px 8px 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: left;
+}
+
+.settings-nav-item:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.settings-nav-item.active {
+  background: var(--active);
+  color: var(--text);
+  font-weight: 500;
+}
+
+.settings-nav-empty {
+  margin: 4px 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.settings-content {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.settings-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+.settings-heading {
+  margin: 0 0 20px;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.settings-section-title {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid var(--border);
+}
+
+.settings-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.settings-label small {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.settings-pane {
+  animation: fade-in 0.15s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-pane {
+    animation: none;
+  }
+}
+
+.settings-value {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.settings-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.settings-status .status-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.settings-status.ok .status-dot {
+  background: var(--live-text);
+}
+
+.settings-status.error {
+  color: var(--error-text);
+}
+
+.settings-status.error .status-dot {
+  background: var(--error-text);
+}
+
+/* Toggle switch (settings options) */
+
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  transition: background-color 0.15s ease;
+}
+
+.toggle.on {
+  background: var(--accent);
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.toggle.on .toggle-knob {
+  transform: translateX(16px);
+}
+
+.settings-section + .settings-section {
+  margin-top: 28px;
+}
+
+/* Segmented control (settings options) */
+
+.segmented {
+  display: flex;
+  flex-shrink: 0;
   gap: 2px;
   padding: 2px;
   border-radius: 10px;
   background: var(--hover);
 }
 
-.theme-toggle button {
-  flex: 1;
+.segmented button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 6px 4px;
+  padding: 5px 10px;
   border-radius: 8px;
   font-size: 0.8rem;
   color: var(--muted);
 }
 
-.theme-toggle button:hover {
+.segmented button:hover {
   color: var(--text);
 }
 
-.theme-toggle button.active {
+.segmented button.active {
   background: var(--surface);
   color: var(--text);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* phones: the nav sits above the content */
+@media (max-width: 767px) {
+  .settings-modal {
+    height: calc(100dvh - 32px);
+  }
+
+  .settings-layout {
+    flex-direction: column;
+  }
+
+  .settings-nav {
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-content {
+    padding: 20px;
+  }
+
+  .settings-close {
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .settings-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .segmented button {
+    flex: 1;
+  }
 }
 
 /* ---------- Chat area ---------- */
@@ -698,7 +1007,7 @@ button:disabled {
 }
 
 .thread {
-  max-width: 1100px;
+  max-width: var(--thread-w);
   margin: 0 auto;
   padding: 12px 20px 24px;
 }
@@ -991,7 +1300,7 @@ button:disabled {
 }
 
 .composer {
-  max-width: 760px;
+  max-width: var(--composer-w);
   margin: 0 auto;
 }
 
@@ -1995,4 +2304,14 @@ button:disabled {
     margin: 0 -16px;
     padding: 0 16px 8px 8px;
   }
+}
+
+/* Settings > Compact table rows (after the normal table rules so it wins) */
+:root[data-compact-tables='true'] .markdown th,
+:root[data-compact-tables='true'] .markdown td,
+:root[data-compact-tables='true'] .master-table th,
+:root[data-compact-tables='true'] .master-table td {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  line-height: 1.3;
 }

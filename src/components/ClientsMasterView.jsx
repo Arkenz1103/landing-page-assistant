@@ -3,8 +3,6 @@ import { Check, ChevronLeft, ChevronRight, Menu, RefreshCw, Search } from 'lucid
 import Logo from './Logo.jsx';
 import { summarizeClients } from '../lib/master.js';
 
-const PAGE_SIZE = 100;
-
 const FILTERS = [
   { key: 'all', label: 'All' },
   { key: 'live', label: 'Live URLs' },
@@ -212,7 +210,8 @@ function SummarySheet({ summary, clients, onOpenClient }) {
 
 /* ---------- Client sheets ---------- */
 
-function RowsSheet({ rows, client, ui, onUi }) {
+// `rowLimit`: rows per page (Settings > Default table row limit), or 'all' for one page
+function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
   const { query, filter, page } = ui;
 
   const searched = useMemo(() => {
@@ -235,6 +234,7 @@ function RowsSheet({ rows, client, ui, onUi }) {
   );
 
   const shown = useMemo(() => (filter === 'all' ? searched : searched.filter((r) => r.status === filter)), [searched, filter]);
+  const PAGE_SIZE = rowLimit === 'all' ? Math.max(shown.length, 1) : rowLimit;
   const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const current = Math.min(page, pages - 1);
   const pageRows = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE);
@@ -398,7 +398,7 @@ function SheetTabs({ active, clients, onSelect }) {
   );
 }
 
-export default function ClientsMasterView({ rows, summary, status, onRefresh, onChat, sheet, onSheet }) {
+export default function ClientsMasterView({ rows, summary, status, onRefresh, onChat, onAskAll, sheet, onSheet, rowLimit = 100 }) {
   // search / filter / page are kept per sheet, like separate worksheets
   const [ui, setUi] = useState({});
 
@@ -444,7 +444,7 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
     body = <SummarySheet summary={summary} clients={clients} onOpenClient={openClient} />;
   } else if (client) {
     body = (
-      <RowsSheet key={sheet} rows={clientRows} client={client} ui={sheetUi} onUi={updateUi} />
+      <RowsSheet key={sheet} rows={clientRows} client={client} ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} />
     );
   } else {
     body = (
@@ -471,6 +471,19 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
                 onClick={() => onChat(client)}
                 aria-label={`Ask Assistant about ${client.name || client.sheet}`}
                 title={`Ask Assistant about ${client.name || client.sheet}`}
+              >
+                <Logo className="btn-logo" />
+                Ask Assistant
+              </button>
+            )}
+            {/* the Summary sheet covers every client, so its chat isn't bound to one */}
+            {sheet === 'summary' && (
+              <button
+                type="button"
+                className="head-btn tinted"
+                onClick={onAskAll}
+                aria-label="Ask Assistant about all clients"
+                title="Ask Assistant about all clients"
               >
                 <Logo className="btn-logo" />
                 Ask Assistant

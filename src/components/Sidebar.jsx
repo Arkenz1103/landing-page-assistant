@@ -1,4 +1,4 @@
-import { CircleHelp, MessageSquare, Moon, PanelLeftClose, Search, SquarePen, Sun, Users } from 'lucide-react';
+import { CircleHelp, MessageSquare, PanelLeftClose, Search, Settings, SquarePen, Users } from 'lucide-react';
 import ChatsPanel from './ChatsPanel.jsx';
 import ClientsPanel from './ClientsPanel.jsx';
 import HelpPanel from './HelpPanel.jsx';
@@ -8,11 +8,6 @@ const NAV = [
   { key: 'chats', label: 'Chats', icon: MessageSquare },
   { key: 'clients', label: 'Clients', icon: Users },
   { key: 'help', label: 'Help', icon: CircleHelp },
-];
-
-const THEMES = [
-  { key: 'light', label: 'Light', icon: Sun },
-  { key: 'dark', label: 'Dark', icon: Moon },
 ];
 
 export default function Sidebar({
@@ -32,8 +27,7 @@ export default function Sidebar({
   activeSheet,
   onOpenSheet,
   onOpenClient,
-  theme,
-  onTheme,
+  onSettings,
   onHome,
 }) {
   return (
@@ -100,21 +94,10 @@ export default function Sidebar({
         {panel === 'help' && <HelpPanel onAsk={onAsk} />}
       </div>
 
-      <div className="theme-toggle" role="radiogroup" aria-label="Colour theme">
-        {THEMES.map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            type="button"
-            role="radio"
-            aria-checked={theme === key}
-            className={theme === key ? 'active' : ''}
-            onClick={() => onTheme(key)}
-          >
-            <Icon size={14} aria-hidden="true" />
-            {label}
-          </button>
-        ))}
-      </div>
+      <button type="button" className="settings-btn" onClick={onSettings}>
+        <Settings size={16} aria-hidden="true" />
+        Settings
+      </button>
     </div>
   );
 }

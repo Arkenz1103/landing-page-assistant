@@ -7,6 +7,7 @@ import Composer from './Composer.jsx';
 import { QUESTIONS, followUpChips } from '../lib/clients.js';
 import { NO_ANSWER_MSG, STOPPED_MSG, UNREACHABLE_MSG } from '../lib/api.js';
 import { isWorkbookQuestion, splitMasterCta } from '../lib/master.js';
+import { scrollBehavior } from '../lib/storage.js';
 
 // the same wording as the sidebar quick questions
 const STARTERS = [
@@ -50,7 +51,7 @@ function useTimeGreeting() {
   return state.text;
 }
 
-function Welcome({ onSend, waiting }) {
+function Welcome({ onSend, waiting, enterToSend }) {
   const greeting = useTimeGreeting();
   return (
     <div className="welcome">
@@ -59,7 +60,7 @@ function Welcome({ onSend, waiting }) {
         <span>{greeting}</span>
       </h2>
       <p className="welcome-title">What would you like to check?</p>
-      <Composer onSend={onSend} waiting={waiting} large autoFocus />
+      <Composer onSend={onSend} waiting={waiting} large autoFocus enterToSend={enterToSend} />
       <div className="starters">
         {STARTERS.map((q) => (
           <button key={q} type="button" className="starter" onClick={() => onSend(q)} disabled={waiting}>
@@ -79,7 +80,7 @@ const CLIENT_PROMPTS = [
   { key: 'assigned', icon: '👤', label: 'Who is assigned to this client?' },
 ];
 
-function ClientWelcome({ client, onSend, waiting }) {
+function ClientWelcome({ client, onSend, waiting, enterToSend }) {
   return (
     <div className="welcome">
       <div className="client-welcome">
@@ -95,7 +96,7 @@ function ClientWelcome({ client, onSend, waiting }) {
           ))}
         </div>
       </div>
-      <Composer onSend={onSend} waiting={waiting} large autoFocus />
+      <Composer onSend={onSend} waiting={waiting} large autoFocus enterToSend={enterToSend} />
     </div>
   );
 }
@@ -133,12 +134,23 @@ function Waiting() {
   );
 }
 
-export default function ChatView({ chat, waiting, error, clients, onSend, onStop, onRetry, onRetryError, onOpenMaster }) {
+export default function ChatView({
+  chat,
+  waiting,
+  error,
+  clients,
+  onSend,
+  onStop,
+  onRetry,
+  onRetryError,
+  onOpenMaster,
+  enterToSend,
+}) {
   const bottomRef = useRef(null);
   const messages = chat?.messages ?? [];
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    bottomRef.current?.scrollIntoView({ behavior: scrollBehavior(), block: 'end' });
   }, [messages.length, waiting, error, chat?.id]);
 
   const last = messages[messages.length - 1];
@@ -153,9 +165,9 @@ export default function ChatView({ chat, waiting, error, clients, onSend, onStop
     return (
       <div className="chat-scroll">
         {chat?.client ? (
-          <ClientWelcome client={chat.client} onSend={onSend} waiting={waiting} />
+          <ClientWelcome client={chat.client} onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
         ) : (
-          <Welcome onSend={onSend} waiting={waiting} />
+          <Welcome onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
         )}
       </div>
     );
@@ -216,7 +228,7 @@ export default function ChatView({ chat, waiting, error, clients, onSend, onStop
         </div>
       </div>
       <div className="composer-dock">
-        <Composer onSend={onSend} onStop={onStop} waiting={waiting} />
+        <Composer onSend={onSend} onStop={onStop} waiting={waiting} enterToSend={enterToSend} />
       </div>
     </>
   );

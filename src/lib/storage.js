@@ -1,5 +1,6 @@
 const CHATS_KEY = 'lpa-chats';
 const THEME_KEY = 'lpa-theme';
+const SETTINGS_KEY = 'lpa-settings';
 const MAX_CHATS = 100;
 
 // Keys used by the previous single-chat version of the app
@@ -86,15 +87,15 @@ export function saveChats(chats) {
   writeJson(CHATS_KEY, kept);
 }
 
-// 'light' or 'dark'; with nothing saved (or an old 'system' value) it starts from the OS preference
+// 'light', 'dark' or 'system' (follows the OS preference); 'system' when nothing is saved
 export function loadTheme() {
   try {
     const t = localStorage.getItem(THEME_KEY);
-    if (t === 'light' || t === 'dark') return t;
+    if (t === 'light' || t === 'dark' || t === 'system') return t;
   } catch {
     // ignore
   }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'system';
 }
 
 export function saveTheme(theme) {
@@ -103,6 +104,41 @@ export function saveTheme(theme) {
   } catch {
     // ignore
   }
+}
+
+export const DEFAULT_SETTINGS = {
+  textSize: 'medium',
+  chatWidth: 'wide',
+  compactTables: false,
+  enterToSend: true,
+  launchView: 'chat',
+  rowLimit: 100,
+};
+
+const SETTING_VALUES = {
+  textSize: ['small', 'medium', 'large'],
+  chatWidth: ['narrow', 'medium', 'wide'],
+  compactTables: [false, true],
+  enterToSend: [true, false],
+  launchView: ['chat', 'clients'],
+  rowLimit: [50, 100, 'all'],
+};
+
+// General preferences other than the theme (unknown or missing values fall back to the defaults)
+export function loadSettings() {
+  const stored = readJson(SETTINGS_KEY) ?? {};
+  return Object.fromEntries(
+    Object.entries(DEFAULT_SETTINGS).map(([k, d]) => [k, SETTING_VALUES[k].includes(stored[k]) ? stored[k] : d])
+  );
+}
+
+export function saveSettings(settings) {
+  writeJson(SETTINGS_KEY, settings);
+}
+
+// no smooth scrolling when the OS asks for reduced motion
+export function scrollBehavior() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 }
 
 export { readJson, writeJson };

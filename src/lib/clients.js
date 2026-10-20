@@ -22,7 +22,7 @@ export const QUICK_ACTIONS = [
 export function getCachedClients() {
   const cached = readJson(CLIENTS_KEY);
   if (!cached || !Array.isArray(cached.clients)) return null;
-  return { clients: cached.clients, fresh: Date.now() - cached.fetchedAt < CACHE_MS };
+  return { clients: cached.clients, fetchedAt: cached.fetchedAt, fresh: Date.now() - cached.fetchedAt < CACHE_MS };
 }
 
 function parseClients(output) {
