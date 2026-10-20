@@ -6,6 +6,7 @@ import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterVie
 import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { fetchMaster, getCachedMaster } from './lib/master.js';
+import { localGreeting } from './lib/greetings.js';
 import { createChat, loadChats, loadTheme, saveChats, saveTheme } from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
@@ -183,15 +184,18 @@ export default function App() {
     const userMsg = { role: 'user', content: chatInput, createdAt: now };
     let chat = newChat || (client && activeChat?.client?.sheet !== client.sheet) ? null : activeChat;
     const prior = chat ? chat.messages : [];
+    if (chat && pending[chat.id]) return;
+    // a pure greeting / thanks / "who are you" is answered here at once, without a workflow call
+    const greeting = localGreeting(chatInput, { prior, client: chat ? chat.client : client });
+    const added = greeting ? [userMsg, { role: 'assistant', content: greeting, createdAt: now }] : [userMsg];
     if (chat) {
-      if (pending[chat.id]) return;
-      updateChat(chat.id, (c) => ({ ...c, updatedAt: now, messages: [...c.messages, userMsg] }));
+      updateChat(chat.id, (c) => ({ ...c, updatedAt: now, messages: [...c.messages, ...added] }));
     } else {
-      chat = { ...createChat(chatInput), messages: [userMsg], ...(client && { client }) };
+      chat = { ...createChat(chatInput), messages: added, ...(client && { client }) };
       setChats((list) => [chat, ...list]);
       setActiveId(chat.id);
     }
-    request(chat, chatInput, prior);
+    if (!greeting) request(chat, chatInput, prior);
   }
 
   // Stop button: cancel the pending request and unlock the composer straight away
