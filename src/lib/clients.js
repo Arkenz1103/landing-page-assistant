@@ -141,24 +141,25 @@ function typeFor(question, client) {
 /** Quick actions the last answer shows would come back empty (its totals say "0 with URL" / "0 without"). */
 function emptyActions(answer = '') {
   const empty = new Set();
-  if (/\b0 with url\b/i.test(answer)) empty.add('pages');
-  if (/\b0 without\b/i.test(answer)) empty.add('months');
+  // the status summary's counts ("Landing Pages: 0", "Missing Landing Pages: 0") or the older totals line
+  if (/\b0 with url\b/i.test(answer) || /\bLanding Pages:\*{0,2} 0\b/.test(answer.replace(/Missing Landing Pages/g, ''))) empty.add('pages');
+  if (/\b0 without\b/i.test(answer) || /\bMissing Landing Pages:\*{0,2} 0\b/.test(answer)) empty.add('months');
   return empty;
 }
 
 /**
  * Follow-up chips after an answer: the client quick actions (same labels as the sidebar) for the client
- * in the last question, leaving out every one already asked about that client in this chat and any the
- * answer shows has nothing to list.
+ * in the last question (or the chat's own client when the question names none), leaving out every one
+ * already asked about that client in this chat and any the answer shows has nothing to list.
  */
-export function followUpChips(messages, clients) {
+export function followUpChips(messages, clients, chatClient = null) {
   const userQuestions = messages.filter((m) => m.role === 'user').map((m) => m.content);
   const lastQuestion = userQuestions[userQuestions.length - 1];
-  const client = findClient(lastQuestion, clients);
+  const own = chatClient ? (clients ?? []).find((c) => c.sheet === chatClient.sheet) ?? null : null;
+  const clientOf = (q) => findClient(q, clients) ?? own;
+  const client = clientOf(lastQuestion);
   if (!client || !typeFor(lastQuestion, client)) return [];
-  const asked = new Set(
-    userQuestions.filter((q) => findClient(q, clients) === client).map((q) => typeFor(q, client))
-  );
+  const asked = new Set(userQuestions.filter((q) => clientOf(q) === client).map((q) => typeFor(q, client)));
   const empty = emptyActions(messages[messages.length - 1]?.content);
   return QUICK_ACTIONS.filter((a) => !asked.has(a.key) && !empty.has(a.key)).map((a) => ({
     label: a.label,

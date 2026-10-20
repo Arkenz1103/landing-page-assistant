@@ -2523,3 +2523,28 @@ button .refresh-icon {
 .contact-no-tab {
   cursor: help;
 }
+
+/* "Click here to view full X sheet" button under a client status answer */
+.sheet-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sheet-link-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sheet-link-btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

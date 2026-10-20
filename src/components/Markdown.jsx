@@ -5,6 +5,9 @@ import CopyButton from './CopyButton.jsx';
 import { scrollBehavior } from '../lib/storage.js';
 
 const InTableContext = createContext(false);
+// opens a client's tab in the Clients workbook view (the status answer's "view full sheet" link); null = no handler here
+export const OpenClientSheetContext = createContext(null);
+const CLIENT_SHEET_LINK = '#open-client-sheet:';
 // true inside a scroll box the answer already has (the workflow's own row tables)
 const InScrollBoxContext = createContext(false);
 // a longer table with no scroll box of its own (e.g. written by the AI) gets one, like the workflow's row tables
@@ -20,6 +23,22 @@ const bodyRows = (node) =>
 
 function Link({ node, href, children, ...props }) {
   const inTable = useContext(InTableContext);
+  const openClientSheet = useContext(OpenClientSheetContext);
+  // "[👉 Click here to view full X sheet](#open-client-sheet:X)": a button that opens the client's sheet tab
+  if (href?.startsWith(CLIENT_SHEET_LINK)) {
+    let sheet = href.slice(CLIENT_SHEET_LINK.length);
+    try {
+      sheet = decodeURIComponent(sheet);
+    } catch {
+      // keep the raw name
+    }
+    if (!openClientSheet) return <span>{children}</span>;
+    return (
+      <button type="button" className="sheet-link-btn" onClick={() => openClientSheet(sheet)}>
+        {children}
+      </button>
+    );
+  }
   const link = (
     <a {...props} href={href} target="_blank" rel="noopener noreferrer">
       {children}

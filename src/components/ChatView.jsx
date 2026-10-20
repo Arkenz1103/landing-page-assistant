@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CircleAlert, RotateCw } from 'lucide-react';
 import Logo from './Logo.jsx';
-import Markdown from './Markdown.jsx';
+import Markdown, { OpenClientSheetContext } from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
 import { QUESTIONS, followUpChips, randomExamples } from '../lib/clients.js';
@@ -168,6 +168,7 @@ export default function ChatView({
   onRetry,
   onRetryError,
   onOpenMaster,
+  onOpenClient,
   enterToSend,
 }) {
   const bottomRef = useRef(null);
@@ -180,8 +181,8 @@ export default function ChatView({
   const last = messages[messages.length - 1];
   const chips = useMemo(() => {
     if (waiting || !last || last.role !== 'assistant') return [];
-    return followUpChips(messages, clients);
-  }, [messages, last, waiting, clients]);
+    return followUpChips(messages, clients, chat?.client);
+  }, [messages, last, waiting, clients, chat?.client]);
 
   const answers = useMemo(() => messages.map((m, i) => (m.role === 'assistant' ? answerParts(messages, i) : null)), [messages]);
 
@@ -202,60 +203,62 @@ export default function ChatView({
   return (
     <>
       <div className="chat-scroll">
-        <div className="thread">
-          {messages.map((m, i) =>
-            m.role === 'user' ? (
-              <div key={i} className="msg msg-user">
-                <div className="bubble">{m.content}</div>
-              </div>
-            ) : (
-              <div key={i} className="msg msg-assistant">
-                <Markdown>{answers[i].text}</Markdown>
-                {answers[i].cta && <MasterSheetCta onOpen={onOpenMaster} />}
-                <div className="msg-actions">
-                  <CopyButton text={answers[i].text} label="Copy answer" />
-                  {/* only the latest answer: retrying an older one would drop everything after it;
-                      instant local replies (greetings) have nothing to retry */}
-                  {i === messages.length - 1 && !m.local && (
-                    <button
-                      type="button"
-                      className="action-btn"
-                      onClick={() => onRetry(i)}
-                      disabled={waiting}
-                      aria-label="Retry this answer"
-                    >
-                      <RotateCw size={14} className="refresh-icon" aria-hidden="true" />
-                      <span>Retry</span>
-                    </button>
+        <OpenClientSheetContext.Provider value={onOpenClient ?? null}>
+          <div className="thread">
+            {messages.map((m, i) =>
+              m.role === 'user' ? (
+                <div key={i} className="msg msg-user">
+                  <div className="bubble">{m.content}</div>
+                </div>
+              ) : (
+                <div key={i} className="msg msg-assistant">
+                  <Markdown>{answers[i].text}</Markdown>
+                  {answers[i].cta && <MasterSheetCta onOpen={onOpenMaster} />}
+                  <div className="msg-actions">
+                    <CopyButton text={answers[i].text} label="Copy answer" />
+                    {/* only the latest answer: retrying an older one would drop everything after it;
+                        instant local replies (greetings) have nothing to retry */}
+                    {i === messages.length - 1 && !m.local && (
+                      <button
+                        type="button"
+                        className="action-btn"
+                        onClick={() => onRetry(i)}
+                        disabled={waiting}
+                        aria-label="Retry this answer"
+                      >
+                        <RotateCw size={14} className="refresh-icon" aria-hidden="true" />
+                        <span>Retry</span>
+                      </button>
+                    )}
+                  </div>
+                  {i === messages.length - 1 && chips.length > 0 && (
+                    <div className="chips" aria-label="Suggested follow-up questions">
+                      {chips.map((c) => (
+                        <button key={c.label} type="button" className="chip" onClick={() => onSend(c.question)}>
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
                   )}
                 </div>
-                {i === messages.length - 1 && chips.length > 0 && (
-                  <div className="chips" aria-label="Suggested follow-up questions">
-                    {chips.map((c) => (
-                      <button key={c.label} type="button" className="chip" onClick={() => onSend(c.question)}>
-                        {c.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              )
+            )}
+
+            {waiting && <Waiting />}
+
+            {error && !waiting && (
+              <div className="error-banner" role="alert">
+                <CircleAlert size={16} aria-hidden="true" />
+                <span>{ERROR_MSGS[error] ?? UNREACHABLE_MSG}</span>
+                <button type="button" className="action-btn" onClick={onRetryError}>
+                  <RotateCw size={14} className="refresh-icon" aria-hidden="true" />
+                  <span>Retry</span>
+                </button>
               </div>
-            )
-          )}
-
-          {waiting && <Waiting />}
-
-          {error && !waiting && (
-            <div className="error-banner" role="alert">
-              <CircleAlert size={16} aria-hidden="true" />
-              <span>{ERROR_MSGS[error] ?? UNREACHABLE_MSG}</span>
-              <button type="button" className="action-btn" onClick={onRetryError}>
-                <RotateCw size={14} className="refresh-icon" aria-hidden="true" />
-                <span>Retry</span>
-              </button>
-            </div>
-          )}
-          <div ref={bottomRef} />
-        </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+        </OpenClientSheetContext.Provider>
       </div>
       <div className="composer-dock">
         <Composer onSend={onSend} onStop={onStop} waiting={waiting} enterToSend={enterToSend} />

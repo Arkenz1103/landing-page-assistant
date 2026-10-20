@@ -337,6 +337,13 @@ export default function App() {
     closeDrawerOnMobile();
   }
 
+  // "Click here to view full X sheet" button in a status answer: the Clients tab with that client's sheet
+  function openClientSheetFromChat(sheet) {
+    setPanel('clients');
+    openSheet(clientSheetKey(sheet));
+    closeDrawerOnMobile();
+  }
+
   // Sidebar: a client name opens its sheet
   function openClientSheet(client) {
     openSheet(clientSheetKey(client));
@@ -543,6 +550,7 @@ export default function App() {
             onRetry={retryAnswer}
             onRetryError={retryAfterError}
             onOpenMaster={openMasterSheet}
+            onOpenClient={openClientSheetFromChat}
             enterToSend={settings.enterToSend}
           />
         )}
