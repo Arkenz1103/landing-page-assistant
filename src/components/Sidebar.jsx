@@ -29,6 +29,7 @@ export default function Sidebar({
   onOpenClient,
   onSettings,
   onHome,
+  searchRef,
 }) {
   return (
     <div className="sidebar-inner">
@@ -39,12 +40,12 @@ export default function Sidebar({
             <span>Landing Page Assistant</span>
           </button>
         </h1>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="Close sidebar" title="Close sidebar">
+        <button type="button" className="icon-btn collapse-btn" onClick={onClose} aria-label="Close sidebar" title="Close sidebar">
           <PanelLeftClose size={18} aria-hidden="true" />
         </button>
       </div>
 
-      <button type="button" className="new-chat-btn" onClick={onNewChat}>
+      <button type="button" className="new-chat-btn" onClick={onNewChat} title="New chat (Ctrl+Shift+O)">
         <SquarePen size={16} aria-hidden="true" />
         New chat
       </button>
@@ -52,9 +53,11 @@ export default function Sidebar({
       <div className="search-box">
         <Search size={15} aria-hidden="true" />
         <input
+          ref={searchRef}
           type="search"
           placeholder="Search chats"
           aria-label="Search chats"
+          title="Search chats (Ctrl+K)"
           value={query}
           onChange={(e) => {
             onQuery(e.target.value);

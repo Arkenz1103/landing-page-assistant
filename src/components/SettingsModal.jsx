@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Database, Info, Monitor, Moon, RefreshCw, Search, Settings, Sun, X } from 'lucide-react';
+import { Database, Download, Eraser, Info, Monitor, Moon, RefreshCw, Search, Settings, Sun, Trash2, Upload, X } from 'lucide-react';
 import { version } from '../../package.json';
+import { chatExport } from '../lib/storage.js';
 
 const THEMES = [
   { key: 'system', label: 'System', icon: Monitor },
@@ -43,7 +44,8 @@ const SECTIONS = [
     key: 'data',
     label: 'Data & Cache',
     icon: Database,
-    keywords: 'client list cache sync refresh conversation state layout columns filter table row limit',
+    keywords:
+      'client list master sheet workbook cache sync refresh conversation state layout columns filter table row limit chat history export import clear delete backup',
   },
   { key: 'about', label: 'About', icon: Info, keywords: 'version system status n8n workflow supabase' },
 ];
@@ -51,6 +53,8 @@ const SECTIONS = [
 // System status, as shown by the last client list request (the list comes from Supabase through the n8n workflow)
 const STATUS = {
   ok: { n8n: 'Active', supabase: 'Connected', tone: 'ok' },
+  // a fresh saved list was used, so the workflow wasn't asked this session
+  cached: { n8n: 'Active (cached)', supabase: 'Connected (cached)', tone: 'ok' },
   loading: { n8n: 'Checking…', supabase: 'Checking…', tone: 'muted' },
   error: { n8n: 'Unreachable', supabase: 'Unknown', tone: 'error' },
   idle: { n8n: 'Not checked yet', supabase: 'Not checked yet', tone: 'muted' },
@@ -61,6 +65,107 @@ function syncedLabel(time) {
   const mins = Math.round((Date.now() - time) / 60000);
   const ago = mins < 1 ? 'just now' : mins < 60 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
   return `Last synced ${ago} (${new Date(time).toLocaleString()}).`;
+}
+
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+// Saves the chats as a JSON file (Settings > Export chats)
+function downloadChats(chats) {
+  const blob = new Blob([chatExport(chats)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `landing-page-assistant-chats-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// Export / import / clear the chat history
+function ChatHistorySection({ chats, onImportChats, onClearChats }) {
+  const fileRef = useRef(null);
+  const [imported, setImported] = useState(null); // a count, or 'error'
+  const [cleared, setCleared] = useState(null);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const pinned = chats.filter((c) => c.pinned).length;
+
+  async function onFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // the same file can be picked again
+    if (!file) return;
+    try {
+      setImported(onImportChats(await file.text()));
+    } catch {
+      setImported('error');
+    }
+  }
+
+  return (
+    <section className="settings-section" aria-labelledby="settings-history">
+      <h4 id="settings-history" className="settings-section-title">
+        Chat history
+      </h4>
+      <Row label="Export chats" hint={`Downloads all ${plural(chats.length, 'chat')} as a JSON file.`}>
+        <button type="button" className="small-btn" onClick={() => downloadChats(chats)} disabled={chats.length === 0}>
+          <Download size={13} aria-hidden="true" />
+          Export
+        </button>
+      </Row>
+      <Row
+        label="Import chats"
+        hint={
+          imported === null
+            ? 'Adds the chats from an exported file. Chats already here keep the newer copy.'
+            : imported === 'error'
+              ? 'That file isn’t a chat export.'
+              : `Imported ${plural(imported, 'chat')}.`
+        }
+      >
+        <input ref={fileRef} type="file" accept=".json,application/json" hidden onChange={onFile} />
+        <button type="button" className="small-btn" onClick={() => fileRef.current?.click()}>
+          <Upload size={13} aria-hidden="true" />
+          Import
+        </button>
+      </Row>
+      <Row
+        label="Clear all chats"
+        hint={
+          cleared !== null
+            ? `Removed ${plural(cleared, 'chat')}.`
+            : pinned
+              ? `Removes every chat except the ${plural(pinned, 'pinned chat')}.`
+              : 'Removes every chat. Pinned chats are kept.'
+        }
+      >
+        {confirmClear ? (
+          <button
+            type="button"
+            className="small-btn clear-btn danger"
+            autoFocus
+            onBlur={() => setConfirmClear(false)}
+            onClick={() => {
+              setConfirmClear(false);
+              setCleared(onClearChats());
+            }}
+          >
+            <Trash2 size={13} aria-hidden="true" />
+            Confirm clear
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="small-btn clear-btn"
+            onClick={() => setConfirmClear(true)}
+            disabled={chats.length === pinned}
+          >
+            <Trash2 size={13} aria-hidden="true" />
+            Clear all
+          </button>
+        )}
+      </Row>
+    </section>
+  );
 }
 
 function Segmented({ label, options, value, onChange }) {
@@ -151,9 +256,23 @@ function GeneralTab({ theme, onTheme, settings, set }) {
   );
 }
 
-function DataTab({ settings, set, clientStatus, clientsSyncedAt, onSyncClients, onClearTableState }) {
+function DataTab({
+  settings,
+  set,
+  clientStatus,
+  clientsSyncedAt,
+  onSyncClients,
+  masterStatus,
+  masterSyncedAt,
+  onSyncMaster,
+  onClearTableState,
+  chats,
+  onImportChats,
+  onClearChats,
+}) {
   const [cleared, setCleared] = useState(null);
   const syncing = clientStatus === 'loading';
+  const masterSyncing = masterStatus === 'loading';
 
   return (
     <>
@@ -168,7 +287,18 @@ function DataTab({ settings, set, clientStatus, clientsSyncedAt, onSyncClients, 
           hint={syncing ? 'Syncing…' : clientStatus === 'error' ? 'Sync failed. Try again in a moment.' : syncedLabel(clientsSyncedAt)}
         >
           <button type="button" className="small-btn" onClick={onSyncClients} disabled={syncing}>
-            <RefreshCw size={13} className={syncing ? 'spin' : ''} aria-hidden="true" />
+            <RefreshCw size={13} className={`refresh-icon ${syncing ? 'spin' : ''}`} aria-hidden="true" />
+            Sync Now
+          </button>
+        </Row>
+        <Row
+          label="Master sheet cache"
+          hint={
+            masterSyncing ? 'Syncing…' : masterStatus === 'error' ? 'Sync failed. Try again in a moment.' : syncedLabel(masterSyncedAt)
+          }
+        >
+          <button type="button" className="small-btn" onClick={onSyncMaster} disabled={masterSyncing}>
+            <RefreshCw size={13} className={`refresh-icon ${masterSyncing ? 'spin' : ''}`} aria-hidden="true" />
             Sync Now
           </button>
         </Row>
@@ -180,11 +310,14 @@ function DataTab({ settings, set, clientStatus, clientsSyncedAt, onSyncClients, 
               : `Cleared. ${cleared} chat${cleared === 1 ? '' : 's'} had a saved table layout.`
           }
         >
-          <button type="button" className="small-btn" onClick={() => setCleared(onClearTableState())}>
+          <button type="button" className="small-btn clear-btn" onClick={() => setCleared(onClearTableState())}>
+            <Eraser size={13} aria-hidden="true" />
             Clear
           </button>
         </Row>
       </section>
+
+      <ChatHistorySection chats={chats} onImportChats={onImportChats} onClearChats={onClearChats} />
 
       <section className="settings-section" aria-labelledby="settings-display">
         <h4 id="settings-display" className="settings-section-title">
@@ -230,7 +363,13 @@ export default function SettingsModal({
   clientStatus,
   clientsSyncedAt,
   onSyncClients,
+  masterStatus,
+  masterSyncedAt,
+  onSyncMaster,
   onClearTableState,
+  chats,
+  onImportChats,
+  onClearChats,
 }) {
   const ref = useRef(null);
   const [search, setSearch] = useState('');
@@ -302,7 +441,13 @@ export default function SettingsModal({
                 clientStatus={clientStatus}
                 clientsSyncedAt={clientsSyncedAt}
                 onSyncClients={onSyncClients}
+                masterStatus={masterStatus}
+                masterSyncedAt={masterSyncedAt}
+                onSyncMaster={onSyncMaster}
                 onClearTableState={onClearTableState}
+                chats={chats}
+                onImportChats={onImportChats}
+                onClearChats={onClearChats}
               />
             )}
             {tab === 'about' && <AboutTab clientStatus={clientStatus} />}

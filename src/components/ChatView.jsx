@@ -5,7 +5,7 @@ import Markdown from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
 import { QUESTIONS, followUpChips } from '../lib/clients.js';
-import { NO_ANSWER_MSG, STOPPED_MSG, UNREACHABLE_MSG } from '../lib/api.js';
+import { ERROR_MSGS, NO_ANSWER_MSG, STOPPED_MSG, UNREACHABLE_MSG } from '../lib/api.js';
 import { isWorkbookQuestion, splitMasterCta } from '../lib/master.js';
 import { scrollBehavior } from '../lib/storage.js';
 
@@ -91,7 +91,7 @@ function ClientWelcome({ client, onSend, waiting, enterToSend }) {
         <div className="chips client-welcome-chips" aria-label="Suggested questions">
           {CLIENT_PROMPTS.map((p) => (
             <button key={p.key} type="button" className="chip" onClick={() => onSend(QUESTIONS[p.key](client.sheet))} disabled={waiting}>
-              <span aria-hidden="true">{p.icon}</span> {p.label}
+              <span className="chip-icon" aria-hidden="true">{p.icon}</span> {p.label}
             </button>
           ))}
         </div>
@@ -107,7 +107,7 @@ function MasterSheetCta({ onOpen }) {
     <div className="master-cta">
       <p>For a complete side-by-side view across all clients, visit the master overview:</p>
       <button type="button" className="master-cta-btn" onClick={onOpen}>
-        <span aria-hidden="true">📊</span> Open Master Sheet Clients
+        <span className="chip-icon" aria-hidden="true">📊</span> Open Master Sheet Clients
       </button>
     </div>
   );
@@ -188,16 +188,20 @@ export default function ChatView({
                 {answers[i].cta && <MasterSheetCta onOpen={onOpenMaster} />}
                 <div className="msg-actions">
                   <CopyButton text={answers[i].text} label="Copy answer" />
-                  <button
-                    type="button"
-                    className="action-btn"
-                    onClick={() => onRetry(i)}
-                    disabled={waiting}
-                    aria-label="Retry this answer"
-                  >
-                    <RotateCw size={14} aria-hidden="true" />
-                    <span>Retry</span>
-                  </button>
+                  {/* only the latest answer: retrying an older one would drop everything after it;
+                      instant local replies (greetings) have nothing to retry */}
+                  {i === messages.length - 1 && !m.local && (
+                    <button
+                      type="button"
+                      className="action-btn"
+                      onClick={() => onRetry(i)}
+                      disabled={waiting}
+                      aria-label="Retry this answer"
+                    >
+                      <RotateCw size={14} className="refresh-icon" aria-hidden="true" />
+                      <span>Retry</span>
+                    </button>
+                  )}
                 </div>
                 {i === messages.length - 1 && chips.length > 0 && (
                   <div className="chips" aria-label="Suggested follow-up questions">
@@ -217,9 +221,9 @@ export default function ChatView({
           {error && !waiting && (
             <div className="error-banner" role="alert">
               <CircleAlert size={16} aria-hidden="true" />
-              <span>{UNREACHABLE_MSG}</span>
+              <span>{ERROR_MSGS[error] ?? UNREACHABLE_MSG}</span>
               <button type="button" className="action-btn" onClick={onRetryError}>
-                <RotateCw size={14} aria-hidden="true" />
+                <RotateCw size={14} className="refresh-icon" aria-hidden="true" />
                 <span>Retry</span>
               </button>
             </div>

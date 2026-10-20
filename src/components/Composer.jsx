@@ -86,7 +86,8 @@ export default function Composer({ onSend, onStop, waiting, large = false, autoF
 
   function submit() {
     if (!canSend) return;
-    stopListening();
+    // abort, not stop: stop() still delivers a final result, which would put the sent text back in the box
+    recognitionRef.current?.abort();
     onSend(value.trim());
     setValue('');
   }

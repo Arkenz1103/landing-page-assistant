@@ -1186,6 +1186,10 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+.error-banner.save-banner {
+  margin: 8px 16px 0;
+}
+
 .error-banner .action-btn {
   margin-left: auto;
   color: var(--error-text);
@@ -2208,6 +2212,74 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
+.sheet-table th:has(.sort-btn) {
+  padding: 0;
+}
+
+/* sortable column header: the whole cell is the button */
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sort-btn:hover,
+.sort-btn.sorted {
+  color: var(--text);
+}
+
+.sort-btn .sort-idle {
+  opacity: 0;
+}
+
+.sort-btn:hover .sort-idle,
+.sort-btn:focus-visible .sort-idle {
+  opacity: 0.6;
+}
+
+.sheet-select {
+  height: 34px;
+  max-width: 180px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.84rem;
+}
+
+.sheet-select:focus {
+  border-color: var(--focus);
+  outline: none;
+}
+
+.small-btn.danger {
+  border-color: var(--error-text);
+  background: var(--error-bg);
+  color: var(--error-text);
+  font-weight: 600;
+}
+
+.help-tip kbd {
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 0.85em;
+}
+
 .sheet-table th.row-head {
   z-index: 2;
 }
@@ -2254,6 +2326,98 @@ button:disabled {
 .client.current .client-btn {
   background: var(--active);
   font-weight: 500;
+}
+
+/* ---------- Icon hover micro-interactions ---------- */
+
+/* transform-only transitions stay on the compositor; the emoji icons need a box to transform */
+.chip-icon {
+  display: inline-block;
+}
+
+button svg,
+.chip-icon {
+  transition: transform 0.2s ease-out;
+}
+
+.home-btn .app-logo,
+.head-btn.tinted .btn-logo,
+.new-chat-btn svg,
+.new-chat-icon-btn svg,
+.settings-btn svg {
+  transition-duration: 0.3s;
+}
+
+.settings-btn svg {
+  transition-timing-function: ease-in-out;
+}
+
+button .refresh-icon {
+  transition: transform 0.4s ease-in-out;
+}
+
+/* hover only where a pointer can hover, and never when the user asks for less motion */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* sidebar & header */
+  .home-btn:hover .app-logo,
+  .head-btn.tinted:hover:not(:disabled) .btn-logo {
+    transform: scale(1.1) rotate(12deg);
+  }
+
+  /* a pen, so a tilt rather than the quarter turn a "+" would get */
+  .new-chat-btn:hover svg,
+  .new-chat-icon-btn:hover svg {
+    transform: scale(1.1) rotate(-12deg);
+  }
+
+  .settings-btn:hover svg {
+    transform: rotate(90deg);
+  }
+
+  .nav-btn:hover svg,
+  .sheet-link:hover svg,
+  .settings-nav-item:hover svg {
+    transform: scale(1.1);
+  }
+
+  .collapse-btn:hover svg,
+  .pager-prev:hover:not(:disabled) svg {
+    transform: translateX(-2px);
+  }
+
+  .expand-btn:hover svg,
+  .pager-next:hover:not(:disabled) svg {
+    transform: translateX(2px);
+  }
+
+  /* settings modal */
+  .segmented button:hover svg,
+  .mic-btn:hover svg {
+    transform: scale(1.15);
+  }
+
+  button:hover:not(:disabled) .refresh-icon:not(.spin) {
+    transform: rotate(180deg);
+  }
+
+  .clear-btn:hover svg,
+  .send-btn:not(.stop-btn):hover:not(:disabled) svg {
+    transform: translateY(-2px);
+  }
+
+  .settings-close:hover svg {
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  /* chat & tables */
+  .chip:hover:not(:disabled) .chip-icon,
+  .master-cta-btn:hover .chip-icon,
+  .copy-btn:hover svg,
+  .chat-menu-btn:hover svg,
+  .wb-menu-btn:hover svg,
+  .menu button:hover svg {
+    transform: scale(1.1);
+  }
 }
 
 /* ---------- Mobile ---------- */

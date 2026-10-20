@@ -16,11 +16,14 @@ function readJson(key) {
   }
 }
 
+// true when saved; false when storage is unavailable or full
 function writeJson(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    return true;
   } catch (err) {
     console.warn(`Could not save "${key}" to localStorage:`, err);
+    return false;
   }
 }
 
@@ -80,11 +83,51 @@ export function loadChats() {
   return chats;
 }
 
+/**
+ * The chats that are kept (at most MAX_CHATS): pinned first, then the most recently updated.
+ * `keepId` (the open chat) is never dropped. Returns the same array when nothing has to go.
+ */
+export function trimChats(chats, keepId = null) {
+  if (chats.length <= MAX_CHATS) return chats;
+  const rank = (c) => (c.id === keepId ? 2 : Number(Boolean(c.pinned)));
+  return [...chats].sort((a, b) => rank(b) - rank(a) || b.updatedAt - a.updatedAt).slice(0, MAX_CHATS);
+}
+
+export const EXPORT_TYPE = 'lpa-chats';
+
+/** The file Settings > Export chats downloads. */
+export function chatExport(chats) {
+  return JSON.stringify({ type: EXPORT_TYPE, version: 1, exportedAt: new Date().toISOString(), chats }, null, 2);
+}
+
+/**
+ * The chats in an exported file, cleaned up (unknown fields dropped, bad messages left out).
+ * Throws when the text isn't a chat export.
+ */
+export function parseChatExport(text) {
+  const data = JSON.parse(text);
+  if (data?.type !== EXPORT_TYPE || !Array.isArray(data.chats)) throw new Error('Not a chat export');
+  const now = Date.now();
+  return data.chats
+    .filter((c) => c && typeof c.id === 'string' && typeof c.title === 'string' && Array.isArray(c.messages))
+    .map((c) => ({
+      id: c.id,
+      sessionId: typeof c.sessionId === 'string' ? c.sessionId : crypto.randomUUID(),
+      title: c.title,
+      pinned: Boolean(c.pinned),
+      createdAt: Number(c.createdAt) || now,
+      updatedAt: Number(c.updatedAt) || now,
+      messages: c.messages
+        .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+        .map((m) => ({ role: m.role, content: m.content, createdAt: Number(m.createdAt) || now, ...(m.local && { local: true }) })),
+      ...(c.client?.sheet && { client: { sheet: String(c.client.sheet), name: String(c.client.name || c.client.sheet) } }),
+      ...(c.tableState && typeof c.tableState === 'object' && { tableState: c.tableState }),
+    }));
+}
+
+// true when saved
 export function saveChats(chats) {
-  const kept = [...chats]
-    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.updatedAt - a.updatedAt)
-    .slice(0, MAX_CHATS);
-  writeJson(CHATS_KEY, kept);
+  return writeJson(CHATS_KEY, trimChats(chats));
 }
 
 // 'light', 'dark' or 'system' (follows the OS preference); 'system' when nothing is saved

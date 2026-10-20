@@ -1,7 +1,15 @@
 const CHAT_URL = import.meta.env.VITE_N8N_CHAT_URL;
 
-export const REQUEST_TIMEOUT_MS = 30000;
+export const REQUEST_TIMEOUT_MS = 60000;
 export const UNREACHABLE_MSG = "Can't reach the assistant right now. Please try again.";
+// the error banner text for each failed request `kind` (see requestError)
+export const ERROR_MSGS = {
+  network: UNREACHABLE_MSG,
+  offline: "You're offline. Check your connection and try again.",
+  timeout: 'The assistant took too long to answer. Please try again.',
+  http: 'The assistant ran into a problem on its side. Please try again in a moment.',
+  config: "The assistant isn't set up: VITE_N8N_CHAT_URL is missing from the .env file.",
+};
 export const NO_ANSWER_MSG = "Sorry, I didn't get an answer. Please try again.";
 export const STOPPED_MSG = '_Response stopped._';
 
@@ -15,6 +23,11 @@ function toHistory(messages = []) {
     .filter((m) => (m.role === 'user' || m.role === 'assistant') && m.content && m.content !== STOPPED_MSG && m.content !== NO_ANSWER_MSG)
     .slice(-HISTORY_TURNS)
     .map((m) => ({ role: m.role, content: m.content.length > HISTORY_CHARS ? m.content.slice(0, HISTORY_CHARS) + ' …' : m.content }));
+}
+
+// An Error carrying `kind` ('config', 'http', 'timeout', 'offline' or 'network'), so the chat can say what went wrong
+function requestError(kind, message) {
+  return Object.assign(new Error(message), { kind });
 }
 
 function extractOutput(data) {
@@ -38,7 +51,7 @@ function extractTableState(data) {
 /**
  * Sends one message to the n8n chat workflow.
  * Resolves to the markdown output string (may be empty).
- * Throws on network error, non-200 or timeout (details are logged).
+ * Throws on network error, non-200 or timeout (details are logged); the error's `kind` says which.
  * Pass `signal` to cancel the request (e.g. the Stop button); it then throws an AbortError.
  * Pass `timeoutMs` for requests that need longer than the default (e.g. the full master sheet).
  * Pass `client` ({ sheet, name }) for a chat bound to one client: a question that names no client is answered for it.
@@ -53,7 +66,7 @@ export async function sendChatMessage(
 ) {
   if (!CHAT_URL) {
     console.error('VITE_N8N_CHAT_URL is not set. Copy .env.example to .env and set it.');
-    throw new Error('Missing VITE_N8N_CHAT_URL');
+    throw requestError('config', 'Missing VITE_N8N_CHAT_URL');
   }
 
   const controller = new AbortController();
@@ -83,7 +96,7 @@ export async function sendChatMessage(
     if (res.status !== 200) {
       const body = await res.text().catch(() => '');
       console.error('Assistant request failed:', res.status, res.statusText, body);
-      throw new Error(`HTTP ${res.status}`);
+      throw requestError('http', `HTTP ${res.status}`);
     }
 
     let data = null;
@@ -98,12 +111,14 @@ export async function sendChatMessage(
     if (nextState) onTableState?.(nextState);
     return output;
   } catch (err) {
+    if (err.kind) throw err;
     if (err.name === 'AbortError') {
-      if (timedOut) console.error(`Assistant request timed out after ${timeoutMs / 1000}s`);
-    } else if (!err.message?.startsWith('HTTP ')) {
-      console.error('Assistant request error:', err);
+      if (!timedOut) throw err; // cancelled by the caller (Stop button)
+      console.error(`Assistant request timed out after ${timeoutMs / 1000}s`);
+      throw requestError('timeout', 'Request timed out');
     }
-    throw err;
+    console.error('Assistant request error:', err);
+    throw requestError(navigator.onLine === false ? 'offline' : 'network', err.message);
   } finally {
     clearTimeout(timer);
     signal?.removeEventListener('abort', onCancel);

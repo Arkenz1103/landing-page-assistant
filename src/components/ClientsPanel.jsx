@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, ChevronRight, LayoutDashboard, RefreshCw, Search } from 'lucide-react';
+import { ChevronDown, ChevronRight, CircleAlert, LayoutDashboard, RefreshCw, Search } from 'lucide-react';
 import { QUESTIONS, QUICK_ACTIONS } from '../lib/clients.js';
 
 const SHEETS = [
   { key: 'summary', label: 'Master Sheet Clients', icon: LayoutDashboard },
+  { key: 'missing', label: 'Missing URLs', icon: CircleAlert },
 ];
 
 export default function ClientsPanel({ clients, status, onRefresh, onAsk, activeSheet, onOpenSheet, onOpenClient }) {
@@ -30,7 +31,7 @@ export default function ClientsPanel({ clients, status, onRefresh, onAsk, active
         disabled={status === 'loading'}
         aria-label="Refresh client list"
       >
-        <RefreshCw size={13} className={status === 'loading' ? 'spin' : ''} aria-hidden="true" />
+        <RefreshCw size={13} className={`refresh-icon ${status === 'loading' ? 'spin' : ''}`} aria-hidden="true" />
         Refresh
       </button>
     </div>

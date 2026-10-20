@@ -8,6 +8,8 @@ const OLD_KEYS = ['lpa-master', 'lpa-master-v2'];
 const MASTER_SESSION_ID = 'master-sheet';
 const MASTER_TIMEOUT_MS = 60000;
 const CACHE_MS = 12 * 60 * 60 * 1000;
+// localStorage holds ~5 MB per site and the chats share it, so a larger workbook is not cached
+const MAX_CACHE_CHARS = 2_000_000;
 
 // Row status, same rule as the chat answers: an http link is live, text in the URL cell is a note, a blank cell is missing
 function rowStatus(url, note) {
@@ -75,7 +77,7 @@ export function getCachedMaster() {
   try {
     // a copy saved before the workflow sent the Summary rows is refetched straight away
     const fresh = Boolean(cached.payload.summary) && Date.now() - cached.fetchedAt < CACHE_MS;
-    return { data: decode(cached.payload), fresh };
+    return { data: decode(cached.payload), fresh, fetchedAt: cached.fetchedAt };
   } catch {
     return null;
   }
@@ -92,8 +94,19 @@ export async function fetchMaster() {
     console.error('Could not parse master sheet data:', err, output.slice(0, 500));
     throw err;
   }
-  writeJson(MASTER_KEY, { fetchedAt: Date.now(), payload });
+  const entry = { fetchedAt: Date.now(), payload };
+  if (JSON.stringify(entry).length <= MAX_CACHE_CHARS) writeJson(MASTER_KEY, entry);
+  else clearMasterCache();
   return data;
+}
+
+/** Drops the saved workbook copy (it is too big, or the chats need the room). */
+export function clearMasterCache() {
+  try {
+    localStorage.removeItem(MASTER_KEY);
+  } catch {
+    // storage unavailable
+  }
 }
 
 // The assistant ends partial multi-client and all-clients answers with this link; the chat shows it as a button

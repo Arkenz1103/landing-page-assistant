@@ -35,6 +35,10 @@ export default function HelpPanel({ onAsk }) {
       <p className="help-tip">
         <strong>Tip:</strong> If a name matches more than one client, the assistant will ask which one you mean.
       </p>
+      <p className="help-tip">
+        <strong>Shortcuts:</strong> <kbd>Ctrl</kbd>+<kbd>K</kbd> search chats · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> new
+        chat (<kbd>⌘</kbd> on Mac).
+      </p>
     </div>
   );
 }

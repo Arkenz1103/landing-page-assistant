@@ -1,14 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PanelLeftOpen, SquarePen } from 'lucide-react';
+import { CircleAlert, PanelLeftOpen, SquarePen } from 'lucide-react';
 import Sidebar from './components/Sidebar.jsx';
 import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
 import SettingsModal from './components/SettingsModal.jsx';
 import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
-import { fetchMaster, getCachedMaster } from './lib/master.js';
+import { clearMasterCache, fetchMaster, getCachedMaster } from './lib/master.js';
 import { localGreeting } from './lib/greetings.js';
-import { createChat, loadChats, loadSettings, loadTheme, saveChats, saveSettings, saveTheme } from './lib/storage.js';
+import {
+  createChat,
+  loadChats,
+  loadSettings,
+  loadTheme,
+  parseChatExport,
+  saveChats,
+  saveSettings,
+  saveTheme,
+  trimChats,
+} from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
@@ -63,7 +73,10 @@ export default function App() {
   const [chats, setChats] = useState(loadChats);
   const [activeId, setActiveId] = useState(null);
   const [pending, setPending] = useState({});
+  // per chat: the failed request's kind ('network', 'timeout', ...; see ERROR_MSGS in api.js)
   const [errors, setErrors] = useState({});
+  // the chats could not be saved on this device (storage full or blocked)
+  const [saveFailed, setSaveFailed] = useState(false);
   // one AbortController per chat with a request in flight (the Stop button aborts it)
   const controllers = useRef({});
 
@@ -80,11 +93,14 @@ export default function App() {
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const [collapsed, setCollapsed] = useState(false);
+  // the sidebar's "Search chats" box (Ctrl+K focuses it)
+  const searchRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const sidebarVisible = isMobile ? drawerOpen : !collapsed;
 
   const [clients, setClients] = useState(() => getCachedClients()?.clients ?? null);
-  const [clientStatus, setClientStatus] = useState('idle');
+  // 'cached' when a fresh saved list is used without asking the workflow
+  const [clientStatus, setClientStatus] = useState(() => (getCachedClients()?.fresh ? 'cached' : 'idle'));
   // when the client list was last fetched (Settings > Data & Cache)
   const [clientsSyncedAt, setClientsSyncedAt] = useState(() => getCachedClients()?.fetchedAt ?? null);
   const clientsRequested = useRef(false);
@@ -92,11 +108,24 @@ export default function App() {
   // { rows, summary } from the master workbook
   const [master, setMaster] = useState(null);
   const [masterStatus, setMasterStatus] = useState('idle');
+  const [masterSyncedAt, setMasterSyncedAt] = useState(null);
   const masterRequested = useRef(false);
 
   useEffect(() => {
-    saveChats(chats);
-  }, [chats]);
+    // over the limit: drop the oldest in the app too, so the list doesn't change on the next reload
+    const kept = trimChats(chats, activeId);
+    if (kept !== chats) {
+      setChats(kept);
+      return;
+    }
+    let saved = saveChats(chats);
+    // storage full: the cached workbook is the big item and can be fetched again, the chats can't
+    if (!saved) {
+      clearMasterCache();
+      saved = saveChats(chats);
+    }
+    setSaveFailed(!saved);
+  }, [chats, activeId]);
 
   useEffect(() => {
     if (!isMobile) setDrawerOpen(false);
@@ -131,6 +160,7 @@ export default function App() {
     setMasterStatus('loading');
     try {
       setMaster(await fetchMaster());
+      setMasterSyncedAt(Date.now());
       setMasterStatus('ok');
     } catch {
       setMasterStatus('error');
@@ -145,7 +175,10 @@ export default function App() {
       if (masterRequested.current) return;
       masterRequested.current = true;
       const cached = getCachedMaster();
-      if (cached) setMaster(cached.data);
+      if (cached) {
+        setMaster(cached.data);
+        setMasterSyncedAt(cached.fetchedAt);
+      }
       if (!cached?.fresh) loadMaster();
     };
     if (view === 'clients') {
@@ -168,7 +201,7 @@ export default function App() {
       const controller = new AbortController();
       controllers.current[chatId] = controller;
       setPending((p) => ({ ...p, [chatId]: true }));
-      setErrors((e) => ({ ...e, [chatId]: false }));
+      setErrors((e) => ({ ...e, [chatId]: null }));
       try {
         // a chat bound to a client sends it along, so "who is assigned?" needs no client name
         // the chat's table state (row filter + column layout) goes out with the message and comes back updated
@@ -188,8 +221,8 @@ export default function App() {
           ...(nextTableState && { tableState: nextTableState }),
           messages: [...c.messages, { role: 'assistant', content: output.trim() ? output : NO_ANSWER_MSG, createdAt: now }],
         }));
-      } catch {
-        if (!controller.signal.aborted) setErrors((e) => ({ ...e, [chatId]: true }));
+      } catch (err) {
+        if (!controller.signal.aborted) setErrors((e) => ({ ...e, [chatId]: err.kind || 'network' }));
       } finally {
         // a stopped request was already cleaned up by stop(); a newer request may own this chat now
         if (controllers.current[chatId] === controller) {
@@ -207,15 +240,20 @@ export default function App() {
     const chatInput = text.trim();
     if (!chatInput) return;
 
+    let chat = newChat || (client && activeChat?.client?.sheet !== client.sheet) ? null : activeChat;
+    if (chat && pending[chat.id]) {
+      // a sidebar quick question for a client whose chat is still waiting goes to a new chat instead of being dropped
+      if (!client) return;
+      chat = null;
+    }
     setView('chat');
     const now = Date.now();
     const userMsg = { role: 'user', content: chatInput, createdAt: now };
-    let chat = newChat || (client && activeChat?.client?.sheet !== client.sheet) ? null : activeChat;
     const prior = chat ? chat.messages : [];
-    if (chat && pending[chat.id]) return;
     // a pure greeting / thanks / "who are you" is answered here at once, without a workflow call
     const greeting = localGreeting(chatInput, { prior, client: chat ? chat.client : client });
-    const added = greeting ? [userMsg, { role: 'assistant', content: greeting, createdAt: now }] : [userMsg];
+    // `local`: answered here, so it has no Retry
+    const added = greeting ? [userMsg, { role: 'assistant', content: greeting, local: true, createdAt: now }] : [userMsg];
     if (chat) {
       updateChat(chat.id, (c) => ({ ...c, updatedAt: now, messages: [...c.messages, ...added] }));
     } else {
@@ -329,10 +367,65 @@ export default function App() {
     onPin: (id) => updateChat(id, (c) => ({ ...c, pinned: !c.pinned })),
     onRename: (id, title) => updateChat(id, (c) => ({ ...c, title })),
     onDelete: (id) => {
+      // cancel a request still running for the chat and forget its pending / error flags
+      controllers.current[id]?.abort();
+      delete controllers.current[id];
+      setPending(({ [id]: _p, ...rest }) => rest);
+      setErrors(({ [id]: _e, ...rest }) => rest);
       setChats((list) => list.filter((c) => c.id !== id));
       if (id === activeId) setActiveId(null);
     },
   };
+
+  // Settings > Import chats: adds the file's chats (a chat already here keeps whichever copy is newer).
+  // Throws when the text isn't a chat export; returns how many chats it had.
+  function importChats(text) {
+    const imported = parseChatExport(text);
+    setChats((list) => {
+      const byId = new Map(list.map((c) => [c.id, c]));
+      for (const c of imported) {
+        const have = byId.get(c.id);
+        if (!have || c.updatedAt > have.updatedAt) byId.set(c.id, c);
+      }
+      return [...byId.values()];
+    });
+    return imported.length;
+  }
+
+  // Settings > Clear all chats: every chat except the pinned ones; returns how many were removed
+  function clearChats() {
+    const removed = chats.filter((c) => !c.pinned);
+    for (const c of removed) controllers.current[c.id]?.abort();
+    for (const c of removed) delete controllers.current[c.id];
+    setPending({});
+    setErrors({});
+    setChats((list) => list.filter((c) => c.pinned));
+    if (removed.some((c) => c.id === activeId)) setActiveId(null);
+    return removed.length;
+  }
+
+  // Ctrl/Cmd+K: search chats (opens the sidebar if needed); Ctrl/Cmd+Shift+O: new chat
+  const shortcuts = useRef(null);
+  shortcuts.current = (e) => {
+    if (settingsOpen || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+    const key = e.key.toLowerCase();
+    if (key === 'k' && !e.shiftKey) {
+      e.preventDefault();
+      if (isMobile) setDrawerOpen(true);
+      else setCollapsed(false);
+      setPanel('chats');
+      // after the sidebar has rendered (it is inert while closed)
+      requestAnimationFrame(() => searchRef.current?.select());
+    } else if (key === 'o' && e.shiftKey) {
+      e.preventDefault();
+      newChat();
+    }
+  };
+  useEffect(() => {
+    const onKey = (e) => shortcuts.current(e);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
 
   // Settings > Clear conversation state: forget every chat's table filter / column layout but keep its messages.
   // The workflow also keeps a copy per session id, so every chat gets a new one (its history still goes with each message).
@@ -359,6 +452,7 @@ export default function App() {
           onQuery={setQuery}
           onNewChat={newChat}
           onHome={goHome}
+          searchRef={searchRef}
           onClose={toggleSidebar}
           chats={chats}
           activeId={activeId}
@@ -386,16 +480,23 @@ export default function App() {
           <header className="topbar">
             {!sidebarVisible && (
               <>
-                <button type="button" className="icon-btn" onClick={toggleSidebar} aria-label="Open sidebar" title="Open sidebar">
+                <button type="button" className="icon-btn expand-btn" onClick={toggleSidebar} aria-label="Open sidebar" title="Open sidebar">
                   <PanelLeftOpen size={18} aria-hidden="true" />
                 </button>
-                <button type="button" className="icon-btn" onClick={newChat} aria-label="New chat" title="New chat">
+                <button type="button" className="icon-btn new-chat-icon-btn" onClick={newChat} aria-label="New chat" title="New chat (Ctrl+Shift+O)">
                   <SquarePen size={18} aria-hidden="true" />
                 </button>
               </>
             )}
             {view === 'chat' && <span className="topbar-title">{activeChat?.title ?? ''}</span>}
           </header>
+        )}
+
+        {saveFailed && (
+          <div className="error-banner save-banner" role="alert">
+            <CircleAlert size={16} aria-hidden="true" />
+            <span>Chats can’t be saved on this device (browser storage is full or blocked). New messages will be lost on reload.</span>
+          </div>
         )}
 
         {view === 'clients' ? (
@@ -415,7 +516,7 @@ export default function App() {
             key={activeChat?.id ?? 'new'}
             chat={activeChat}
             waiting={Boolean(activeChat && pending[activeChat.id])}
-            error={Boolean(activeChat && errors[activeChat.id])}
+            error={(activeChat && errors[activeChat.id]) || null}
             clients={clients}
             onSend={send}
             onStop={stop}
@@ -437,7 +538,13 @@ export default function App() {
         clientStatus={clientStatus}
         clientsSyncedAt={clientsSyncedAt}
         onSyncClients={loadClients}
+        masterStatus={masterStatus}
+        masterSyncedAt={masterSyncedAt}
+        onSyncMaster={loadMaster}
         onClearTableState={clearTableState}
+        chats={chats}
+        onImportChats={importChats}
+        onClearChats={clearChats}
       />
     </div>
   );

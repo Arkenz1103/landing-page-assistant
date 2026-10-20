@@ -7,7 +7,9 @@ dist
 # Local tooling
 .claude
 .playwright
+.playwright-cli/
 backups/
 
 .vercel
 .env*
+!.env.example

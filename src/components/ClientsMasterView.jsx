@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronLeft, ChevronRight, Menu, RefreshCw, Search } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Check, ChevronLeft, ChevronRight, Menu, RefreshCw, Search } from 'lucide-react';
 import Logo from './Logo.jsx';
-import { summarizeClients } from '../lib/master.js';
+import { summarize, summarizeClients } from '../lib/master.js';
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -11,9 +11,10 @@ const FILTERS = [
 
 const STATUS_LABEL = { live: 'Live', note: 'Note', missing: 'Missing' };
 
-const DEFAULT_UI = { query: '', filter: 'all', page: 0 };
+// `sort`: { key, dir: 'asc' | 'desc' } or null (sheet row order); `month` / `assigned`: '' = all
+const DEFAULT_UI = { query: '', filter: 'all', page: 0, sort: null, month: '', assigned: '' };
 
-/** Sheet keys: 'summary' (shown as Master Sheet Clients) or 'client:<tab name>'. */
+/** Sheet keys: 'summary' (shown as Master Sheet Clients), 'missing' (every client's rows without a URL) or 'client:<tab name>'. */
 export const clientSheetKey = (sheet) => `client:${sheet}`;
 export const sheetOfKey = (key) => (key?.startsWith('client:') ? key.slice(7) : null);
 
@@ -49,20 +50,80 @@ function LinkCell({ value }) {
   );
 }
 
-// Same columns, in the same order, as each client tab of the master workbook
+// "September 2025" (or "Sep 2025", "September") as a date number, so months sort in calendar order; else the text
+function monthValue(m) {
+  const t = Date.parse(`1 ${m}`);
+  return Number.isNaN(t) ? m : t;
+}
+
+const STATUS_ORDER = { missing: 0, note: 1, live: 2 };
+
+// Same columns, in the same order, as each client tab of the master workbook (plus Status);
+// `sort`: the value a header click sorts by
 const SHEET_COLS = [
-  { label: 'Month', cell: (r) => r.month },
-  { label: 'Client', cell: (r) => r.name, className: 'master-client' },
-  { label: 'Assigned to', cell: (r) => r.assigned },
-  { label: 'Service', cell: (r) => r.service },
-  { label: 'City', cell: (r) => r.city },
-  { label: 'Suburb', cell: (r) => r.suburb },
-  { label: 'Landing Page URL', cell: (r) => <UrlCell row={r} />, className: 'master-url-cell' },
-  { label: 'GMB Link', cell: (r) => <LinkCell value={r.gmb} />, className: 'link-col' },
-  { label: 'Yellow Pages', cell: (r) => <LinkCell value={r.yellowPages} />, className: 'link-col' },
-  { label: 'True Local Link', cell: (r) => <LinkCell value={r.trueLocal} />, className: 'link-col' },
-  { label: 'ASSIGNED URL', cell: (r) => <LinkCell value={r.assignedUrl} />, className: 'link-col' },
+  { key: 'month', label: 'Month', cell: (r) => r.month, sort: (r) => monthValue(r.month) },
+  { key: 'name', label: 'Client', cell: (r) => r.name, className: 'master-client', sort: (r) => r.name },
+  { key: 'assigned', label: 'Assigned to', cell: (r) => r.assigned, sort: (r) => r.assigned },
+  { key: 'service', label: 'Service', cell: (r) => r.service, sort: (r) => r.service },
+  { key: 'city', label: 'City', cell: (r) => r.city, sort: (r) => r.city },
+  { key: 'suburb', label: 'Suburb', cell: (r) => r.suburb, sort: (r) => r.suburb },
+  { key: 'url', label: 'Landing Page URL', cell: (r) => <UrlCell row={r} />, className: 'master-url-cell', sort: (r) => r.url || r.note },
+  { key: 'gmb', label: 'GMB Link', cell: (r) => <LinkCell value={r.gmb} />, className: 'link-col', sort: (r) => r.gmb },
+  { key: 'yellowPages', label: 'Yellow Pages', cell: (r) => <LinkCell value={r.yellowPages} />, className: 'link-col', sort: (r) => r.yellowPages },
+  { key: 'trueLocal', label: 'True Local Link', cell: (r) => <LinkCell value={r.trueLocal} />, className: 'link-col', sort: (r) => r.trueLocal },
+  { key: 'assignedUrl', label: 'ASSIGNED URL', cell: (r) => <LinkCell value={r.assignedUrl} />, className: 'link-col', sort: (r) => r.assignedUrl },
+  { key: 'status', label: 'Status', cell: (r) => <StatusBadge status={r.status} />, sort: (r) => STATUS_ORDER[r.status] },
 ];
+
+const isBlank = (v) => v === '' || v == null;
+
+// numbers in order, then text (A-Z, "Page 2" before "Page 10")
+function compareValues(a, b) {
+  if (typeof a === 'number' && typeof b === 'number') return a - b;
+  if (typeof a === 'number') return -1;
+  if (typeof b === 'number') return 1;
+  return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+}
+
+// blank cells stay at the bottom in both directions; ties keep sheet order
+function sortRows(rows, sort) {
+  const col = sort && SHEET_COLS.find((c) => c.key === sort.key);
+  if (!col) return rows;
+  const dir = sort.dir === 'desc' ? -1 : 1;
+  return [...rows].sort((a, b) => {
+    const va = col.sort(a);
+    const vb = col.sort(b);
+    if (isBlank(va) || isBlank(vb)) return isBlank(va) - isBlank(vb) || a.id - b.id;
+    return compareValues(va, vb) * dir || a.id - b.id;
+  });
+}
+
+// header click: ascending, then descending, then back to sheet order
+function nextSort(sort, key) {
+  if (sort?.key !== key) return { key, dir: 'asc' };
+  return sort.dir === 'asc' ? { key, dir: 'desc' } : null;
+}
+
+function SortIcon({ dir }) {
+  if (dir === 'asc') return <ArrowUp size={12} aria-hidden="true" />;
+  if (dir === 'desc') return <ArrowDown size={12} aria-hidden="true" />;
+  return <ArrowUpDown size={12} className="sort-idle" aria-hidden="true" />;
+}
+
+// a dropdown filter ('' = everything); left out when there is nothing to choose between
+function SheetSelect({ label, allLabel, options, value, onChange }) {
+  if (options.length < 2 && !value) return null;
+  return (
+    <select className="sheet-select" aria-label={label} value={value} onChange={(e) => onChange(e.target.value)}>
+      <option value="">{allLabel}</option>
+      {options.map((o) => (
+        <option key={o} value={o}>
+          {o}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 /* ---------- Summary sheet ---------- */
 
@@ -210,19 +271,26 @@ function SummarySheet({ summary, clients, onOpenClient }) {
 
 /* ---------- Client sheets ---------- */
 
-// `rowLimit`: rows per page (Settings > Default table row limit), or 'all' for one page
-function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
-  const { query, filter, page } = ui;
+// `rowLimit`: rows per page (Settings > Default table row limit), or 'all' for one page.
+// `pills`: show the Live / Missing filter (the Missing URLs sheet has only one kind of row).
+function RowsSheet({ rows, title, ui, onUi, rowLimit, pills = true }) {
+  const { query, filter, page, sort, month, assigned } = ui;
+
+  // dropdown choices from the whole sheet, so picking one never empties the other list
+  const choices = useMemo(() => summarize(rows), [rows]);
 
   const searched = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter((r) =>
-      [r.name, r.sheet, r.suburb, r.city, r.service, r.assigned, r.url, r.note, r.month, r.gmb, r.yellowPages, r.trueLocal, r.assignedUrl].some(
-        (v) => v.toLowerCase().includes(q)
-      )
+    return rows.filter(
+      (r) =>
+        (!month || r.month === month) &&
+        (!assigned || r.assigned === assigned) &&
+        (!q ||
+          [r.name, r.sheet, r.suburb, r.city, r.service, r.assigned, r.url, r.note, r.month, r.gmb, r.yellowPages, r.trueLocal, r.assignedUrl].some(
+            (v) => v.toLowerCase().includes(q)
+          ))
     );
-  }, [rows, query]);
+  }, [rows, query, month, assigned]);
 
   const counts = useMemo(
     () => ({
@@ -233,7 +301,10 @@ function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
     [searched]
   );
 
-  const shown = useMemo(() => (filter === 'all' ? searched : searched.filter((r) => r.status === filter)), [searched, filter]);
+  const shown = useMemo(
+    () => sortRows(filter === 'all' || !pills ? searched : searched.filter((r) => r.status === filter), sort),
+    [searched, filter, pills, sort]
+  );
   const PAGE_SIZE = rowLimit === 'all' ? Math.max(shown.length, 1) : rowLimit;
   const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const current = Math.min(page, pages - 1);
@@ -246,27 +317,43 @@ function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
           <Search size={15} aria-hidden="true" />
           <input
             type="search"
-            placeholder={`Search ${client.name}`}
-            aria-label={`Search ${client.name} sheet`}
+            placeholder={`Search ${title}`}
+            aria-label={`Search ${title} sheet`}
             value={query}
             onChange={(e) => onUi({ query: e.target.value, page: 0 })}
           />
         </div>
-        <div className="status-pills" role="radiogroup" aria-label="Filter by URL status">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              role="radio"
-              aria-checked={filter === f.key}
-              className={`status-pill ${filter === f.key ? 'active' : ''}`}
-              onClick={() => onUi({ filter: f.key, page: 0 })}
-            >
-              {f.label}
-              <span className="pill-count">{counts[f.key].toLocaleString()}</span>
-            </button>
-          ))}
-        </div>
+        <SheetSelect
+          label="Filter by month"
+          allLabel="All months"
+          options={choices.months}
+          value={month}
+          onChange={(v) => onUi({ month: v, page: 0 })}
+        />
+        <SheetSelect
+          label="Filter by assignee"
+          allLabel="Everyone"
+          options={choices.assigned}
+          value={assigned}
+          onChange={(v) => onUi({ assigned: v, page: 0 })}
+        />
+        {pills && (
+          <div className="status-pills" role="radiogroup" aria-label="Filter by URL status">
+            {FILTERS.map((f) => (
+              <button
+                key={f.key}
+                type="button"
+                role="radio"
+                aria-checked={filter === f.key}
+                className={`status-pill ${filter === f.key ? 'active' : ''}`}
+                onClick={() => onUi({ filter: f.key, page: 0 })}
+              >
+                {f.label}
+                <span className="pill-count">{counts[f.key].toLocaleString()}</span>
+              </button>
+            ))}
+          </div>
+        )}
         <span className="sheet-count">
           {shown.length.toLocaleString()} row{shown.length === 1 ? '' : 's'}
         </span>
@@ -279,10 +366,22 @@ function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
               <th className="row-head" aria-label="Sheet row">
                 #
               </th>
-              {SHEET_COLS.map((c) => (
-                <th key={c.label}>{c.label}</th>
-              ))}
-              <th>Status</th>
+              {SHEET_COLS.map((c) => {
+                const dir = sort?.key === c.key ? sort.dir : null;
+                return (
+                  <th key={c.key} aria-sort={dir ? (dir === 'asc' ? 'ascending' : 'descending') : undefined}>
+                    <button
+                      type="button"
+                      className={`sort-btn ${dir ? 'sorted' : ''}`}
+                      onClick={() => onUi({ sort: nextSort(sort, c.key), page: 0 })}
+                      title={`Sort by ${c.label}`}
+                    >
+                      {c.label}
+                      <SortIcon dir={dir} />
+                    </button>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -290,13 +389,10 @@ function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
               <tr key={r.id}>
                 <td className="row-head">{r.row || ''}</td>
                 {SHEET_COLS.map((c) => (
-                  <td key={c.label} className={c.className}>
+                  <td key={c.key} className={c.className}>
                     {c.cell(r)}
                   </td>
                 ))}
-                <td>
-                  <StatusBadge status={r.status} />
-                </td>
               </tr>
             ))}
           </tbody>
@@ -306,7 +402,7 @@ function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
 
       {pages > 1 && (
         <nav className="master-pager" aria-label="Table pages">
-          <button type="button" className="small-btn" onClick={() => onUi({ page: current - 1 })} disabled={current === 0}>
+          <button type="button" className="small-btn pager-prev" onClick={() => onUi({ page: current - 1 })} disabled={current === 0}>
             <ChevronLeft size={14} aria-hidden="true" />
             Prev
           </button>
@@ -316,7 +412,7 @@ function RowsSheet({ rows, client, ui, onUi, rowLimit }) {
           </span>
           <button
             type="button"
-            className="small-btn"
+            className="small-btn pager-next"
             onClick={() => onUi({ page: current + 1 })}
             disabled={current >= pages - 1}
           >
@@ -359,7 +455,7 @@ function SheetTabs({ active, clients, onSelect }) {
     onSelect(key);
   }
 
-  const sheets = [{ key: 'summary', label: 'Summary' }, ...clients.map((c) => ({ key: clientSheetKey(c.sheet), label: c.sheet }))];
+  const sheets = [{ key: 'summary', label: 'Summary' }, { key: 'missing', label: 'Missing URLs' }, ...clients.map((c) => ({ key: clientSheetKey(c.sheet), label: c.sheet }))];
 
   return (
     <div className="wb-bar">
@@ -406,13 +502,14 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   const activeClient = sheetOfKey(sheet);
   const client = useMemo(() => clients.find((c) => c.sheet === activeClient) ?? null, [clients, activeClient]);
   const clientRows = useMemo(() => (client && rows ? rows.filter((r) => r.sheet === client.sheet) : []), [rows, client]);
+  const missingRows = useMemo(() => (sheet === 'missing' && rows ? rows.filter((r) => r.status === 'missing') : []), [rows, sheet]);
 
   const sheetUi = ui[sheet] ?? DEFAULT_UI;
   const updateUi = (patch) => setUi((all) => ({ ...all, [sheet]: { ...(all[sheet] ?? DEFAULT_UI), ...patch } }));
 
   const refreshBtn = (
     <button type="button" className="head-btn" onClick={onRefresh} disabled={status === 'loading'} aria-label="Refresh master sheet">
-      <RefreshCw size={14} className={status === 'loading' ? 'spin' : ''} aria-hidden="true" />
+      <RefreshCw size={14} className={`refresh-icon ${status === 'loading' ? 'spin' : ''}`} aria-hidden="true" />
       Refresh
     </button>
   );
@@ -437,15 +534,16 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   }
 
   const openClient = (s) => onSheet(clientSheetKey(s));
-  const sheetTitle = sheet === 'summary' ? 'Master Sheet Clients' : client?.name || activeClient;
+  const sheetTitle =
+    sheet === 'summary' ? 'Master Sheet Clients' : sheet === 'missing' ? 'Missing URLs (all clients)' : client?.name || activeClient;
 
   let body;
   if (sheet === 'summary') {
     body = <SummarySheet summary={summary} clients={clients} onOpenClient={openClient} />;
+  } else if (sheet === 'missing') {
+    body = <RowsSheet key={sheet} rows={missingRows} title="Missing URLs" ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} pills={false} />;
   } else if (client) {
-    body = (
-      <RowsSheet key={sheet} rows={clientRows} client={client} ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} />
-    );
+    body = <RowsSheet key={sheet} rows={clientRows} title={client.name} ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} />;
   } else {
     body = (
       <div className="master-empty">
@@ -476,8 +574,8 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
                 Ask Assistant
               </button>
             )}
-            {/* the Summary sheet covers every client, so its chat isn't bound to one */}
-            {sheet === 'summary' && (
+            {/* the Summary and Missing URLs sheets cover every client, so their chat isn't bound to one */}
+            {(sheet === 'summary' || sheet === 'missing') && (
               <button
                 type="button"
                 className="head-btn tinted"
