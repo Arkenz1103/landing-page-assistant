@@ -240,6 +240,12 @@ export default function App() {
     closeDrawerOnMobile();
   }
 
+  // Sidebar logo/title: back to the home screen (an empty chat, with the Chats list showing)
+  function goHome() {
+    setPanel('chats');
+    newChat();
+  }
+
   function choosePanel(key) {
     setPanel(key);
     // on mobile the drawer stays open so a sheet or client can be picked from the list
@@ -264,7 +270,7 @@ export default function App() {
     closeDrawerOnMobile();
   }
 
-  // "Chat about this client" on a client sheet: an empty chat named after the client, showing its welcome guide
+  // "Ask Assistant" on a client sheet: an empty chat named after the client, showing its welcome guide
   // (an unused one for the same client is reopened instead of adding another)
   function chatAboutClient({ sheet, name }) {
     const title = name || sheet;
@@ -316,6 +322,7 @@ export default function App() {
           query={query}
           onQuery={setQuery}
           onNewChat={newChat}
+          onHome={goHome}
           onClose={toggleSidebar}
           chats={chats}
           activeId={activeId}

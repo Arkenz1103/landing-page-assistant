@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronLeft, ChevronRight, Menu, MessageSquare, RefreshCw, Search } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, Menu, RefreshCw, Search } from 'lucide-react';
+import Logo from './Logo.jsx';
 import { summarizeClients } from '../lib/master.js';
 
 const PAGE_SIZE = 100;
@@ -464,9 +465,15 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
           <h2 className="master-title">{sheetTitle}</h2>
           <div className="sheet-actions">
             {client && (
-              <button type="button" className="head-btn primary" onClick={() => onChat(client)}>
-                <MessageSquare size={14} aria-hidden="true" />
-                Chat about this client
+              <button
+                type="button"
+                className="head-btn tinted"
+                onClick={() => onChat(client)}
+                aria-label={`Ask Assistant about ${client.name || client.sheet}`}
+                title={`Ask Assistant about ${client.name || client.sheet}`}
+              >
+                <Logo className="btn-logo" />
+                Ask Assistant
               </button>
             )}
             {refreshBtn}

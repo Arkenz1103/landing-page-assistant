@@ -2,6 +2,7 @@ import { CircleHelp, MessageSquare, Moon, PanelLeftClose, Search, SquarePen, Sun
 import ChatsPanel from './ChatsPanel.jsx';
 import ClientsPanel from './ClientsPanel.jsx';
 import HelpPanel from './HelpPanel.jsx';
+import Logo from './Logo.jsx';
 
 const NAV = [
   { key: 'chats', label: 'Chats', icon: MessageSquare },
@@ -33,11 +34,17 @@ export default function Sidebar({
   onOpenClient,
   theme,
   onTheme,
+  onHome,
 }) {
   return (
     <div className="sidebar-inner">
       <div className="sidebar-top">
-        <h1 className="app-name">Landing Page Assistant</h1>
+        <h1 className="app-name">
+          <button type="button" className="home-btn" onClick={onHome} title="Home">
+            <Logo className="app-logo" />
+            <span>Landing Page Assistant</span>
+          </button>
+        </h1>
         <button type="button" className="icon-btn" onClick={onClose} aria-label="Close sidebar" title="Close sidebar">
           <PanelLeftClose size={18} aria-hidden="true" />
         </button>

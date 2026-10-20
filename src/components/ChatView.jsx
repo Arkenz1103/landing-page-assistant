@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CircleAlert, RotateCw } from 'lucide-react';
+import Logo from './Logo.jsx';
 import Markdown from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
@@ -15,10 +16,49 @@ const STARTERS = [
   QUESTIONS.months('A Vision Windscreens'),
 ];
 
+// landing screen greeting by local time; one line per period is picked when the period starts
+const GREETINGS = {
+  // statements only: the line below already asks "What would you like to check?"
+  morning: ['Good morning! Let’s get to work.', 'Good morning! Hope your day starts well.', 'Good morning! Great to see you.'],
+  afternoon: ['Good afternoon! Let’s keep it moving.', 'Good afternoon! Hope your day is great.', 'Good afternoon! Great to see you.'],
+  evening: ['Good evening! Let’s finish strong.', 'Good evening! Hope you had a good day.', 'Good evening! Great to see you.'],
+};
+
+function period(date) {
+  const h = date.getHours();
+  return h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
+}
+
+function pickGreeting(p) {
+  const list = GREETINGS[p];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// re-checked every minute, so a screen left open moves from morning to afternoon to evening
+function useTimeGreeting() {
+  const [state, setState] = useState(() => {
+    const p = period(new Date());
+    return { period: p, text: pickGreeting(p) };
+  });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const p = period(new Date());
+      setState((s) => (s.period === p ? s : { period: p, text: pickGreeting(p) }));
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+  return state.text;
+}
+
 function Welcome({ onSend, waiting }) {
+  const greeting = useTimeGreeting();
   return (
     <div className="welcome">
-      <h2 className="welcome-title">What would you like to check?</h2>
+      <h2 className="welcome-greeting">
+        <Logo className="welcome-logo" />
+        <span>{greeting}</span>
+      </h2>
+      <p className="welcome-title">What would you like to check?</p>
       <Composer onSend={onSend} waiting={waiting} large autoFocus />
       <div className="starters">
         {STARTERS.map((q) => (
