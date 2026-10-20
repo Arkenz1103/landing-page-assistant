@@ -11,12 +11,19 @@ const CACHE_MS = 12 * 60 * 60 * 1000;
 // localStorage holds ~5 MB per site and the chats share it, so a larger workbook is not cached
 const MAX_CACHE_CHARS = 2_000_000;
 
-// Row status, same rule as the chat answers: an http link is live, text in the URL cell is a note, a blank cell is missing
+// Row status, same rule as the chat answers: a link is live; a blank cell is missing; other text in the URL cell is a
+// note ("no more pages, start refreshing content"), which also means the row has no landing page URL
 function rowStatus(url, note) {
   if (url) return 'live';
   if (note) return 'note';
   return 'missing';
 }
+
+// a URL cell written without http ("www.example.com.au/page" or "example.com.au/page") is still a link
+const isLinkText = (v) => /^(?:https?:\/\/|www\.)/i.test(v) || /^[^\s/]+\.[a-z]{2,}(?:[/?#:]|$)/i.test(v);
+
+/** True when the row has no landing page URL: the cell is blank or holds a note instead of a link. */
+export const noLandingPage = (r) => r.status !== 'live';
 
 /** The Summary worksheet rows, cells keyed by the sheet's own headers (null if the payload has none). */
 function decodeSummary(summary) {
@@ -38,8 +45,11 @@ function decodeRows(payload) {
     .map((r, i) => {
       const tab = payload.tabs[r[col.tab]];
       if (!tab) return null;
-      const url = str(r[col.url]);
-      const note = str(r[col.note]);
+      // a link stored as a note (no http) is shown and counted as a link
+      const rawNote = str(r[col.note]);
+      const noteIsLink = !str(r[col.url]) && isLinkText(rawNote.trim());
+      const url = noteIsLink ? `https://${rawNote.trim().replace(/^https?:\/\//i, '')}` : str(r[col.url]);
+      const note = noteIsLink ? '' : rawNote;
       return {
         id: i,
         sheet: tab.sheet,

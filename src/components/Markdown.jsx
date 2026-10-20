@@ -5,6 +5,18 @@ import CopyButton from './CopyButton.jsx';
 import { scrollBehavior } from '../lib/storage.js';
 
 const InTableContext = createContext(false);
+// true inside a scroll box the answer already has (the workflow's own row tables)
+const InScrollBoxContext = createContext(false);
+// a longer table with no scroll box of its own (e.g. written by the AI) gets one, like the workflow's row tables
+const AUTO_SCROLL_ROWS = 10;
+const AUTO_SCROLL_HEIGHT = 320;
+
+// body rows of a markdown table (hast node)
+const bodyRows = (node) =>
+  (node?.children ?? [])
+    .filter((c) => c.tagName === 'tbody')
+    .flatMap((b) => b.children ?? [])
+    .filter((r) => r.tagName === 'tr').length;
 
 function Link({ node, href, children, ...props }) {
   const inTable = useContext(InTableContext);
@@ -23,12 +35,19 @@ function Link({ node, href, children, ...props }) {
 }
 
 function Table({ node, ...props }) {
-  return (
+  const inScrollBox = useContext(InScrollBoxContext);
+  const table = (
     <InTableContext.Provider value={true}>
       <div className="table-wrap">
         <table {...props} />
       </div>
     </InTableContext.Provider>
+  );
+  if (inScrollBox || bodyRows(node) <= AUTO_SCROLL_ROWS) return table;
+  return (
+    <div className="scroll-box" style={{ maxHeight: AUTO_SCROLL_HEIGHT + 'px' }}>
+      <div className="markdown-small">{table}</div>
+    </div>
   );
 }
 
@@ -140,7 +159,7 @@ function renderBlocks(text, keyPrefix = '') {
           className={'scroll-box' + (hasTabs ? ' has-tabs' : '')}
           style={mh ? { maxHeight: Number(mh[1]) + 'px' } : undefined}
         >
-          {renderBlocks(inner, key + '-')}
+          <InScrollBoxContext.Provider value={true}>{renderBlocks(inner, key + '-')}</InScrollBoxContext.Provider>
         </div>
       );
     } else {

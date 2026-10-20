@@ -120,6 +120,8 @@ export function findClient(question, clients) {
 export function questionType(question) {
   const q = question.toLowerCase();
   if (/\bmonths?\b/.test(q) && /(without|don't|dont|do not|missing|no landing|no url)/.test(q)) return 'months';
+  // rows without a URL, however it is worded ("Show me missing landing page URLs", "Any blank landing pages?")
+  if (/(landing pages?|urls?)\b/.test(q) && /\b(missing|without|blank|empty|don't|dont|do not|no|not done)\b/.test(q)) return 'months';
   if (/(assigned|who is|who's)/.test(q)) return 'assigned';
   if (/(service|city|cities|suburb|location|gmb|yellow pages|true local|truelocal)/.test(q)) return 'detail';
   if (/(landing pages?|urls?)\b/.test(q)) return 'pages';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, ArrowUpDown, Check, ChevronLeft, ChevronRight, Menu, RefreshCw, Search } from 'lucide-react';
 import Logo from './Logo.jsx';
-import { summarize, summarizeClients } from '../lib/master.js';
+import { noLandingPage, summarize, summarizeClients } from '../lib/master.js';
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -349,13 +349,18 @@ function RowsSheet({ rows, title, ui, onUi, rowLimit, pills = true }) {
     () => ({
       all: searched.length,
       live: searched.filter((r) => r.status === 'live').length,
-      missing: searched.filter((r) => r.status === 'missing').length,
+      // no landing page URL: a blank cell or a note instead of a link (same rule as the chat)
+      missing: searched.filter(noLandingPage).length,
     }),
     [searched]
   );
 
   const shown = useMemo(
-    () => sortRows(filter === 'all' || !pills ? searched : searched.filter((r) => r.status === filter), sort),
+    () =>
+      sortRows(
+        filter === 'all' || !pills ? searched : searched.filter((r) => (filter === 'missing' ? noLandingPage(r) : r.status === filter)),
+        sort
+      ),
     [searched, filter, pills, sort]
   );
   const PAGE_SIZE = rowLimit === 'all' ? Math.max(shown.length, 1) : rowLimit;
@@ -559,7 +564,7 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   const activeClient = sheetOfKey(sheet);
   const client = useMemo(() => clients.find((c) => c.sheet === activeClient) ?? null, [clients, activeClient]);
   const clientRows = useMemo(() => (client && rows ? rows.filter((r) => r.sheet === client.sheet) : []), [rows, client]);
-  const missingRows = useMemo(() => (sheet === 'missing' && rows ? rows.filter((r) => r.status === 'missing') : []), [rows, sheet]);
+  const missingRows = useMemo(() => (sheet === 'missing' && rows ? rows.filter(noLandingPage) : []), [rows, sheet]);
 
   const sheetUi = ui[sheet] ?? DEFAULT_UI;
   const updateUi = (patch) => setUi((all) => ({ ...all, [sheet]: { ...(all[sheet] ?? DEFAULT_UI), ...patch } }));
