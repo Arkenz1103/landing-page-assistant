@@ -25,6 +25,17 @@ function toHistory(messages = []) {
     .map((m) => ({ role: m.role, content: m.content.length > HISTORY_CHARS ? m.content.slice(0, HISTORY_CHARS) + ' …' : m.content }));
 }
 
+// "Show me missing URLs for X? Which months have URLs for X?" -> two questions, each answered on its own.
+// Every later part must start like a new request and each part needs 3+ words; at most 3 parts.
+const QUESTION_START = /^(?:which|what|show|list|give|who|where|when|how|can|could|do|does|did|is|are|tell|display|find)\b/i;
+
+export function splitQuestions(text) {
+  const parts = text.split(/(?<=\?)\s+/).map((s) => s.trim()).filter(Boolean);
+  if (parts.length < 2 || parts.length > 3) return [text];
+  const ok = parts.every((p, i) => p.split(/\s+/).length >= 3 && (i === 0 || QUESTION_START.test(p)));
+  return ok ? parts : [text];
+}
+
 // An Error carrying `kind` ('config', 'http', 'timeout', 'offline' or 'network'), so the chat can say what went wrong
 function requestError(kind, message) {
   return Object.assign(new Error(message), { kind });

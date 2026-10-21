@@ -5,7 +5,7 @@ import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
 import SettingsModal from './components/SettingsModal.jsx';
 import ChatTitle from './components/ChatTitle.jsx';
-import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
+import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage, splitQuestions } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { clearMasterCache, fetchMaster, getCachedMaster } from './lib/master.js';
 import { localGreeting, withAppExamples } from './lib/greetings.js';
@@ -207,20 +207,30 @@ export default function App() {
       try {
         // a chat bound to a client sends it along, so "who is assigned?" needs no client name
         // the chat's table state (row filter + column layout) goes out with the message and comes back updated
+        // several questions in one message are asked one after another (each sees the earlier answers) and the
+        // answers are shown together
         let nextTableState = null;
-        const output = await sendChatMessage(sessionId, text, {
-          signal: controller.signal,
-          client,
-          history: prior,
-          tableState,
-          onTableState: (s) => (nextTableState = s),
-        });
-        if (controller.signal.aborted) return;
+        const outputs = [];
+        let history = prior;
+        for (const part of splitQuestions(text)) {
+          const output = await sendChatMessage(sessionId, part, {
+            signal: controller.signal,
+            client,
+            history,
+            tableState: nextTableState || tableState,
+            onTableState: (s) => (nextTableState = s),
+          });
+          if (controller.signal.aborted) return;
+          outputs.push(output.trim());
+          history = [...history, { role: 'user', content: part }, { role: 'assistant', content: output }];
+        }
         const now = Date.now();
         updateChat(chatId, (c) => {
           // off-topic answers get the app's random example questions in place of the workflow's
-          const content = output.trim()
-            ? withAppExamples(output, { prior: c.messages, client: c.client, clients: getCachedClients()?.clients })
+          const content = outputs.some(Boolean)
+            ? outputs
+                .map((o) => (o ? withAppExamples(o, { prior: c.messages, client: c.client, clients: getCachedClients()?.clients }) : NO_ANSWER_MSG))
+                .join('\n\n---\n\n')
             : NO_ANSWER_MSG;
           // the first real answer names the chat by its topic (a renamed chat keeps its name)
           const named = c.autoTitle ? topicTitle(text, content) : null;

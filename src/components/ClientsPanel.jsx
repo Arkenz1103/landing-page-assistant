@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronRight, CircleAlert, LayoutDashboard, RefreshCw, Search } from 'lucide-react';
-import { QUESTIONS, QUICK_ACTIONS } from '../lib/clients.js';
+import { QUICK_ACTIONS } from '../lib/clients.js';
 import { SHOW_MISSING_SHEET } from './ClientsMasterView.jsx';
 
 const SHEETS = [
@@ -122,8 +122,8 @@ export default function ClientsPanel({ clients, status, onRefresh, onAsk, active
               {open && (
                 <div className="quick-actions">
                   {QUICK_ACTIONS.map((a) => (
-                    <button key={a.key} type="button" className="quick-btn" onClick={() => onAsk(QUESTIONS[a.key](c.sheet), c)}>
-                      {a.label}
+                    <button key={a.key} type="button" className="quick-btn" onClick={() => onAsk(a.question(c.sheet), c)} title={a.label}>
+                      {a.short || a.label}
                     </button>
                   ))}
                 </div>

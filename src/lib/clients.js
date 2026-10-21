@@ -5,12 +5,16 @@ const CLIENTS_KEY = 'lpa-clients';
 const CLIENTS_SESSION_ID = 'client-list';
 const CACHE_MS = 12 * 60 * 60 * 1000;
 
-export const QUESTIONS = {
-  status: (sheet) => `What is the status for ${sheet}?`,
-  pages: (sheet) => `Which months have landing page URLs for ${sheet}?`,
-  months: (sheet) => `Which months don't have landing page URLs for ${sheet}?`,
-  assigned: (sheet) => `Who is assigned to ${sheet}?`,
-};
+// The four quick questions about one client (welcome card, client tab buttons, follow-up chips):
+// one label each, worded like the question it sends (`short`: the narrow client tab buttons)
+export const QUICK_ACTIONS = [
+  { key: 'status', icon: '📊', label: 'Where are we at?', question: (sheet) => `Where are we at for ${sheet}?` },
+  { key: 'pages', icon: '🔗', label: 'Months with landing page URLs', short: 'With URLs', question: (sheet) => `Which months have landing page URLs for ${sheet}?` },
+  { key: 'months', icon: '❌', label: 'Months without landing page URLs', short: 'Without URLs', question: (sheet) => `Which months don't have landing page URLs for ${sheet}?` },
+  { key: 'assigned', icon: '👤', label: 'Who is assigned?', question: (sheet) => `Who is assigned to ${sheet}?` },
+];
+
+export const QUESTIONS = Object.fromEntries(QUICK_ACTIONS.map((a) => [a.key, a.question]));
 
 // example questions: phrasings the workflow answers with its fast template tables
 const EXAMPLE_QUESTIONS = [
@@ -58,13 +62,6 @@ export function randomExamples(clients, { client = null, avoid = [], count = 3 +
     : fresh(clients?.length ? clients.map((c) => c.sheet) : EXAMPLE_CLIENTS, (s) => s);
   return types.slice(0, count).map((q, i) => q(sheets[i % sheets.length]));
 }
-
-export const QUICK_ACTIONS = [
-  { key: 'status', label: 'Status' },
-  { key: 'pages', label: 'Landing pages url' },
-  { key: 'months', label: 'Without Landing pages url' },
-  { key: 'assigned', label: 'Who is assigned to' },
-];
 
 export function getCachedClients() {
   const cached = readJson(CLIENTS_KEY);

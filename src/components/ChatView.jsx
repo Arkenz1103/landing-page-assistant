@@ -4,7 +4,7 @@ import Logo from './Logo.jsx';
 import Markdown, { OpenClientSheetContext } from './Markdown.jsx';
 import CopyButton from './CopyButton.jsx';
 import Composer from './Composer.jsx';
-import { QUESTIONS, followUpChips, randomExamples } from '../lib/clients.js';
+import { QUICK_ACTIONS, followUpChips, randomExamples } from '../lib/clients.js';
 import { ERROR_MSGS, NO_ANSWER_MSG, STOPPED_MSG, UNREACHABLE_MSG } from '../lib/api.js';
 import { isWorkbookQuestion, splitMasterCta } from '../lib/master.js';
 import { scrollBehavior } from '../lib/storage.js';
@@ -67,14 +67,6 @@ function Welcome({ clients, onSend, waiting, enterToSend }) {
   );
 }
 
-// shown labels are generic; the question sent names the client's sheet so the agent can route it
-const CLIENT_PROMPTS = [
-  { key: 'status', icon: '📊', label: 'Where are we at for this client?' },
-  { key: 'pages', icon: '🔗', label: 'Show live landing pages' },
-  { key: 'months', icon: '❌', label: 'Which months are missing URLs?' },
-  { key: 'assigned', icon: '👤', label: 'Who is assigned to this client?' },
-];
-
 function ClientWelcome({ client, onSend, waiting, enterToSend }) {
   return (
     <div className="welcome">
@@ -84,8 +76,8 @@ function ClientWelcome({ client, onSend, waiting, enterToSend }) {
         </h2>
         <p className="client-welcome-help">Select a quick question below or type your query in the chat box.</p>
         <div className="chips client-welcome-chips" aria-label="Suggested questions">
-          {CLIENT_PROMPTS.map((p) => (
-            <button key={p.key} type="button" className="chip" onClick={() => onSend(QUESTIONS[p.key](client.sheet))} disabled={waiting}>
+          {QUICK_ACTIONS.map((p) => (
+            <button key={p.key} type="button" className="chip" onClick={() => onSend(p.question(client.sheet))} disabled={waiting}>
               <span className="chip-icon" aria-hidden="true">{p.icon}</span> {p.label}
             </button>
           ))}
