@@ -9,6 +9,7 @@ import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { clearMasterCache, fetchMaster, getCachedMaster } from './lib/master.js';
 import { localGreeting, withAppExamples } from './lib/greetings.js';
+import { topicTitle } from './lib/chatTitle.js';
 import {
   createChat,
   loadChats,
@@ -221,9 +222,12 @@ export default function App() {
           const content = output.trim()
             ? withAppExamples(output, { prior: c.messages, client: c.client, clients: getCachedClients()?.clients })
             : NO_ANSWER_MSG;
+          // the first real answer names the chat by its topic (a renamed chat keeps its name)
+          const named = c.autoTitle ? topicTitle(text, content) : null;
           return {
             ...c,
             updatedAt: now,
+            ...(named && { title: named, autoTitle: false }),
             ...(nextTableState && { tableState: nextTableState }),
             messages: [...c.messages, { role: 'assistant', content, createdAt: now }],
           };
@@ -356,7 +360,7 @@ export default function App() {
     const title = name || sheet;
     let chat = chats.find((c) => c.client?.sheet === sheet && c.messages.length === 0);
     if (!chat) {
-      chat = { ...createChat(title), title, client: { sheet, name: title } };
+      chat = { ...createChat(title), title, autoTitle: false, client: { sheet, name: title } };
       setChats((list) => [chat, ...list]);
     }
     setActiveId(chat.id);
@@ -369,7 +373,7 @@ export default function App() {
     const title = 'Master Sheet Clients';
     let chat = chats.find((c) => c.scope === 'all' && c.messages.length === 0);
     if (!chat) {
-      chat = { ...createChat(title), title, scope: 'all' };
+      chat = { ...createChat(title), title, autoTitle: false, scope: 'all' };
       setChats((list) => [chat, ...list]);
     }
     setActiveId(chat.id);
@@ -392,7 +396,7 @@ export default function App() {
       closeDrawerOnMobile();
     },
     onPin: (id) => updateChat(id, (c) => ({ ...c, pinned: !c.pinned })),
-    onRename: (id, title) => updateChat(id, (c) => ({ ...c, title })),
+    onRename: (id, title) => updateChat(id, (c) => ({ ...c, title, autoTitle: false })),
     onDelete: (id) => {
       // cancel a request still running for the chat and forget its pending / error flags
       controllers.current[id]?.abort();

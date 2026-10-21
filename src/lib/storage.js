@@ -1,3 +1,5 @@
+import { titleFromMessages } from './chatTitle.js';
+
 const CHATS_KEY = 'lpa-chats';
 const THEME_KEY = 'lpa-theme';
 const SETTINGS_KEY = 'lpa-settings';
@@ -27,9 +29,23 @@ function writeJson(key, value) {
   }
 }
 
+// The whole first message (up to 120 characters); the sidebar and top bar shorten it on screen with CSS
 export function makeTitle(text) {
   const clean = text.replace(/\s+/g, ' ').trim();
-  return clean.length > 40 ? `${clean.slice(0, 40).trimEnd()}…` : clean;
+  return clean.length > 120 ? `${clean.slice(0, 120).trimEnd()}…` : clean;
+}
+
+// Chats saved before topic names still carry their first message as the title (older ones cut at 40 characters):
+// name them from their first answer. A title the user renamed never matches the first message, so it is left alone.
+function topicNamed(chat) {
+  if (typeof chat?.title !== 'string' || !Array.isArray(chat.messages) || chat.autoTitle !== undefined) return chat;
+  const first = chat.messages.find((m) => m && m.role === 'user' && typeof m.content === 'string');
+  if (!first) return chat;
+  const clean = first.content.replace(/\s+/g, ' ').trim();
+  const oldCut = clean.length > 40 ? `${clean.slice(0, 40).trimEnd()}…` : clean;
+  if (chat.title !== oldCut && chat.title !== makeTitle(first.content)) return chat;
+  const { title, done } = titleFromMessages(chat.messages);
+  return done ? { ...chat, title, autoTitle: false } :{ ...chat, title: makeTitle(first.content), autoTitle: true };
 }
 
 export function createChat(firstMessage) {
@@ -38,6 +54,8 @@ export function createChat(firstMessage) {
     id: crypto.randomUUID(),
     sessionId: crypto.randomUUID(),
     title: makeTitle(firstMessage),
+    // the first message is only a placeholder name: the first real answer gives the chat its topic name
+    autoTitle: true,
     pinned: false,
     createdAt: now,
     updatedAt: now,
@@ -74,7 +92,7 @@ function migrateOldChat() {
 
 export function loadChats() {
   const stored = readJson(CHATS_KEY);
-  const chats = Array.isArray(stored) ? stored : [];
+  const chats = Array.isArray(stored) ? stored.map(topicNamed) : [];
   const migrated = migrateOldChat();
   if (migrated) {
     chats.unshift(migrated);
