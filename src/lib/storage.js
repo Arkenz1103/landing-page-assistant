@@ -3,6 +3,7 @@ import { titleFromMessages } from './chatTitle.js';
 const CHATS_KEY = 'lpa-chats';
 const THEME_KEY = 'lpa-theme';
 const SETTINGS_KEY = 'lpa-settings';
+const SIDEBAR_W_KEY = 'lpa-sidebar-w';
 const MAX_CHATS = 100;
 
 // Keys used by the previous single-chat version of the app
@@ -90,13 +91,27 @@ function migrateOldChat() {
   };
 }
 
-export function loadChats() {
+// Each user's chats, saved on this device under their own key
+const userChatsKey = (userId) => `${CHATS_KEY}:${userId}`;
+
+export function loadChats(userId) {
+  const stored = readJson(userChatsKey(userId));
+  return Array.isArray(stored) ? stored.map(topicNamed) : [];
+}
+
+/**
+ * Chats kept on this device from before sign-in existed (and the even older single-chat version).
+ * They are removed here: the first user to sign in on the device takes them over.
+ */
+export function takeDeviceChats() {
   const stored = readJson(CHATS_KEY);
   const chats = Array.isArray(stored) ? stored.map(topicNamed) : [];
   const migrated = migrateOldChat();
-  if (migrated) {
-    chats.unshift(migrated);
-    saveChats(chats);
+  if (migrated) chats.unshift(migrated);
+  try {
+    localStorage.removeItem(CHATS_KEY);
+  } catch {
+    // ignore
   }
   return chats;
 }
@@ -145,8 +160,8 @@ export function parseChatExport(text) {
 }
 
 // true when saved
-export function saveChats(chats) {
-  return writeJson(CHATS_KEY, trimChats(chats));
+export function saveChats(chats, userId) {
+  return writeJson(userChatsKey(userId), trimChats(chats));
 }
 
 // 'light', 'dark' or 'system' (follows the OS preference); 'system' when nothing is saved
@@ -166,6 +181,20 @@ export function saveTheme(theme) {
   } catch {
     // ignore
   }
+}
+
+// Sidebar width in pixels (dragged on its right edge); DEFAULT_SIDEBAR_W when nothing valid is saved
+export const DEFAULT_SIDEBAR_W = 260;
+export const MIN_SIDEBAR_W = 220;
+export const MAX_SIDEBAR_W = 420;
+
+export function loadSidebarWidth() {
+  const w = Number(readJson(SIDEBAR_W_KEY));
+  return w >= MIN_SIDEBAR_W && w <= MAX_SIDEBAR_W ? w : DEFAULT_SIDEBAR_W;
+}
+
+export function saveSidebarWidth(w) {
+  writeJson(SIDEBAR_W_KEY, w);
 }
 
 export const DEFAULT_SETTINGS = {

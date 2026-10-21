@@ -7,7 +7,6 @@ const MASTER_KEY = 'lpa-master-v3';
 const OLD_KEYS = ['lpa-master', 'lpa-master-v2'];
 const MASTER_SESSION_ID = 'master-sheet';
 const MASTER_TIMEOUT_MS = 60000;
-const CACHE_MS = 12 * 60 * 60 * 1000;
 // localStorage holds ~5 MB per site and the chats share it, so a larger workbook is not cached
 const MAX_CACHE_CHARS = 2_000_000;
 
@@ -84,10 +83,9 @@ export function getCachedMaster() {
   }
   const cached = readJson(MASTER_KEY);
   if (!cached?.payload) return null;
+  // shown until the fresh copy (always fetched when the app opens) arrives
   try {
-    // a copy saved before the workflow sent the Summary rows is refetched straight away
-    const fresh = Boolean(cached.payload.summary) && Date.now() - cached.fetchedAt < CACHE_MS;
-    return { data: decode(cached.payload), fresh, fetchedAt: cached.fetchedAt };
+    return { data: decode(cached.payload), fetchedAt: cached.fetchedAt };
   } catch {
     return null;
   }

@@ -34,6 +34,7 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --focus: #c15f3c;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --ok: #2f8a4a;
   --radius: 12px;
   --sidebar-w: 260px;
   --thread-w: 1100px;
@@ -65,7 +66,6 @@
   --composer-w: 720px;
 }
 
-
 :root[data-theme='dark'] {
   --bg: #262624;
   --sidebar-bg: #1f1e1d;
@@ -96,6 +96,7 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --focus: #e48a6c;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --ok: #6cc584;
   color-scheme: dark;
 }
 
@@ -164,6 +165,50 @@ button:disabled {
   transition: flex-basis 0.2s ease, width 0.2s ease, transform 0.2s ease;
 }
 
+/* dragging the sidebar edge: the width follows the pointer at once */
+.app.resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.app.resizing .sidebar {
+  transition: none;
+}
+
+/* sits on the sidebar's right border; the hit area is wider than the line it lights up */
+.sidebar-resizer {
+  position: relative;
+  z-index: 5;
+  flex: 0 0 0;
+  width: 0;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.sidebar-resizer::before {
+  content: '';
+  position: absolute;
+  inset: 0 -4px;
+}
+
+.sidebar-resizer::after {
+  content: '';
+  position: absolute;
+  inset: 0 -1px;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.sidebar-resizer:hover::after,
+.sidebar-resizer:focus-visible::after,
+.app.resizing .sidebar-resizer::after {
+  background: var(--accent);
+}
+
+.sidebar-resizer:focus-visible {
+  outline: none;
+}
+
 .app.sidebar-closed:not(.is-mobile) .sidebar {
   flex-basis: 0;
   width: 0;
@@ -204,6 +249,91 @@ button:disabled {
   gap: 4px;
   min-height: 52px;
   padding: 8px 12px;
+  border-bottom: 1px solid transparent;
+}
+
+/* the chat or the workbook under the top bar; keyed by view in App, so each switch fades in */
+.view-pane {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  animation: view-in 0.22s ease-out;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* "Clients Workbook" / "New chat" where a chat name would be */
+.topbar-section {
+  margin-left: 6px;
+  padding: 4px 8px;
+  font-size: 0.92rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  padding-left: 8px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--hover);
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent);
+}
+
+.status-thinking .status-dot {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  animation: status-pulse 1.2s ease-in-out infinite;
+}
+
+.status-error .status-dot,
+.status-unconfigured .status-dot {
+  background: var(--error-text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error-text) 20%, transparent);
+}
+
+.status-offline .status-dot {
+  background: var(--muted);
+  box-shadow: none;
+}
+
+@keyframes status-pulse {
+  50% {
+    opacity: 0.35;
+  }
 }
 
 .topbar-title {
@@ -717,20 +847,96 @@ button:disabled {
   color: var(--muted);
 }
 
-/* Settings button (sidebar) */
+/* Account footer (sidebar): who is signed in, chat sync state, Settings / Sign out menu */
 
-.settings-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: var(--text);
+.account {
+  position: relative;
+  margin: 0 -4px -4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
 }
 
-.settings-btn:hover {
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.account-btn:hover,
+.account-btn[aria-expanded='true'] {
   background: var(--hover);
+}
+
+.avatar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-lg {
+  width: 44px;
+  height: 44px;
+  font-size: 1rem;
+}
+
+.account-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.account-email {
+  font-size: 0.87rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.account-chevron {
+  flex: none;
+  color: var(--muted);
+}
+
+/* opens upward from the footer */
+.menu.account-menu {
+  top: auto;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+}
+
+.menu button:disabled {
+  opacity: 0.6;
 }
 
 /* ---------- Settings modal ---------- */
@@ -1209,6 +1415,11 @@ button:disabled {
   }
   .sidebar {
     transition: none;
+  }
+  .view-pane,
+  .status-thinking .status-dot,
+  .auth-card {
+    animation: none;
   }
 }
 
@@ -1769,11 +1980,6 @@ button:disabled {
   padding: 4px 24px 0;
 }
 
-/* no top bar above it: start the header a little below the window edge */
-.main > .master-view:first-child {
-  padding-top: 16px;
-}
-
 .master-empty {
   margin: auto;
   text-align: center;
@@ -1921,6 +2127,73 @@ button:disabled {
 .master-search {
   flex: 1 1 280px;
   max-width: 460px;
+}
+
+/* client sheet search: matching tabs drop down under the box */
+.client-search {
+  position: relative;
+}
+
+.client-search-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: min(360px, 55vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+
+.client-search-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.client-search-list button.hi {
+  background: var(--hover);
+}
+
+.client-search-list button.active .client-search-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.client-search-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.client-search-name small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.client-search-meta {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.client-search-none {
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .status-pills {
@@ -2384,13 +2657,8 @@ button svg,
 .home-btn .app-logo,
 .head-btn.tinted .btn-logo,
 .new-chat-btn svg,
-.new-chat-icon-btn svg,
-.settings-btn svg {
+.new-chat-icon-btn svg {
   transition-duration: 0.3s;
-}
-
-.settings-btn svg {
-  transition-timing-function: ease-in-out;
 }
 
 button .refresh-icon {
@@ -2411,8 +2679,12 @@ button .refresh-icon {
     transform: scale(1.1) rotate(-12deg);
   }
 
-  .settings-btn:hover svg {
-    transform: rotate(90deg);
+  .theme-toggle-btn:hover svg {
+    transform: rotate(20deg) scale(1.1);
+  }
+
+  .view-toggle-btn:hover svg {
+    transform: scale(1.1);
   }
 
   .nav-btn:hover svg,
@@ -2464,6 +2736,15 @@ button .refresh-icon {
 /* ---------- Mobile ---------- */
 
 @media (max-width: 767px) {
+  .status-label {
+    display: none;
+  }
+
+  .status-pill {
+    margin-right: 2px;
+    padding: 8px;
+  }
+
   .thread {
     padding: 8px 14px 20px;
   }
@@ -2549,4 +2830,236 @@ button .refresh-icon {
 .sheet-link-btn:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* ---------- Sign in ---------- */
+
+.auth-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px 16px;
+  background:
+    radial-gradient(60rem 30rem at 50% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%),
+    var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 32px 28px 26px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  animation: modal-in 0.2s ease-out;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.auth-logo {
+  width: 22px;
+  height: 22px;
+}
+
+.auth-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.auth-sub {
+  margin: 4px 0 22px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg);
+  font-size: 0.95rem;
+  font-weight: 400;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.auth-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.auth-field input:focus {
+  border-color: var(--focus);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 18%, transparent);
+}
+
+.auth-password {
+  position: relative;
+}
+
+.auth-password input {
+  padding-right: 42px;
+}
+
+.auth-eye {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: inline-flex;
+  padding: 6px;
+  border-radius: 6px;
+  color: var(--muted);
+  transform: translateY(-50%);
+}
+
+.auth-eye:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.auth-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.auth-submit {
+  margin-top: 4px;
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.auth-submit:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.auth-submit:disabled {
+  opacity: 0.7;
+}
+
+.auth-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.87rem;
+}
+
+.auth-notice svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.auth-notice p {
+  margin: 0;
+}
+
+.auth-notice-error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.auth-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.auth-loading span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-loading-logo {
+  width: 36px;
+  height: 36px;
+}
+
+/* ---------- Settings > Account ---------- */
+
+.settings-input {
+  width: min(260px, 100%);
+  padding: 7px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.settings-input::placeholder {
+  color: var(--muted);
+}
+
+.settings-input:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 18%, transparent);
+}
+
+.profile-photo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* the photo itself is the upload button; an upload icon fades in on hover */
+.profile-photo-btn {
+  position: relative;
+  border-radius: 50%;
+}
+
+.profile-photo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.profile-photo-btn:hover .profile-photo-overlay,
+.profile-photo-btn:focus-visible .profile-photo-overlay {
+  opacity: 1;
 }

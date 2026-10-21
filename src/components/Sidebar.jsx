@@ -1,4 +1,5 @@
-import { CircleHelp, MessageSquare, PanelLeftClose, Search, Settings, SquarePen, Users } from 'lucide-react';
+import { CircleHelp, MessageSquare, PanelLeftClose, Search, SquarePen, Users } from 'lucide-react';
+import AccountMenu from './AccountMenu.jsx';
 import ChatsPanel from './ChatsPanel.jsx';
 import ClientsPanel from './ClientsPanel.jsx';
 import HelpPanel from './HelpPanel.jsx';
@@ -30,6 +31,7 @@ export default function Sidebar({
   onSettings,
   onHome,
   searchRef,
+  account,
 }) {
   return (
     <div className="sidebar-inner">
@@ -97,10 +99,7 @@ export default function Sidebar({
         {panel === 'help' && <HelpPanel onAsk={onAsk} />}
       </div>
 
-      <button type="button" className="settings-btn" onClick={onSettings}>
-        <Settings size={16} aria-hidden="true" />
-        Settings
-      </button>
+      <AccountMenu {...account} onSettings={onSettings} />
     </div>
   );
 }

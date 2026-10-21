@@ -12,7 +12,7 @@ const FILTERS = [
 const STATUS_LABEL = { live: 'Live', note: 'Note', missing: 'Missing' };
 
 // `sort`: { key, dir: 'asc' | 'desc' } or null (sheet row order); `month` / `assigned`: '' = all
-const DEFAULT_UI = { query: '', filter: 'all', page: 0, sort: null, month: '', assigned: '' };
+const DEFAULT_UI = { filter: 'all', page: 0, sort: null, month: '', assigned: '' };
 
 /** Sheet keys: 'summary' (shown as Master Sheet Clients), 'missing' (every client's rows without a URL) or 'client:<tab name>'. */
 export const clientSheetKey = (sheet) => `client:${sheet}`;
@@ -236,9 +236,7 @@ function summaryTabs(contacts, clients) {
 }
 
 function SummarySheet({ summary, clients, onOpenClient }) {
-  const [query, setQuery] = useState('');
-
-  const rows = useMemo(() => {
+  const shown = useMemo(() => {
     const list = (summary?.rows ?? []).map((r) => ({ row: r.row, values: SUMMARY_COLUMNS.map((col) => cellValue(r.cells, col)) }));
     const tabs = summaryTabs(
       list.map((r) => r.values[0]),
@@ -246,11 +244,6 @@ function SummarySheet({ summary, clients, onOpenClient }) {
     );
     return list.map((r, i) => ({ ...r, tab: tabs[i] }));
   }, [summary, clients]);
-
-  const shown = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return q ? rows.filter((r) => r.values.some((v) => v.toLowerCase().includes(q))) : rows;
-  }, [rows, query]);
 
   if (!summary) {
     return (
@@ -264,16 +257,7 @@ function SummarySheet({ summary, clients, onOpenClient }) {
   return (
     <div className="sheet-body">
       <div className="master-controls">
-        <div className="search-box master-search">
-          <Search size={15} aria-hidden="true" />
-          <input
-            type="search"
-            placeholder="Search Master Sheet Clients"
-            aria-label="Search Master Sheet Clients"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
+        <ClientSearch clients={clients} onOpen={onOpenClient} />
         <span className="sheet-count">
           {shown.length.toLocaleString()} row{shown.length === 1 ? '' : 's'}
         </span>
@@ -324,26 +308,109 @@ function SummarySheet({ summary, clients, onOpenClient }) {
 
 /* ---------- Client sheets ---------- */
 
+// Finds a client sheet tab by name (tab or client name, every typed word must match) and opens it
+function ClientSearch({ clients, active, onOpen }) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(0);
+  const rootRef = useRef(null);
+
+  const matches = useMemo(() => {
+    const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    return clients.filter((c) => {
+      const hay = `${c.sheet} ${c.name}`.toLowerCase();
+      return words.every((w) => hay.includes(w));
+    });
+  }, [clients, query]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => !rootRef.current?.contains(e.target) && setOpen(false);
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, [open]);
+
+  const pick = (c) => {
+    onOpen(c.sheet);
+    setQuery('');
+    setOpen(false);
+  };
+
+  const onKey = (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!matches.length) return;
+      setOpen(true);
+      setHi((h) => (h + (e.key === 'ArrowDown' ? 1 : -1) + matches.length) % matches.length);
+    } else if (e.key === 'Enter' && matches.length) {
+      e.preventDefault();
+      pick(matches[Math.min(hi, matches.length - 1)]);
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    }
+  };
+
+  const showList = open && query.trim() !== '';
+  return (
+    <div className="search-box master-search client-search" ref={rootRef}>
+      <Search size={15} aria-hidden="true" />
+      <input
+        type="search"
+        placeholder="Search client sheets"
+        aria-label="Search client sheets"
+        role="combobox"
+        aria-expanded={showList}
+        aria-controls="client-search-list"
+        aria-autocomplete="list"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setHi(0);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onKeyDown={onKey}
+      />
+      {showList && (
+        <ul className="client-search-list" id="client-search-list" role="listbox" aria-label="Client sheets">
+          {matches.length === 0 && <li className="client-search-none">No client sheet matches “{query.trim()}”</li>}
+          {matches.slice(0, 50).map((c, i) => (
+            <li key={c.sheet} role="option" aria-selected={i === hi}>
+              <button
+                type="button"
+                className={`${i === hi ? 'hi' : ''} ${c.sheet === active ? 'active' : ''}`.trim()}
+                onMouseEnter={() => setHi(i)}
+                onClick={() => pick(c)}
+              >
+                <span className="client-search-name">
+                  {c.sheet}
+                  {c.name && c.name !== c.sheet && <small>{c.name}</small>}
+                </span>
+                <span className="client-search-meta">
+                  {c.total} rows · {c.total - c.live} missing
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 // `rowLimit`: rows per page (Settings > Default table row limit), or 'all' for one page.
 // `pills`: show the Live / Missing filter (the Missing URLs sheet has only one kind of row).
-function RowsSheet({ rows, title, ui, onUi, rowLimit, pills = true }) {
-  const { query, filter, page, sort, month, assigned } = ui;
+function RowsSheet({ rows, ui, onUi, rowLimit, pills = true, clients, activeSheet, onOpenClient }) {
+  const { filter, page, sort, month, assigned } = ui;
 
   // dropdown choices from the whole sheet, so picking one never empties the other list
   const choices = useMemo(() => summarize(rows), [rows]);
 
-  const searched = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return rows.filter(
-      (r) =>
-        (!month || r.month === month) &&
-        (!assigned || r.assigned === assigned) &&
-        (!q ||
-          [r.name, r.sheet, r.suburb, r.city, r.service, r.assigned, r.url, r.note, r.month, r.gmb, r.yellowPages, r.trueLocal, r.assignedUrl].some(
-            (v) => v.toLowerCase().includes(q)
-          ))
-    );
-  }, [rows, query, month, assigned]);
+  const searched = useMemo(
+    () => rows.filter((r) => (!month || r.month === month) && (!assigned || r.assigned === assigned)),
+    [rows, month, assigned]
+  );
 
   const counts = useMemo(
     () => ({
@@ -371,16 +438,7 @@ function RowsSheet({ rows, title, ui, onUi, rowLimit, pills = true }) {
   return (
     <div className="sheet-body">
       <div className="master-controls">
-        <div className="search-box master-search">
-          <Search size={15} aria-hidden="true" />
-          <input
-            type="search"
-            placeholder={`Search ${title}`}
-            aria-label={`Search ${title} sheet`}
-            value={query}
-            onChange={(e) => onUi({ query: e.target.value, page: 0 })}
-          />
-        </div>
+        <ClientSearch clients={clients} active={activeSheet} onOpen={onOpenClient} />
         <SheetSelect
           label="Filter by month"
           allLabel="All months"
@@ -603,9 +661,22 @@ export default function ClientsMasterView({ rows, summary, status, onRefresh, on
   if (sheet === 'summary') {
     body = <SummarySheet summary={summary} clients={clients} onOpenClient={openClient} />;
   } else if (sheet === 'missing') {
-    body = <RowsSheet key={sheet} rows={missingRows} title="Missing URLs" ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} pills={false} />;
+    body = (
+      <RowsSheet key={sheet} rows={missingRows} ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} pills={false} clients={clients} onOpenClient={openClient} />
+    );
   } else if (client) {
-    body = <RowsSheet key={sheet} rows={clientRows} title={client.name} ui={sheetUi} onUi={updateUi} rowLimit={rowLimit} />;
+    body = (
+      <RowsSheet
+        key={sheet}
+        rows={clientRows}
+        ui={sheetUi}
+        onUi={updateUi}
+        rowLimit={rowLimit}
+        clients={clients}
+        activeSheet={client.sheet}
+        onOpenClient={openClient}
+      />
+    );
   } else {
     body = (
       <div className="master-empty">

@@ -1,56 +1,30 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CircleAlert, PanelLeftOpen, SquarePen } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 import Sidebar from './components/Sidebar.jsx';
+import SidebarResizer from './components/SidebarResizer.jsx';
+import TopBar from './components/TopBar.jsx';
 import ChatView from './components/ChatView.jsx';
 import ClientsMasterView, { clientSheetKey } from './components/ClientsMasterView.jsx';
 import SettingsModal from './components/SettingsModal.jsx';
-import ChatTitle from './components/ChatTitle.jsx';
-import { NO_ANSWER_MSG, STOPPED_MSG, sendChatMessage, splitQuestions } from './lib/api.js';
+import { NO_ANSWER_MSG, STOPPED_MSG, isChatConfigured, sendChatMessage, splitQuestions } from './lib/api.js';
 import { fetchClients, getCachedClients } from './lib/clients.js';
 import { clearMasterCache, fetchMaster, getCachedMaster } from './lib/master.js';
 import { localGreeting, withAppExamples } from './lib/greetings.js';
 import { topicTitle } from './lib/chatTitle.js';
+import { greetName, loadProfile, saveProfile, shownName } from './lib/profile.js';
+import { useMediaQuery, useOnline, useTheme } from './lib/hooks.js';
 import {
   createChat,
-  loadChats,
   loadSettings,
-  loadTheme,
+  loadSidebarWidth,
   parseChatExport,
   saveChats,
   saveSettings,
-  saveTheme,
+  saveSidebarWidth,
   trimChats,
 } from './lib/storage.js';
 
 const MOBILE_QUERY = '(max-width: 767px)';
-
-function useMediaQuery(query) {
-  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
-  useEffect(() => {
-    const mq = window.matchMedia(query);
-    const onChange = () => setMatches(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, [query]);
-  return matches;
-}
-
-// `theme` is the saved choice ('light', 'dark' or 'system'); the page gets the resolved light/dark one
-function useTheme() {
-  const [theme, setTheme] = useState(loadTheme);
-  const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
-  }, [theme, systemDark]);
-
-  const choose = useCallback((t) => {
-    setTheme(t);
-    saveTheme(t);
-  }, []);
-
-  return [theme, choose];
-}
 
 // Text size, chat width and compact tables, applied as data attributes on <html> (index.css reads them)
 function useSettings() {
@@ -71,8 +45,11 @@ function useSettings() {
   return [settings, update];
 }
 
-export default function App() {
-  const [chats, setChats] = useState(loadChats);
+// The workspace for the signed-in `user` (AuthGate only renders it with a session). `initialChats` are the
+// user's chats saved on this device; every change is saved back there.
+export default function App({ user, initialChats, onSignOut }) {
+  const [chats, setChats] = useState(initialChats);
+  const [signingOut, setSigningOut] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const [pending, setPending] = useState({});
   // per chat: the failed request's kind ('network', 'timeout', ...; see ERROR_MSGS in api.js)
@@ -89,9 +66,14 @@ export default function App() {
   // clients workbook: the active sheet ('summary' = Master Sheet Clients, or a client sheet)
   const [sheet, setSheet] = useState('summary');
   const [query, setQuery] = useState('');
-  const [theme, setTheme] = useTheme();
+  const [theme, setTheme, systemDark] = useTheme();
+  const dark = theme === 'dark' || (theme === 'system' && systemDark);
+  const online = useOnline();
   const [settings, setSettings] = useSettings();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Settings > Account: photo and names, saved per user on this device
+  const [profile, setProfile] = useState(() => loadProfile(user.id));
+  const name = shownName(profile, user);
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const [collapsed, setCollapsed] = useState(false);
@@ -99,6 +81,9 @@ export default function App() {
   const searchRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const sidebarVisible = isMobile ? drawerOpen : !collapsed;
+  const [sidebarW, setSidebarW] = useState(loadSidebarWidth);
+  // while the sidebar edge is dragged: no width transition, resize cursor everywhere
+  const [resizing, setResizing] = useState(false);
 
   const [clients, setClients] = useState(() => getCachedClients()?.clients ?? null);
   // 'cached' when a fresh saved list is used without asking the workflow
@@ -120,14 +105,15 @@ export default function App() {
       setChats(kept);
       return;
     }
-    let saved = saveChats(chats);
+    // saved per user, so each login has its own chats
+    let saved = saveChats(chats, user.id);
     // storage full: the cached workbook is the big item and can be fetched again, the chats can't
     if (!saved) {
       clearMasterCache();
-      saved = saveChats(chats);
+      saved = saveChats(chats, user.id);
     }
     setSaveFailed(!saved);
-  }, [chats, activeId]);
+  }, [chats, activeId, user.id]);
 
   useEffect(() => {
     if (!isMobile) setDrawerOpen(false);
@@ -170,7 +156,8 @@ export default function App() {
   }, []);
 
   // Load the master sheet in the background shortly after the app opens, or straight away when the Clients view
-  // opens first, so it is usually ready before it is needed (a fresh cached copy is used as is)
+  // opens first, so it is usually ready before it is needed. The saved copy shows at once and is always replaced by a
+  // fresh one, so the workbook never lags behind the sheet (or the chat answers) after a reload
   useEffect(() => {
     if (masterRequested.current) return;
     const start = () => {
@@ -181,7 +168,7 @@ export default function App() {
         setMaster(cached.data);
         setMasterSyncedAt(cached.fetchedAt);
       }
-      if (!cached?.fresh) loadMaster();
+      loadMaster();
     };
     if (view === 'clients') {
       start();
@@ -481,8 +468,65 @@ export default function App() {
     else setCollapsed((c) => !c);
   }
 
+  function openSettings() {
+    closeDrawerOnMobile();
+    setSettingsOpen(true);
+  }
+
+  function updateProfile(p) {
+    setProfile(p);
+    saveProfile(user.id, p);
+  }
+
+  function resizeSidebar(w, done) {
+    setSidebarW(w);
+    if (done) saveSidebarWidth(w);
+  }
+
+  // Top bar switch: the master sheet, with the Clients tab showing in the sidebar
+  function openWorkbook() {
+    setPanel('clients');
+    setView('clients');
+    closeDrawerOnMobile();
+  }
+
+  function toggleView() {
+    if (view === 'clients') {
+      setPanel('chats');
+      setView('chat');
+    } else openWorkbook();
+  }
+
+  // Sign out: stop running requests, then end the session (the chats stay saved on this device for next time)
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    for (const c of Object.values(controllers.current)) c.abort();
+    controllers.current = {};
+    try {
+      await onSignOut();
+    } catch (err) {
+      console.error('Sign out failed:', err);
+      setSigningOut(false);
+    }
+  }
+
+  // the top bar's assistant status, for the open chat
+  const assistantStatus = !isChatConfigured
+    ? 'unconfigured'
+    : !online
+      ? 'offline'
+      : activeChat && pending[activeChat.id]
+        ? 'thinking'
+        : activeChat && errors[activeChat.id]
+          ? 'error'
+          : 'ready';
+
   return (
-    <div className={`app ${sidebarVisible ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'is-mobile' : ''}`}>
+    <div
+      className={`app ${sidebarVisible ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'is-mobile' : ''} ${resizing ? 'resizing' : ''}`}
+      style={{ '--sidebar-w': `${sidebarW}px` }}
+    >
       {isMobile && drawerOpen && <div className="overlay" onClick={() => setDrawerOpen(false)} aria-hidden="true" />}
 
       <aside className="sidebar" aria-label="Sidebar" aria-hidden={!sidebarVisible} inert={!sidebarVisible ? true : undefined}>
@@ -508,30 +552,28 @@ export default function App() {
             closeDrawerOnMobile();
           }}
           onOpenClient={openClientSheet}
-          onSettings={() => {
-            closeDrawerOnMobile();
-            setSettingsOpen(true);
-          }}
+          onSettings={openSettings}
+          account={{ name, photo: profile.photo, onSignOut: signOut, signingOut }}
         />
       </aside>
 
+      {!isMobile && sidebarVisible && (
+        <SidebarResizer width={sidebarW} onResize={resizeSidebar} onClose={toggleSidebar} onDragging={setResizing} />
+      )}
+
       <main className="main">
-        {/* on the Clients view the bar would be empty while the sidebar is open, so it is dropped */}
-        {(view === 'chat' || !sidebarVisible) && (
-          <header className="topbar">
-            {!sidebarVisible && (
-              <>
-                <button type="button" className="icon-btn expand-btn" onClick={toggleSidebar} aria-label="Open sidebar" title="Open sidebar">
-                  <PanelLeftOpen size={18} aria-hidden="true" />
-                </button>
-                <button type="button" className="icon-btn new-chat-icon-btn" onClick={newChat} aria-label="New chat" title="New chat (Ctrl+Shift+O)">
-                  <SquarePen size={18} aria-hidden="true" />
-                </button>
-              </>
-            )}
-            {view === 'chat' && activeChat && <ChatTitle key={activeChat.id} chat={activeChat} onRename={chatHandlers.onRename} />}
-          </header>
-        )}
+        <TopBar
+          sidebarVisible={sidebarVisible}
+          onToggleSidebar={toggleSidebar}
+          onNewChat={newChat}
+          view={view}
+          chat={activeChat}
+          onRename={chatHandlers.onRename}
+          status={assistantStatus}
+          onToggleView={toggleView}
+          dark={dark}
+          onToggleTheme={() => setTheme(dark ? 'light' : 'dark')}
+        />
 
         {saveFailed && (
           <div className="error-banner save-banner" role="alert">
@@ -540,34 +582,38 @@ export default function App() {
           </div>
         )}
 
-        {view === 'clients' ? (
-          <ClientsMasterView
-            rows={master?.rows ?? null}
-            summary={master?.summary ?? null}
-            status={masterStatus}
-            onRefresh={loadMaster}
-            onChat={chatAboutClient}
-            onAskAll={chatAboutAllClients}
-            sheet={sheet}
-            onSheet={openSheet}
-            rowLimit={settings.rowLimit}
-          />
-        ) : (
-          <ChatView
-            key={activeChat?.id ?? 'new'}
-            chat={activeChat}
-            waiting={Boolean(activeChat && pending[activeChat.id])}
-            error={(activeChat && errors[activeChat.id]) || null}
-            clients={clients}
-            onSend={send}
-            onStop={stop}
-            onRetry={retryAnswer}
-            onRetryError={retryAfterError}
-            onOpenMaster={openMasterSheet}
-            onOpenClient={openClientSheetFromChat}
-            enterToSend={settings.enterToSend}
-          />
-        )}
+        {/* keyed by view, so switching between the chat and the workbook fades the new one in */}
+        <div key={view} className="view-pane">
+          {view === 'clients' ? (
+            <ClientsMasterView
+              rows={master?.rows ?? null}
+              summary={master?.summary ?? null}
+              status={masterStatus}
+              onRefresh={loadMaster}
+              onChat={chatAboutClient}
+              onAskAll={chatAboutAllClients}
+              sheet={sheet}
+              onSheet={openSheet}
+              rowLimit={settings.rowLimit}
+            />
+          ) : (
+            <ChatView
+              key={activeChat?.id ?? 'new'}
+              chat={activeChat}
+              waiting={Boolean(activeChat && pending[activeChat.id])}
+              error={(activeChat && errors[activeChat.id]) || null}
+              clients={clients}
+              onSend={send}
+              onStop={stop}
+              onRetry={retryAnswer}
+              onRetryError={retryAfterError}
+              onOpenMaster={openMasterSheet}
+              onOpenClient={openClientSheetFromChat}
+              enterToSend={settings.enterToSend}
+              userName={greetName(profile)}
+            />
+          )}
+        </div>
       </main>
 
       <SettingsModal
@@ -587,6 +633,10 @@ export default function App() {
         chats={chats}
         onImportChats={importChats}
         onClearChats={clearChats}
+        user={user}
+        profile={profile}
+        onProfile={updateProfile}
+        onSignOut={signOut}
       />
     </div>
   );

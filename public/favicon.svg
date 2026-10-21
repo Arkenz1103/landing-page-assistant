@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- the app's logo (src/components/Logo.jsx) in the accent colour; a lighter one on dark browser tabs -->
+  <style>
+    .mark { color: #c15f3c; }
+    @media (prefers-color-scheme: dark) { .mark { color: #e48a6c; } }
+  </style>
+  <g class="mark">
+    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="50.3 12.5" transform="rotate(-30 12 12)" />
+    <circle cx="19.6" cy="4.4" r="1.8" fill="currentColor" />
+    <path d="M12 5.6C12.55 9.55 14.45 11.45 18.4 12C14.45 12.55 12.55 14.45 12 18.4C11.45 14.45 9.55 12.55 5.6 12C9.55 11.45 11.45 9.55 12 5.6Z" fill="currentColor" />
+  </g>
+</svg>

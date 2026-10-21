@@ -1,7 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { Database, Download, Eraser, Info, Monitor, Moon, RefreshCw, Search, Settings, Sun, Trash2, Upload, X } from 'lucide-react';
+import {
+  CircleUser,
+  Database,
+  Download,
+  Eraser,
+  Info,
+  LogOut,
+  Monitor,
+  Moon,
+  RefreshCw,
+  Search,
+  Settings,
+  Sun,
+  Trash2,
+  Upload,
+  X,
+} from 'lucide-react';
 import { version } from '../../package.json';
 import { chatExport } from '../lib/storage.js';
+import { PHOTO_TYPES, photoFromFile, shownName } from '../lib/profile.js';
+import Avatar from './Avatar.jsx';
 
 const THEMES = [
   { key: 'system', label: 'System', icon: Monitor },
@@ -39,6 +57,12 @@ const SECTIONS = [
     label: 'General',
     icon: Settings,
     keywords: 'appearance theme text size width chat table compact rows enter send launch start view clients workbook',
+  },
+  {
+    key: 'account',
+    label: 'Account',
+    icon: CircleUser,
+    keywords: 'profile photo picture avatar name full name call display username login log out sign out',
   },
   {
     key: 'data',
@@ -331,6 +355,96 @@ function DataTab({
   );
 }
 
+// Profile (photo, names) and the login: the profile is saved per user on this device
+function AccountTab({ user, profile, onProfile, onSignOut }) {
+  const fileRef = useRef(null);
+  const [photoError, setPhotoError] = useState('');
+  const set = (key) => (e) => onProfile({ ...profile, [key]: e.target.value });
+
+  async function onFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // the same file can be picked again
+    if (!file) return;
+    try {
+      onProfile({ ...profile, photo: await photoFromFile(file) });
+      setPhotoError('');
+    } catch (err) {
+      setPhotoError(err.message);
+    }
+  }
+
+  return (
+    <>
+      <h3 className="settings-heading">Account</h3>
+
+      <section className="settings-section" aria-labelledby="settings-profile">
+        <h4 id="settings-profile" className="settings-section-title">
+          Profile
+        </h4>
+        <Row label="Profile photo" hint={photoError || 'PNG, JPEG, or WebP, up to 10MB.'}>
+          <div className="profile-photo">
+            <input ref={fileRef} type="file" accept={PHOTO_TYPES.join(',')} hidden onChange={onFile} />
+            {profile.photo && (
+              <button type="button" className="small-btn" onClick={() => onProfile({ ...profile, photo: '' })}>
+                Remove
+              </button>
+            )}
+            <button
+              type="button"
+              className="profile-photo-btn"
+              onClick={() => fileRef.current?.click()}
+              aria-label={profile.photo ? 'Change profile photo' : 'Upload profile photo'}
+              title={profile.photo ? 'Change photo' : 'Upload photo'}
+            >
+              <Avatar photo={profile.photo} name={shownName(profile, user)} className="avatar-lg" />
+              <span className="profile-photo-overlay" aria-hidden="true">
+                <Upload size={15} />
+              </span>
+            </button>
+          </div>
+        </Row>
+        <Row label="Full name">
+          <input
+            className="settings-input"
+            value={profile.fullName}
+            onChange={set('fullName')}
+            maxLength={80}
+            placeholder="Your full name"
+            aria-label="Full name"
+            autoComplete="name"
+          />
+        </Row>
+        <Row label="What should the assistant call you?" hint="Used in the greeting and the sidebar.">
+          <input
+            className="settings-input"
+            value={profile.displayName}
+            onChange={set('displayName')}
+            maxLength={40}
+            placeholder={profile.fullName.trim().split(/\s+/)[0] || user.name}
+            aria-label="What should the assistant call you?"
+            autoComplete="nickname"
+          />
+        </Row>
+      </section>
+
+      <section className="settings-section" aria-labelledby="settings-login">
+        <h4 id="settings-login" className="settings-section-title">
+          Login
+        </h4>
+        <Row label="Username" hint="Set by APP_USERNAME in the server’s .env file.">
+          <span className="settings-value">{user.name}</span>
+        </Row>
+        <Row label="Log out of this device">
+          <button type="button" className="small-btn" onClick={onSignOut}>
+            <LogOut size={13} aria-hidden="true" />
+            Log out
+          </button>
+        </Row>
+      </section>
+    </>
+  );
+}
+
 function AboutTab({ clientStatus }) {
   const status = STATUS[clientStatus] ?? STATUS.idle;
   return (
@@ -352,7 +466,7 @@ function AboutTab({ clientStatus }) {
   );
 }
 
-// Settings: General (appearance, chat and table behaviour), Data & Cache, About
+// Settings: General (appearance, chat and table behaviour), Account (profile, login), Data & Cache, About
 export default function SettingsModal({
   open,
   onClose,
@@ -370,6 +484,10 @@ export default function SettingsModal({
   chats,
   onImportChats,
   onClearChats,
+  user,
+  profile,
+  onProfile,
+  onSignOut,
 }) {
   const ref = useRef(null);
   const [search, setSearch] = useState('');
@@ -434,6 +552,7 @@ export default function SettingsModal({
           {/* keyed by tab so each switch replays the fade-in */}
           <div key={tab} className="settings-pane">
             {tab === 'general' && <GeneralTab theme={theme} onTheme={onTheme} settings={settings} set={set} />}
+            {tab === 'account' && <AccountTab user={user} profile={profile} onProfile={onProfile} onSignOut={onSignOut} />}
             {tab === 'data' && (
               <DataTab
                 settings={settings}

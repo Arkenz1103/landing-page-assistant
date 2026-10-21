@@ -1,5 +1,8 @@
 const CHAT_URL = import.meta.env.VITE_N8N_CHAT_URL;
 
+// false when the .env file has no webhook URL (the top bar's status says so)
+export const isChatConfigured = Boolean(CHAT_URL);
+
 export const REQUEST_TIMEOUT_MS = 60000;
 export const UNREACHABLE_MSG = "Can't reach the assistant right now. Please try again.";
 // the error banner text for each failed request `kind` (see requestError)

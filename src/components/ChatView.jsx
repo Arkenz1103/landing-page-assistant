@@ -43,8 +43,9 @@ function useTimeGreeting() {
   return state.text;
 }
 
-function Welcome({ clients, onSend, waiting, enterToSend }) {
-  const greeting = useTimeGreeting();
+function Welcome({ clients, onSend, waiting, enterToSend, userName }) {
+  // "Good morning!" -> "Good morning, Sam!"
+  const greeting = useTimeGreeting().replace('!', userName ? `, ${userName}!` : '!');
   // random starters, picked once per welcome screen (again when the client list first arrives) so they don't change while typing
   const loaded = clients?.length > 0;
   const starters = useMemo(() => randomExamples(clients, { count: 4 }), [loaded]);
@@ -162,6 +163,7 @@ export default function ChatView({
   onOpenMaster,
   onOpenClient,
   enterToSend,
+  userName,
 }) {
   const bottomRef = useRef(null);
   const messages = chat?.messages ?? [];
@@ -186,7 +188,7 @@ export default function ChatView({
         ) : chat?.scope === 'all' ? (
           <AllClientsWelcome onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
         ) : (
-          <Welcome clients={clients} onSend={onSend} waiting={waiting} enterToSend={enterToSend} />
+          <Welcome clients={clients} onSend={onSend} waiting={waiting} enterToSend={enterToSend} userName={userName} />
         )}
       </div>
     );
